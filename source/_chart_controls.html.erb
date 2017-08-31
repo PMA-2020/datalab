@@ -1,0 +1,48 @@
+<div class='row'>
+  <div class='col-md-12'>
+    <div class='form-group'>
+      <%= label_tag("dataset-language-picker".to_sym, {class: 'i18nable-label', data: { type: 'Language' }}) { "Language: " } %>
+      language select here
+    </div>
+  </div>
+</div>
+<%= partial 'select_box_filter', locals: {
+  type: 'indicators',
+  label_value: 'Indicators',
+  grouped: true } %>
+<%= partial 'select_box_filter', locals: {
+  type: 'disaggregators',
+  label_value: 'Break down data by',
+  grouped: false } %>
+<%= partial 'data_series_limiters' %>
+<%= partial 'data_series' %>
+<div class='row'>
+  <div class='col-md-12'>
+    <%= partial 'chart_type_buttons' %>
+  </div>
+</div>
+<div class='row'>
+  <div class='col-md-6'>
+    <%= partial 'black_and_white_button' %>
+  </div>
+  <div class='col-md-6'>
+    <%= partial 'overtime_checkbox' %>
+  </div>
+</div>
+<div class='row'>
+  <div class='col-md-12'>
+    <div class='row'>
+      <div class='col-md-3'>
+        <% link_to "#", id: "download-csv", class: 'btn btn-success btn-block btn-lg', disabled: true do %>
+          <i class='fa fa-download'></i>
+        <% end %>
+      </div>
+      <div class='col-md-9'>
+        <% link_to '#', id: "submit-chart-filters", class: 'submit-chart btn btn-success btn-block btn-lg', disabled: true do %>
+          <i class='fa fa-bar-chart'></i>
+          <span class='i18nable-label' data-type='Chart'>Chart</span>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

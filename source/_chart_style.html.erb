@@ -1,0 +1,272 @@
+<h4 class='text-center'>Chart Font</h4>
+<div class='bfh-selectbox bfh-fonts' data-font='Arial'>
+</div>
+<h4 class='text-center'>Chart Color Options</h4>
+<div>
+  <div class='form-group'>
+    <div class='row'>
+      <div class='col-md-6'>
+        <label for='chart-color-palette' class='text-right'>
+          Color Palette:
+        </label>
+      </div>
+      <div class='col-md-6'>
+        <%= select_tag(
+          'chart-color-palette',
+          { options: [], class: 'form-control', id: 'chart-palette' }) %>
+      </div>
+    </div>
+    <div class='row'>
+      <div class='col-md-12'>
+        <div id='color-palette-preview'></div>
+        <br/>
+        <br/>
+      </div>
+    </div>
+  </div>
+  <div class='form-group'>
+    <div class='row'>
+      <div class='col-md-6'>
+        <label for='chart-background-color' class='text-right'>
+          Background:
+        </label>
+      </div>
+      <div class='col-md-6'>
+        <%= text_field_tag(
+          'chart-background-color',
+          {
+            class: 'color form-control',
+            id: 'chart-background-color'
+          }) %>
+      </div>
+    </div>
+  </div>
+  <div class='form-group'>
+    <div class='row'>
+      <div class='col-md-6'>
+        <label for='chart-background-color' class='text-right'>
+          Title:
+        </label>
+      </div>
+      <div class='col-md-6'>
+        <%= text_field_tag(
+          'title-color',
+          {
+            class: 'color form-control',
+            id: 'title-color'
+          }) %>
+      </div>
+    </div>
+  </div>
+  <div class='form-group'>
+    <div class='row'>
+      <div class='col-md-6'>
+        <label for='chart-background-color' class='text-right'>
+          Label:
+        </label>
+      </div>
+      <div class='col-md-6'>
+        <%= text_field_tag(
+          'label-color',
+          {
+            class: 'color form-control',
+            id: 'label-color'
+          }) %>
+      </div>
+    </div>
+  </div>
+  <div class='form-group'>
+    <div class='row'>
+      <div class='col-md-6'>
+        <label for='chart-background-color' class='text-right'>
+          Y-Axis:
+        </label>
+      </div>
+      <div class='col-md-6'>
+        <%= text_field_tag('y-axis-color', class: 'color form-control', id: 'y-axis-color') %>
+      </div>
+    </div>
+  </div>
+  <div class='form-group'>
+    <div class='row'>
+      <div class='col-md-6'>
+        <label for='chart-background-color' class='text-right'>
+          X-Axis:
+        </label>
+      </div>
+      <div class='col-md-6'>
+        <%= text_field_tag('x-axis-color', class: 'color form-control', id: 'x-axis-color') %>
+      </div>
+    </div>
+  </div>
+  <div class='form-group'>
+    <div class='row'>
+      <div class='col-md-6'>
+        <label for='chart-background-color' class='text-right'>
+          Tick:
+        </label>
+      </div>
+      <div class='col-md-6'>
+        <%= text_field_tag('tick-color', class: 'color form-control', id: 'tick-color') %>
+      </div>
+    </div>
+  </div>
+  <div class='form-group'>
+    <div class='row'>
+      <div class='col-md-6'>
+        <label for='chart-background-color' class='text-right'>
+          Minor Tick:
+        </label>
+      </div>
+      <div class='col-md-6'>
+        <%= text_field_tag('minor-tick-color', class: 'color form-control', id: 'minor-tick-color') %>
+      </div>
+    </div>
+  </div>
+  <h4 class='text-center'>Chart Title</h4>
+  <div class='form-group'>
+    <label for='chart-title' class='text-right'>
+      Title:
+    </label>
+    <%= text_field_tag('chart-title', class: 'form-control', id: 'chart-title') %>
+  </div>
+  <h4 class='text-center'>Axis Labels</h4>
+  <div class='form-group'>
+    <label for='chart-background-color' class='text-right'>
+      Y-Axis Label:
+    </label>
+    <%= text_field_tag('y-axis-label', class: 'form-control', id: 'y-axis-label') %>
+  </div>
+  <div class='form-group'>
+    <label for='chart-background-color' class='text-right'>
+      X-Axis Label:
+    </label>
+    <%= text_field_tag('x-axis-label', class: 'form-control', id: 'x-axis-label') %>
+  </div>
+  <h4 class='text-center'>Axis Title Position</h4>
+  <div class='form-group'>
+    <div class='row'>
+      <div class='col-md-6'>
+        <label for='y-axis-x-position' class='text-right'>
+          Y-Axis X:
+        </label>
+      </div>
+      <div class='col-md-6'>
+        <%= text_field_tag('y-axis-x-position', class: 'form-control', id: 'y-axis-x-position', placeholder: 'Default: 0') %>
+      </div>
+    </div>
+  </div>
+  <div class='form-group'>
+    <div class='row'>
+      <div class='col-md-6'>
+        <label for='y-axis-y-position' class='text-right'>
+          Y-Axis Y:
+        </label>
+      </div>
+      <div class='col-md-6'>
+        <%= text_field_tag('y-axis-y-position', class: 'form-control', id: 'y-axis-y-position', placeholder: 'Default: 0') %>
+      </div>
+    </div>
+  </div>
+  <div class='form-group'>
+    <div class='row'>
+      <div class='col-md-6'>
+        <label for='x-axis-x-position' class='text-right'>
+          X-Axis X:
+        </label>
+      </div>
+      <div class='col-md-6'>
+        <%= text_field_tag('x-axis-x-position', class: 'form-control', id: 'x-axis-x-position', placeholder: 'Default: 0') %>
+      </div>
+    </div>
+  </div>
+  <div class='form-group'>
+    <div class='row'>
+      <div class='col-md-6'>
+        <label for='x-axis-y-position' class='text-right'>
+          X-Axis Y:
+        </label>
+      </div>
+      <div class='col-md-6'>
+        <%= text_field_tag('x-axis-y-position', class: 'form-control', id: 'x-axis-y-position', placeholder: 'Default: 0') %>
+      </div>
+    </div>
+  </div>
+  <h4 class='text-center'>Marker and Labels</h4>
+  <div class='form-group'>
+    <div class='row'>
+      <div class='col-md-6'>
+        <label for='marker-size' class='text-right'>
+          Marker Size:
+        </label>
+      </div>
+      <div class='col-md-6'>
+        <%= text_field_tag('marker-size', class: 'form-control', id: 'marker-size', placeholder: 'Default: 4') %>
+      </div>
+    </div>
+  </div>
+  <div class='form-group'>
+    <div class='row'>
+      <div class='col-md-6'>
+        <label for='data-label-x-position' class='text-right'>
+          Data Label X:
+        </label>
+      </div>
+      <div class='col-md-6'>
+        <%= text_field_tag('data-label-x-position', class: 'form-control', id: 'data-label-x-position', placeholder: 'Default: 0') %>
+      </div>
+    </div>
+  </div>
+  <div class='form-group'>
+    <div class='row'>
+      <div class='col-md-6'>
+        <label for='data-label-y-position' class='text-right'>
+          Data Label Y:
+        </label>
+      </div>
+      <div class='col-md-6'>
+        <%= text_field_tag('data-label-y-position', class: 'form-control', id: 'data-label-y-position', placeholder: 'Default: -6') %>
+      </div>
+    </div>
+  </div>
+  <h4 class='text-center'>Credits Position</h4>
+  <div class='form-group'>
+    <div class='row'>
+      <div class='col-md-6'>
+        <label for='credits-y-position' class='text-right'>
+          Credits Y:
+        </label>
+      </div>
+      <div class='col-md-6'>
+        <%= text_field_tag(
+          'credits-y-position',
+          class: 'form-control',
+          id: 'credits-y-position',
+          placeholder: 'Default: 0') %>
+      </div>
+    </div>
+  </div>
+  <h4 class='text-center'>Chart Margins</h4>
+  <div class='form-group'>
+    <div class='row'>
+      <div class='col-md-6'>
+        <label for='bottom-margin-offset' class='text-right'>
+          Bottom Margin:
+        </label>
+      </div>
+      <div class='col-md-6'>
+        <%= text_field_tag(
+          'bottom-margin-offset',
+          {
+            class: 'form-control',
+            id: 'bottom-margin-offset',
+            placeholder: 'Default: 115'
+          }) %>
+      </div>
+    </div>
+  </div>
+</div>
+<br/>
+<br/>
+<%= button_tag('Chart', type: :button, value: 'Update Chart', id: 'submit-chart-filters', class: 'submit-chart i18nable-button btn btn-success btn-block btn-lg', disabled: 'disabled') %>
+<%= button_tag('Chart', type: :button, value: 'Reset Chart', id: 'reset-chart-filters', class: 'reset-chart i18nable-button btn btn-success btn-block btn-lg') %>
