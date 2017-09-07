@@ -1,19 +1,12 @@
 <div class='row'>
   <div class='col-md-12'>
     <div class='form-group'>
-      <%= label_tag("dataset-language-picker".to_sym, {class: 'i18nable-label', data: { type: 'Language' }}) { "Language: " } %>
-      language select here
+      <%= partial(:select_box_filter, locals: { type: 'language', label_value: 'Language' }) %>
     </div>
   </div>
 </div>
-<%= partial 'select_box_filter', locals: {
-  type: 'indicators',
-  label_value: 'Indicators',
-  grouped: true } %>
-<%= partial 'select_box_filter', locals: {
-  type: 'disaggregators',
-  label_value: 'Break down data by',
-  grouped: false } %>
+<%= partial(:select_box_filter, locals: { type: 'indicator-group', label_value: 'Indicators' }) %>
+<%= partial(:select_box_filter, locals: { type: 'characteristic-group', label_value: 'Break down data by' }) %>
 <%= partial 'data_series_limiters' %>
 <%= partial 'data_series' %>
 <div class='row'>

@@ -52,3 +52,15 @@ function dataValues(hsh) {
   for(var k in hsh) { values.push(hsh[k].y); }
   return values;
 }
+
+const createNode = el => document.createElement(el);
+const append = (parent, el) => parent.appendChild(el);
+const getSelectedLanguage = () => $('#select-language option:selected').val();
+
+const utility = {
+  createNode,
+  append,
+  getSelectedLanguage,
+};
+
+export default utility;

@@ -1,12 +1,13 @@
 // webpack.config.js
+require('babel-polyfill');
 var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-
 module.exports = {
-  entry: {
-    main: './source/javascripts/main.js',
-    styles: './source/scss/main.scss'
-  },
+  entry: [
+    'babel-polyfill',
+    './source/javascripts/main.js',
+    './source/scss/main.scss',
+  ],
 
   plugins: [
     new ExtractTextPlugin('bundle.styles.css'),
@@ -42,9 +43,13 @@ module.exports = {
         test: /source\/assets\/javascripts\/.*\.js$/,
         exclude: /node_modules|\.tmp|vendor/,
         loader: 'babel-loader',
-        query: {
-          presets: ['es2015', 'stage-0']
-        },
+        options: {
+          babelrc: false,
+          query: {
+            plugins: ["transform-runtime", "transform-async-to-generator"],
+            presets: ['es2016', 'stage-0'],
+          }
+        }
       },
       { // Load SASS pre processed CSS
         test: /\.scss$/,
