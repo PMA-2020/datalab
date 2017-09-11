@@ -14,7 +14,9 @@
         <h4 class="modal-title" id="countryRoundModalLabel">Country Round Selection</h4>
       </div>
       <div class="modal-body">
-        <%= partial 'data_series_limiters' %>
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+          <%= partial 'data_series_limiters' %>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

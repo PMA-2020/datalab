@@ -61,24 +61,52 @@ const initializeSurveyCountries = (response) => {
 
   surveyCountries.forEach(country => {
     const countryName = utility.getString(strings, country["country.label.id"]);
-    let countryHeader = utility.createNode('h3');
-    let container  = utility.createNode('div');
+    let panelContainer  = utility.createNode('div');
 
-    countryHeader.innerHTML = countryName;
+    let panelHeading  = utility.createNode('div');
+    let panelTitle  = utility.createNode('div');
+    let panelLink  = utility.createNode('a');
+
+    let panelBodyContainer  = utility.createNode('div');
+    let panelBody  = utility.createNode('div');
+
+    panelContainer.className = 'panel panel-default';
+
+    panelHeading.className = 'panel-heading';
+    panelHeading.setAttribute('role', 'tab');
+    panelHeading.id = countryName;
+
+    panelTitle.className = 'panel-title';
+
+    panelLink.href = `#collapse${countryName}`
+    panelLink.setAttribute('role', 'button');
+    panelLink.setAttribute('data-toggle', 'collapse');
+    panelLink.setAttribute('data-parent', '#accordion');
+    panelLink.innerHTML = countryName;
+
+    panelTitle.append(panelLink);
+    panelHeading.append(panelTitle);
+    panelContainer.append(panelHeading);
+
+    panelBodyContainer.id = `collapse${countryName}`;
+    panelBodyContainer.className = 'panel-collapse collapse';
+
+    panelBody.className = 'panel-body';
 
     country.geographies.forEach(geography => {
       const geographyName = utility.getString(strings, geography["geography.label.id"]);
 
       let listHeader = utility.createNode('h4');
-      let list  = utility.createNode('ul');
 
       listHeader.innerHTML = geographyName;
+
+      panelBody.append(listHeader);
 
       geography.surveys.forEach(survey => {
         const surveyName = utility.getString(strings, survey["label.id"]);
         const surveyId = survey["id"];
 
-        let listItem  = utility.createNode('li');
+        let listItem  = utility.createNode('div');
         let surveyInput = utility.createNode('input');
 
         surveyInput.type = 'checkbox';
@@ -93,15 +121,14 @@ const initializeSurveyCountries = (response) => {
 
         listItem.append(surveyInput);
         listItem.append(surveyInputLabel);
-        list.append(listItem);
+        panelBody.append(listItem);
       });
-
-      container.append(listHeader);
-      container.append(list);
     });
 
-    $('#countryRoundModal .modal-body').append(countryHeader);
-    $('#countryRoundModal .modal-body').append(container);
+    panelBodyContainer.append(panelBody);
+    panelContainer.append(panelBodyContainer);
+
+    $('#countryRoundModal .modal-body').append(panelContainer);
   });
 };
 
