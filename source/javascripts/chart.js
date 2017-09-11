@@ -56,9 +56,9 @@ const initializeLanguage = (languages) => {
 
 const initialize = () => {
   network.get("datalab/init").then(res => {
-    initializeLanguage(res.results.languages);
-    initializeCharacteristicGroups(res.results);
-    initializeIndicators(res.results);
+    initializeLanguage(res.languages);
+    initializeCharacteristicGroups(res);
+    initializeIndicators(res);
   });
 };
 
