@@ -56,11 +56,17 @@ function dataValues(hsh) {
 const createNode = el => document.createElement(el);
 const append = (parent, el) => parent.appendChild(el);
 const getSelectedLanguage = () => $('#select-language option:selected').val();
+const getString = (strings, id) => {
+  const lang = getSelectedLanguage();
+  const enString = strings[id]['en'];
+  return strings[id][lang] || enString;
+};
 
 const utility = {
   createNode,
   append,
   getSelectedLanguage,
+  getString,
 };
 
 export default utility;
