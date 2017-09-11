@@ -1,10 +1,8 @@
 import network from './network';
 import utility from './utility';
 
-const initializeIndicators = (response) => {
-  const indicators = response.indicatorCategories;
+const initializeIndicators = (indicators, strings) => {
   const language = utility.getSelectedLanguage();
-  const strings = response.strings;
 
   indicators.forEach(group => {
     const optGroupName = strings[group["category.label.id"]][language];
@@ -23,10 +21,8 @@ const initializeIndicators = (response) => {
   });
 };
 
-const initializeCharacteristicGroups = (response) => {
-  const characteristicGroups = response.characteristicGroupCategories;
+const initializeCharacteristicGroups = (characteristicGroups, strings) => {
   const language = utility.getSelectedLanguage();
-  const strings = response.strings;
 
   characteristicGroups.forEach(group => {
     const optGroupName = strings[group["category.label.id"]][language];
@@ -57,8 +53,8 @@ const initializeLanguage = (languages) => {
 const initialize = () => {
   network.get("datalab/init").then(res => {
     initializeLanguage(res.languages);
-    initializeCharacteristicGroups(res);
-    initializeIndicators(res);
+    initializeCharacteristicGroups(res.characteristicGroupCategories, res.strings);
+    initializeIndicators(res.indicatorCategories, res.strings);
   });
 };
 
