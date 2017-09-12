@@ -10,13 +10,9 @@ const initializeLanguage = (languages) => {
   }
 };
 
-const initializeCharacteristicGroups = (response) => {
-  const characteristicGroups = response.characteristicGroupCategories;
-  const language = utility.getSelectedLanguage();
-  const strings = response.strings;
-
+const initializeCharacteristicGroups = (characteristicGroups, strings) => {
   characteristicGroups.forEach(group => {
-    const optGroupName = strings[group["category.label.id"]][language];
+    const optGroupName = utility.getString(strings, group);
     let optGroup = utility.createNode('optgroup');
 
     optGroup.label = optGroupName;
@@ -24,7 +20,7 @@ const initializeCharacteristicGroups = (response) => {
     group.characteristicGroups.forEach(characteristic => {
       let opt = utility.createNode('option');
 
-      opt.innerHTML = strings[characteristic["label.id"]][language];
+      opt.innerHTML = utility.getString(strings, characteristic);
       optGroup.append(opt);
     });
 
@@ -32,13 +28,9 @@ const initializeCharacteristicGroups = (response) => {
   });
 };
 
-const initializeIndicators = (response) => {
-  const indicators = response.indicatorCategories;
-  const language = utility.getSelectedLanguage();
-  const strings = response.strings;
-
+const initializeIndicators = (indicators, strings) => {
   indicators.forEach(group => {
-    const optGroupName = strings[group["category.label.id"]][language];
+    const optGroupName = utility.getString(strings, group);
     let optGroup = utility.createNode('optgroup');
 
     optGroup.label = optGroupName;
@@ -46,7 +38,7 @@ const initializeIndicators = (response) => {
     group.indicators.forEach(indicator => {
       let opt = utility.createNode('option');
 
-      opt.innerHTML = strings[indicator["label.id"]][language];
+      opt.innerHTML = utility.getString(strings, indicator);
       optGroup.append(opt);
     });
 
@@ -54,13 +46,11 @@ const initializeIndicators = (response) => {
   });
 };
 
-const initializeSurveyCountries = (response) => {
-  const surveyCountries = response.surveyCountries;
+const initializeSurveyCountries = (surveyCountries, strings) => {
   const language = utility.getSelectedLanguage();
-  const strings = response.strings;
 
   surveyCountries.forEach(country => {
-    const countryName = utility.getString(strings, country["country.label.id"]);
+    const countryName = utility.getString(strings, country);
     let panelContainer  = utility.createNode('div');
 
     let panelHeading  = utility.createNode('div');
@@ -94,7 +84,7 @@ const initializeSurveyCountries = (response) => {
     panelBody.className = 'panel-body';
 
     country.geographies.forEach(geography => {
-      const geographyName = utility.getString(strings, geography["geography.label.id"]);
+      const geographyName = utility.getString(strings, geography);
 
       let listHeader = utility.createNode('h4');
 
@@ -103,7 +93,7 @@ const initializeSurveyCountries = (response) => {
       panelBody.append(listHeader);
 
       geography.surveys.forEach(survey => {
-        const surveyName = utility.getString(strings, survey["label.id"]);
+        const surveyName = utility.getString(strings, survey);
         const surveyId = survey["id"];
 
         let listItem  = utility.createNode('div');
@@ -134,10 +124,14 @@ const initializeSurveyCountries = (response) => {
 
 const initialize = () => {
   network.get("datalab/init").then(res => {
+    const strings = res.strings;
+
     initializeLanguage(res.languages);
-    initializeCharacteristicGroups(res);
-    initializeIndicators(res);
-    initializeSurveyCountries(res);
+    initializeCharacteristicGroups(res.characteristicGroupCategories, strings);
+    initializeIndicators(res.indicatorCategories, strings);
+    initializeSurveyCountries(res.surveyCountries, strings);
+
+    $('.selectpicker').selectpicker('refresh');
   });
 };
 

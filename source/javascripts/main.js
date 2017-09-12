@@ -7,5 +7,6 @@ import 'font-awesome/css/font-awesome.css';
 
 import chart from './chart';
 
-chart.initialize();
-
+$(function() {
+  chart.initialize();
+});
