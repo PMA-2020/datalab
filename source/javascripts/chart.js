@@ -1,6 +1,15 @@
 import network from './network';
 import utility from './utility';
 
+const initializeStrings = (strings) => {
+  if (typeof(Storage) !== "undefined") {
+    localStorage.removeItem('pma2020Strings', strings);
+    localStorage.pma2020Strings = JSON.stringify(strings);
+  } else {
+    console.log('Warning: Local Storage is unavailable.');
+  }
+};
+
 const initializeLanguage = (languages) => {
   for(var k in languages) {
     let opt = utility.createNode('option');
@@ -10,9 +19,9 @@ const initializeLanguage = (languages) => {
   }
 };
 
-const initializeCharacteristicGroups = (characteristicGroups, strings) => {
+const initializeCharacteristicGroups = (characteristicGroups) => {
   characteristicGroups.forEach(group => {
-    const optGroupName = utility.getString(strings, group);
+    const optGroupName = utility.getString(group);
     let optGroup = utility.createNode('optgroup');
 
     optGroup.label = optGroupName;
@@ -20,7 +29,8 @@ const initializeCharacteristicGroups = (characteristicGroups, strings) => {
     group.characteristicGroups.forEach(characteristic => {
       let opt = utility.createNode('option');
 
-      opt.innerHTML = utility.getString(strings, characteristic);
+      opt.value = characteristic.id;
+      opt.innerHTML = utility.getString(characteristic);
       optGroup.append(opt);
     });
 
@@ -28,9 +38,9 @@ const initializeCharacteristicGroups = (characteristicGroups, strings) => {
   });
 };
 
-const initializeIndicators = (indicators, strings) => {
+const initializeIndicators = (indicators) => {
   indicators.forEach(group => {
-    const optGroupName = utility.getString(strings, group);
+    const optGroupName = utility.getString(group);
     let optGroup = utility.createNode('optgroup');
 
     optGroup.label = optGroupName;
@@ -38,7 +48,8 @@ const initializeIndicators = (indicators, strings) => {
     group.indicators.forEach(indicator => {
       let opt = utility.createNode('option');
 
-      opt.innerHTML = utility.getString(strings, indicator);
+      opt.value = indicator.id;
+      opt.innerHTML = utility.getString(indicator);
       optGroup.append(opt);
     });
 
@@ -46,11 +57,11 @@ const initializeIndicators = (indicators, strings) => {
   });
 };
 
-const initializeSurveyCountries = (surveyCountries, strings) => {
+const initializeSurveyCountries = (surveyCountries) => {
   const language = utility.getSelectedLanguage();
 
   surveyCountries.forEach(country => {
-    const countryName = utility.getString(strings, country);
+    const countryName = utility.getString(country);
     let panelContainer  = utility.createNode('div');
 
     let panelHeading  = utility.createNode('div');
@@ -84,7 +95,7 @@ const initializeSurveyCountries = (surveyCountries, strings) => {
     panelBody.className = 'panel-body';
 
     country.geographies.forEach(geography => {
-      const geographyName = utility.getString(strings, geography);
+      const geographyName = utility.getString(geography);
 
       let listHeader = utility.createNode('h4');
 
@@ -93,7 +104,7 @@ const initializeSurveyCountries = (surveyCountries, strings) => {
       panelBody.append(listHeader);
 
       geography.surveys.forEach(survey => {
-        const surveyName = utility.getString(strings, survey);
+        const surveyName = utility.getString(survey);
         const surveyId = survey["id"];
 
         let listItem  = utility.createNode('div');
@@ -122,21 +133,186 @@ const initializeSurveyCountries = (surveyCountries, strings) => {
   });
 };
 
+const generateTitle = inputs => {
+  const characteristicGroupLabel = utility.getStringById(inputs["characteristicGroup.label.id"]);
+  const indicatorLabel = utility.getStringById(inputs["indicator.label.id"]);
+  const countries = inputs.surveys.map(country => {
+    utility.getStringById(country["country.label.id"]);
+  });
+
+  return `${indicatorLabel} by ${characteristicGroupLabel} for ${countries.join(", ")}`;
+};
+
+const generateSeriesName = (countryId, regionId, surveyId) => {
+  const country = utility.getStringById(countryId);
+  const region = utility.getStringById(regionId);
+  const survey = utility.getStringById(surveyId);
+
+  return `${country} ${region} ${survey}`
+};
+
+const generatePlotOptions = () => {
+  return {
+    series: {
+      connectNulls: true,
+      marker: { radius: 2 }, // add override when available
+    },
+    bar: { dataLabels: { enabled: true } },
+    column: { dataLabels: { enabled: true } },
+    line: { dataLabels: { enabled: true } },
+    pie: {
+      allowPointSelect: true,
+      cursor: 'pointer',
+      dataLabels: {
+        enabled: true
+      },
+      showInLegend: true
+    }
+  }
+};
+
+const generateSubtitle = () => {
+  return {
+    style: {
+      color: styles['title-color']
+    },
+    text: "PMA2020"
+  }
+};
+
+
+const generateCitation = partners => {
+  var citation = "Performance Monitoring and Accountability 2020. Johns Hopkins University; <br/>";
+
+  partners.forEach(partner => {
+    partner = partners[partner];
+    // citation += translate(partner+"_P", labelText) + "; ";
+    // if (index % 3 == 0 && index != 0) {
+      // citation += "<br/>";
+    // }
+  });
+
+  citation += " " + new Date().toJSON().slice(0,10);
+
+  return citation;
+};
+
+const generateCredits = () => {
+  return {
+    text: generateCitation({}),
+    href: '',
+    position: {
+      align: 'center',
+      y: 10 //-(bottomMargin) + overrides['credits-y-position'] + chartMargin(chartType)
+    },
+  }
+};
+
+const generateXaxis = characteristicGroups => {
+  let characteristicGroupsNames = [];
+
+  characteristicGroups.forEach(charGroup => {
+    const charGroupName = utility.getStringById(charGroup["characteristic.label.id"]);
+    characteristicGroupsNames.push(charGroupName);
+  });
+
+  return { categories: characteristicGroupsNames }
+};
+
+const generateYaxis = indicatorId => {
+  const indicator = utility.getStringById(indicatorId);
+
+  return {
+    title: {
+      text: indicator
+    }
+  }
+};
+
+const generateExporting = () => {
+  return {
+    chartOptions: {
+      plotOptions: {
+        series: {
+          dataLabels: {
+            enabled: true
+          }
+        }
+      }
+    },
+    scale: 3,
+    fallbackToExportServer: false
+  }
+};
+
+const generateLegend = () => {
+};
+
+const generateSeriesData = dataPoints => {
+  dataPoints.map(dataPoint => {
+    const countryId = dataPoint["country.label.id"];
+    const regionId = dataPoint["region.label.id"];
+    const surveyId = dataPoint["survey.label.id"];
+
+    return {
+      name: generateSeriesName(countryId, regionId, surveyId),
+      data: dataPoint.values
+    }
+  });
+};
+
+const generateChart = res => {
+  const inputs = res.inputs;
+  const characteristicGroups = res.results[0].values;
+  const indicatorId = inputs["indicator.label.id"];
+
+  return {
+    chart: { type: utility.getSelectedChartType() },
+    title: generateTitle(inputs),
+    subtitle: generateSubtitle(),
+    xAxis: generateXaxis(characteristicGroups),
+    yAxis: generateYaxis(indicatorId),
+    series: generateSeriesData(),
+    credits: generateCredits(),
+    legend: generateLegend(),
+    exporting: generateExporting(),
+    plotOptions: generatePlotOptions(),
+  }
+};
+
 const initialize = () => {
   network.get("datalab/init").then(res => {
-    const strings = res.strings;
-
+    initializeStrings(res.strings);
     initializeLanguage(res.languages);
-    initializeCharacteristicGroups(res.characteristicGroupCategories, strings);
-    initializeIndicators(res.indicatorCategories, strings);
-    initializeSurveyCountries(res.surveyCountries, strings);
+    initializeCharacteristicGroups(res.characteristicGroupCategories);
+    initializeIndicators(res.indicatorCategories);
+    initializeSurveyCountries(res.surveyCountries);
 
     $('.selectpicker').selectpicker('refresh');
   });
 };
 
+const data = () => {
+  const selectedSurveys = utility.getSelectedCountryRounds();
+  const selectedIndicator = utility.getSelectedValue('select-indicator-group');
+  const selectedCharacteristicGroup = utility.getSelectedValue('select-characteristic-group');
+
+  const opts = { // These should be dynamically added based on selected fields
+    "survey": "GH2013PMA,GH2014PMA",
+    "indicator": "mcpr_aw",
+    "characteristicGroup": "none",
+  }
+
+  network.get("datalab/data", opts).then(res => {
+    console.log(res);
+    const chartData = generateChart(res);
+    $('#chart-container').highcharts(chartData);
+  });
+};
+
 const chart = {
   initialize,
+  data,
 };
 
 export default chart;

@@ -15,9 +15,6 @@
 </div>
 <div class='row'>
   <div class='col-md-6'>
-    <%= partial 'black_and_white_button' %>
-  </div>
-  <div class='col-md-6'>
     <%= partial 'overtime_checkbox' %>
   </div>
 </div>
@@ -30,7 +27,7 @@
         <% end %>
       </div>
       <div class='col-md-9'>
-        <% link_to '#', id: "submit-chart-filters", class: 'submit-chart btn btn-success btn-block btn-lg', disabled: true do %>
+        <% link_to '#', id: "submit-chart-filters", class: 'submit-chart btn btn-success btn-block btn-lg' do %>
           <i class='fa fa-bar-chart'></i>
           <span class='i18nable-label' data-type='Chart'>Chart</span>
         <% end %>

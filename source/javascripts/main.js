@@ -9,4 +9,8 @@ import chart from './chart';
 
 $(function() {
   chart.initialize();
+
+  $("#submit-chart-filters").click(() => {
+    chart.data();
+  });
 });

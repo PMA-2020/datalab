@@ -16,15 +16,24 @@ const sendRequest = request => {
   });
 };
 
-const buildUrl = path => {
-  return `${baseUrl}/v1/${path}`;
+const buildUrl = (path, opts) => {
+  let url =  `${baseUrl}/v1/${path}`;
+
+  console.log(opts)
+
+  if (opts) {
+    url = `${url}?`;
+    for (var k in opts) { url = `${url}${k}=${opts[k]}&`; }
+  }
+
+  console.log(url);
+  return url;
 };
 
-const get = path => {
-  const request = new Request(buildUrl(path), requestOptions);
+const get = (path, opts) => {
+  const request = new Request(buildUrl(path, opts));
   return sendRequest(request);
 };
-
 
 const network = {
   get,
