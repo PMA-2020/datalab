@@ -4,11 +4,11 @@
       <label class='i18nable'><%= label_value %></label>
       <div class="input-group">
         <!-- picker -->
-        <select id="select-<%= type %>" class="selectpicker" data-live-search="true"></select>
-        <!-- clear button -->
-        <span class="input-group-btn">
-          Clear button
-        </span>
+        <% if type == 'language' %>
+          <select id="select-<%= type %>" class="selectpicker" data-live-search="true"></select>
+        <% else %>
+          <select id="select-<%= type %>" class="selectpicker" data-live-search="true" title='Select option'></select>
+        <% end %>
       </div>
     </div>
   </div>

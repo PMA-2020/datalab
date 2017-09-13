@@ -15,7 +15,12 @@ $(function() {
   $("#select-latest").click(() => { interaction.selectLatest(); });
   $("#clear-all").click(() => { interaction.clear(); });
   $("#closeCountryRoundModal").click(() => { interaction.closeModal(); });
-  $("#finishCountryRoundModal").click(() => { interaction.finishModal(); });
+  $("#finishCountryRoundModal").click(() => {
+    interaction.finishModal();
+    chart.surveyCombo();
+  });
+  $("#select-indicator-group").change(() => { chart.indicatorCombo(); });
+  $("#select-characteristic-group").change(() => { chart.characteristicGroupCombo(); });
 
   $("#submit-chart-filters").click(() => {
     chart.data();

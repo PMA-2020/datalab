@@ -297,10 +297,10 @@ const data = () => {
   const selectedIndicator = utility.getSelectedValue('select-indicator-group');
   const selectedCharacteristicGroup = utility.getSelectedValue('select-characteristic-group');
 
-  const opts = { // These should be dynamically added based on selected fields
-    "survey": "GH2013PMA,GH2014PMA",
-    "indicator": "mcpr_aw",
-    "characteristicGroup": "none",
+  const opts = {
+    "survey": selectedSurveys,
+    "indicator": selectedIndicator,
+    "characteristicGroup": selectedCharacteristicGroup,
   }
 
   network.get("datalab/data", opts).then(res => {
@@ -310,9 +310,47 @@ const data = () => {
   });
 };
 
+const setOptionsDisabled = (type, availableValues) => {
+  if (availableValues) {
+    const availableItems = $(`#select-${type}-group option`);
+
+    availableItems.each(item => {
+      const itemDomElement = availableItems[item];
+      if (!availableValues.includes(itemDomElement.value)) { itemDomElement.disabled = true; }
+    });
+  }
+};
+
+const handleCombos = (opts) => {
+  network.get("datalab/combos", opts).then(res => {
+    setOptionsDisabled('characteristic', res['characteristicGroup.id']);
+    setOptionsDisabled('indicator', res['indicator.id']);
+
+    $('.selectpicker').selectpicker('refresh');
+  });
+};
+
+const surveyCombo = () => {
+  const opts = { survey: utility.getSelectedCountryRounds() }
+  handleCombos(opts);
+};
+
+const indicatorCombo = () => {
+  const opts = { indicator: utility.getSelectedValue('select-indicator-group') }
+  handleCombos(opts);
+};
+
+const characteristicGroupCombo = () => {
+  const opts = { characteristicGroup: utility.getSelectedValue('select-characteristic-group') }
+  handleCombos(opts);
+};
+
 const chart = {
   initialize,
   data,
+  surveyCombo,
+  indicatorCombo,
+  characteristicGroupCombo,
 };
 
 export default chart;
