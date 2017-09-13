@@ -19,8 +19,6 @@ const sendRequest = request => {
 const buildUrl = (path, opts) => {
   let url =  `${baseUrl}/v1/${path}`;
 
-  console.log(opts)
-
   if (opts) {
     url = `${url}?`;
     for (var k in opts) { url = `${url}${k}=${opts[k]}&`; }

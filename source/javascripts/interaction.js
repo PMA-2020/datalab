@@ -1,47 +1,10 @@
-function selectAll() {
-  $('.collapse.in .year-check').each(function() {
-    $(this).prop('checked', true);
-    $(this).parents(".country-collapse").find('.country-header b.i18nable').removeClass("active").addClass("active");
-  });
-  validateFilters();
-};
-
-function selectLatest() {
-  $('.date-selection').each(function() {
-    $('.year-check').each(function() {
-      $(this).prop('checked', false);
-    });
-  });
-  $('.date-selection.collapse.in').each(function() {
-    $(this).find('.year-check').last().prop('checked', true);
-    $(this).parents(".country-collapse").find('.country-header b.i18nable').removeClass("active").addClass("active");
-  });
-  validateFilters();
-};
-
-function clearAll() {
-  $('.year-check').each(function() {
-    $(this).prop('checked', false);
-    $(this).parents(".country-collapse").find('.country-header b.i18nable').removeClass("active");
-  });
-  validateFilters();
-};
+import utility from './utility';
 
 function clearSelect(el) {
   var select = el.data('id');
   $('#' + select).prop('selectedIndex', 0);
   $('#' + select).selectpicker('deselectAll');
   validateFilters();
-}
-
-function toggleCountryHeader(el) {
-  var container = el.parents().eq(3);
-  var checked_count = container.find("[type='checkbox']:checked").length;
-  if (checked_count > 0) {
-    container.find(".country-header b.i18nable").removeClass("active").addClass("active");
-  } else {
-    container.find(".country-header b.i18nable").removeClass("active");
-  }
 }
 
 function resetChart() {
@@ -53,3 +16,49 @@ function resetChart() {
     $('#download-csv').prop('disabled', '');
   };
 };
+
+const selectAll = () => {
+  $('#countryRoundModal .collapse.in input[type=checkbox]').prop('checked', true);
+};
+
+const selectLatest = () => {
+  $('#countryRoundModal .collapse input[type=checkbox]').prop('checked', false);
+  const openCollapse = $('#countryRoundModal .collapse.in');
+  openCollapse.each(collapse => {
+    const currentCollapse = openCollapse[collapse];
+    $(currentCollapse).find('input[type=checkbox]').last().prop('checked', true);
+  });
+};
+
+const clear = () => {
+  $('#countryRoundModal .collapse input[type=checkbox]').prop('checked', false);
+};
+
+const closeModal = () => {
+  const previouslySelectedCountryRounds = localStorage.getItem('selectedCountryRounds').split(",");
+
+  clear();
+
+  previouslySelectedCountryRounds.forEach(countryRound => {
+    $(`#countryRoundModal .collapse.in input[value=${countryRound}]`).prop('checked', true);
+  });
+};
+
+const finishModal = () => {
+  if (typeof(Storage) !== "undefined") {
+    localStorage.removeItem('selectedCountryRounds');
+    localStorage.selectedCountryRounds = utility.getSelectedCountryRounds();
+  } else {
+    console.log('Warning: Local Storage is unavailable.');
+  }
+}
+
+const interaction = {
+  selectAll,
+  selectLatest,
+  clear,
+  closeModal,
+  finishModal,
+};
+
+export default interaction;

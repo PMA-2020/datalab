@@ -6,9 +6,16 @@ import 'font-awesome/css/font-awesome.css';
 // import chart_helper from './chart_helper';
 
 import chart from './chart';
+import interaction from './interaction';
 
 $(function() {
   chart.initialize();
+
+  $("#select-all").click(() => { interaction.selectAll(); });
+  $("#select-latest").click(() => { interaction.selectLatest(); });
+  $("#clear-all").click(() => { interaction.clear(); });
+  $("#closeCountryRoundModal").click(() => { interaction.closeModal(); });
+  $("#finishCountryRoundModal").click(() => { interaction.finishModal(); });
 
   $("#submit-chart-filters").click(() => {
     chart.data();
