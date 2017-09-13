@@ -650,7 +650,12 @@ function generateChart() {
           y: -(bottomMargin) + overrides['credits-y-position'] + chartMargin(chartType)
         },
       },
-      legend: legendContent(styles['label-color'], seriesData.length, chartType, (bottomMargin - chartMargin(chartType))),
+      legend: legendContent(
+        styles['label-color'],
+        seriesData.length,
+        chartType,
+        (bottomMargin - chartMargin(chartType))
+      ),
       title: {
         style: {
           color: styles['title-color']

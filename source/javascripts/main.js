@@ -7,5 +7,10 @@ import 'font-awesome/css/font-awesome.css';
 
 import chart from './chart';
 
-chart.initialize();
+$(function() {
+  chart.initialize();
 
+  $("#submit-chart-filters").click(() => {
+    chart.data();
+  });
+});
