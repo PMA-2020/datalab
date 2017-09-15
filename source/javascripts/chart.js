@@ -1,5 +1,38 @@
 import network from './network';
 import utility from './utility';
+import Highcharts from 'highcharts';
+
+const initializeIdHash = (res) => {
+  if (typeof(Storage) !== "undefined") {
+    const idToLabel = Object.assign(
+      {},
+      utility.rekeyHash(
+        utility.flattenHash(res.indicatorCategories, 'indicators'),
+        { key: 'id', value: 'label.id' }
+      ),
+      utility.rekeyHash(
+        utility.flattenHash(res.characteristicGroupCategories, 'characteristicGroups'),
+        { key: 'id', value: 'label.id' }
+      ),
+      utility.rekeyHash(
+        utility.flattenHash(res.surveyCountries, 'geographies'),
+        { key: 'id', value: 'label.id' }
+      ),
+      utility.rekeyHash(
+        utility.flattenHash(
+          utility.flattenHash(res.surveyCountries, 'geographies'),
+          'surveys'
+        ),
+        { key: 'id', value: 'label.id' }
+      )
+    );
+
+    localStorage.removeItem('idToLabel');
+    localStorage.idToLabel = JSON.stringify(idToLabel);
+  } else {
+    console.log('Warning: Local Storage is unavailable.');
+  }
+};
 
 const initializeStrings = (strings) => {
   if (typeof(Storage) !== "undefined") {
@@ -79,7 +112,7 @@ const initializeSurveyCountries = (surveyCountries) => {
 
     panelTitle.className = 'panel-title';
 
-    panelLink.href = `#collapse${countryName}`
+    panelLink.href = `#collapse${country["label.id"]}`
     panelLink.setAttribute('role', 'button');
     panelLink.setAttribute('data-toggle', 'collapse');
     panelLink.setAttribute('data-parent', '#accordion');
@@ -89,7 +122,7 @@ const initializeSurveyCountries = (surveyCountries) => {
     panelHeading.append(panelTitle);
     panelContainer.append(panelHeading);
 
-    panelBodyContainer.id = `collapse${countryName}`;
+    panelBodyContainer.id = `collapse${country["label.id"]}`;
     panelBodyContainer.className = 'panel-collapse collapse';
 
     panelBody.className = 'panel-body';
@@ -134,21 +167,29 @@ const initializeSurveyCountries = (surveyCountries) => {
 };
 
 const generateTitle = inputs => {
-  const characteristicGroupLabel = utility.getStringById(inputs["characteristicGroup.label.id"]);
-  const indicatorLabel = utility.getStringById(inputs["indicator.label.id"]);
-  const countries = inputs.surveys.map(country => {
-    utility.getStringById(country["country.label.id"]);
+  const characteristicGroupLabel = utility.getStringById(
+    utility.getLabelIdFromId(inputs.characteristicGroup)
+  );
+  const indicatorLabel = utility.getStringById(
+    utility.getLabelIdFromId(inputs.indicator)
+  );
+  const countries = inputs.survey.split(",").map(country => {
+    utility.getStringById(
+      utility.getLabelIdFromId(country)
+    );
   });
 
-  return `${indicatorLabel} by ${characteristicGroupLabel} for ${countries.join(", ")}`;
+  const title = `${indicatorLabel} by ${characteristicGroupLabel} for ${countries.join(", ")}`;
+
+  return { text: title };
 };
 
-const generateSeriesName = (countryId, regionId, surveyId) => {
+const generateSeriesName = (countryId, geographyId, surveyId) => {
   const country = utility.getStringById(countryId);
-  const region = utility.getStringById(regionId);
+  const geography = utility.getStringById(geographyId);
   const survey = utility.getStringById(surveyId);
 
-  return `${country} ${region} ${survey}`
+  return `${country} ${geography} ${survey}`
 };
 
 const generatePlotOptions = () => {
@@ -174,7 +215,7 @@ const generatePlotOptions = () => {
 const generateSubtitle = () => {
   return {
     style: {
-      color: styles['title-color']
+      color: '#000' // styles['title-color']
     },
     text: "PMA2020"
   }
@@ -248,40 +289,46 @@ const generateExporting = () => {
 const generateLegend = () => {
 };
 
-const generateSeriesData = dataPoints => {
-  dataPoints.map(dataPoint => {
+const generateSeriesData = dataPoints => (
+  dataPoints.reduce((res, dataPoint) => {
     const countryId = dataPoint["country.label.id"];
-    const regionId = dataPoint["region.label.id"];
+    const geographyId = dataPoint["geography.label.id"];
     const surveyId = dataPoint["survey.label.id"];
 
-    return {
-      name: generateSeriesName(countryId, regionId, surveyId),
-      data: dataPoint.values
-    }
-  });
-};
+    return [
+      ...res,
+      {
+        name: generateSeriesName(countryId, geographyId, surveyId),
+        data: dataPoint.values.reduce((tot, item) => { return [...tot, item.value] }, [])
+      }
+    ]
+  }, [])
+);
 
 const generateChart = res => {
-  const inputs = res.inputs;
+  const inputs = res.metadata.queryParameters;
   const characteristicGroups = res.results[0].values;
-  const indicatorId = inputs["indicator.label.id"];
+  const indicatorId = utility.getLabelIdFromId(inputs["indicator"]);
+  const dataPoints = res.results;
+  const chartType = utility.getSelectedChartType();
 
   return {
-    chart: { type: utility.getSelectedChartType() },
+    chart: { type: chartType },
     title: generateTitle(inputs),
     subtitle: generateSubtitle(),
     xAxis: generateXaxis(characteristicGroups),
     yAxis: generateYaxis(indicatorId),
-    series: generateSeriesData(),
-    credits: generateCredits(),
-    legend: generateLegend(),
-    exporting: generateExporting(),
-    plotOptions: generatePlotOptions(),
+    series: generateSeriesData(dataPoints),
+    //credits: generateCredits(),
+    // legend: generateLegend(),
+    // exporting: generateExporting(),
+    // plotOptions: generatePlotOptions(),
   }
 };
 
 const initialize = () => {
   network.get("datalab/init").then(res => {
+    initializeIdHash(res);
     initializeStrings(res.strings);
     initializeLanguage(res.languages);
     initializeCharacteristicGroups(res.characteristicGroupCategories);
@@ -306,7 +353,7 @@ const data = () => {
   network.get("datalab/data", opts).then(res => {
     console.log(res);
     const chartData = generateChart(res);
-    $('#chart-container').highcharts(chartData);
+    Highcharts.chart('chart-container', chartData);
   });
 };
 
