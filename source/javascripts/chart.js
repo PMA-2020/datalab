@@ -2,38 +2,6 @@ import network from './network';
 import utility from './utility';
 import Highcharts from 'highcharts';
 
-const initializeIdHash = (res) => {
-  if (typeof(Storage) !== "undefined") {
-    const idToLabel = Object.assign(
-      {},
-      utility.rekeyHash(
-        utility.flattenHash(res.indicatorCategories, 'indicators'),
-        { key: 'id', value: 'label.id' }
-      ),
-      utility.rekeyHash(
-        utility.flattenHash(res.characteristicGroupCategories, 'characteristicGroups'),
-        { key: 'id', value: 'label.id' }
-      ),
-      utility.rekeyHash(
-        utility.flattenHash(res.surveyCountries, 'geographies'),
-        { key: 'id', value: 'label.id' }
-      ),
-      utility.rekeyHash(
-        utility.flattenHash(
-          utility.flattenHash(res.surveyCountries, 'geographies'),
-          'surveys'
-        ),
-        { key: 'id', value: 'label.id' }
-      )
-    );
-
-    localStorage.removeItem('idToLabel');
-    localStorage.idToLabel = JSON.stringify(idToLabel);
-  } else {
-    console.log('Warning: Local Storage is unavailable.');
-  }
-};
-
 const initializeStrings = (strings) => {
   if (typeof(Storage) !== "undefined") {
     localStorage.removeItem('pma2020Strings', strings);
@@ -168,18 +136,16 @@ const initializeSurveyCountries = (surveyCountries) => {
 
 const generateTitle = inputs => {
   const characteristicGroupLabel = utility.getStringById(
-    utility.getLabelIdFromId(inputs.characteristicGroup)
+    inputs.characteristicGroups[0]["label.id"]
   );
   const indicatorLabel = utility.getStringById(
-    utility.getLabelIdFromId(inputs.indicator)
+    inputs.indicators[0]["label.id"]
   );
-  const countries = inputs.survey.split(",").map(country => {
-    utility.getStringById(
-      utility.getLabelIdFromId(country)
-    );
-  });
+  const countries = Array.from(new Set(inputs.surveys.reduce((tot, country) => {
+    return [...tot, utility.getStringById(country["country.label.id"])];
+  }, []))).join(", ");
 
-  const title = `${indicatorLabel} by ${characteristicGroupLabel} for ${countries.join(", ")}`;
+  const title = `${indicatorLabel} by ${characteristicGroupLabel} for ${countries}`;
 
   return { text: title };
 };
@@ -223,29 +189,33 @@ const generateSubtitle = () => {
 
 
 const generateCitation = partners => {
-  var citation = "Performance Monitoring and Accountability 2020. Johns Hopkins University; <br/>";
-
-  partners.forEach(partner => {
-    partner = partners[partner];
-    // citation += translate(partner+"_P", labelText) + "; ";
-    // if (index % 3 == 0 && index != 0) {
-      // citation += "<br/>";
-    // }
-  });
-
-  citation += " " + new Date().toJSON().slice(0,10);
+  let citation = "Performance Monitoring and Accountability 2020. Johns Hopkins University;";
+  citation = [citation, ...partners];
+  citation = `${citation} ${new Date().toJSON().slice(0,10)}`;
 
   return citation;
 };
 
-const generateCredits = () => {
+const generateCredits = (inputs) => {
+  const partners = Array.from(new Set(inputs.surveys.reduce((tot, country) => {
+    return [...tot, utility.getStringById(country["partner.label.id"])];
+  }, [])));
+
   return {
-    text: generateCitation({}),
+    text: generateCitation(partners),
     href: '',
     position: {
       align: 'center',
-      y: 10 //-(bottomMargin) + overrides['credits-y-position'] + chartMargin(chartType)
-    },
+    }
+  }
+};
+
+const generateOverTimeXAxis = () => {
+  return {
+    type: 'datetime',
+    title: {
+      text: 'Date'
+    }
   }
 };
 
@@ -260,9 +230,7 @@ const generateXaxis = characteristicGroups => {
   return { categories: characteristicGroupsNames }
 };
 
-const generateYaxis = indicatorId => {
-  const indicator = utility.getStringById(indicatorId);
-
+const generateYaxis = indicator => {
   return {
     title: {
       text: indicator
@@ -287,7 +255,29 @@ const generateExporting = () => {
 };
 
 const generateLegend = () => {
+  return {
+    layout: 'vertical',
+    align: 'right',
+    verticalAlign: 'middle'
+  }
 };
+
+const generateOverTimeSeriesData = dataPoints => (
+  dataPoints.reduce((res, dataPoint) => {
+    const characteristicGroupId = dataPoint["characteristic.label.id"];
+
+    return [
+      ...res,
+      {
+        name: utility.getStringById(characteristicGroupId),
+        data: dataPoint.values.reduce((tot, item) => {
+          const utcDate = new Date(item["survey.date"]).getTime();
+          return [...tot, [utcDate, item.value]];
+        }, [])
+      }
+    ]
+  }, [])
+);
 
 const generateSeriesData = dataPoints => (
   dataPoints.reduce((res, dataPoint) => {
@@ -305,10 +295,31 @@ const generateSeriesData = dataPoints => (
   }, [])
 );
 
-const generateChart = res => {
-  const inputs = res.metadata.queryParameters;
+const generateOverTimeChart = res => {
+  const inputs = res.queryInput;
   const characteristicGroups = res.results[0].values;
-  const indicatorId = utility.getLabelIdFromId(inputs["indicator"]);
+  const indicator = utility.getStringById(inputs.indicators[0]["label.id"]);
+  const dataPoints = res.results;
+  const chartType = utility.getSelectedChartType();
+
+  return {
+    chart: { type: chartType },
+    title: generateTitle(inputs),
+    subtitle: generateSubtitle(),
+    xAxis: generateOverTimeXAxis(),
+    yAxis: generateYaxis(indicator),
+    series: generateOverTimeSeriesData(dataPoints),
+    credits: generateCredits(inputs),
+    legend: generateLegend(),
+    exporting: generateExporting(),
+    plotOptions: generatePlotOptions(),
+  }
+};
+
+const generateChart = res => {
+  const inputs = res.queryInput;
+  const characteristicGroups = res.results[0].values;
+  const indicator = utility.getStringById(inputs.indicators[0]["label.id"]);
   const dataPoints = res.results;
   const chartType = utility.getSelectedChartType();
 
@@ -317,18 +328,17 @@ const generateChart = res => {
     title: generateTitle(inputs),
     subtitle: generateSubtitle(),
     xAxis: generateXaxis(characteristicGroups),
-    yAxis: generateYaxis(indicatorId),
+    yAxis: generateYaxis(indicator),
     series: generateSeriesData(dataPoints),
-    //credits: generateCredits(),
-    // legend: generateLegend(),
-    // exporting: generateExporting(),
-    // plotOptions: generatePlotOptions(),
+    credits: generateCredits(inputs),
+    legend: generateLegend(),
+    exporting: generateExporting(),
+    plotOptions: generatePlotOptions(),
   }
 };
 
 const initialize = () => {
   network.get("datalab/init").then(res => {
-    initializeIdHash(res);
     initializeStrings(res.strings);
     initializeLanguage(res.languages);
     initializeCharacteristicGroups(res.characteristicGroupCategories);
@@ -343,16 +353,24 @@ const data = () => {
   const selectedSurveys = utility.getSelectedCountryRounds();
   const selectedIndicator = utility.getSelectedValue('select-indicator-group');
   const selectedCharacteristicGroup = utility.getSelectedValue('select-characteristic-group');
+  const overTime = $('#dataset_overtime')[0].checked;
 
   const opts = {
     "survey": selectedSurveys,
     "indicator": selectedIndicator,
     "characteristicGroup": selectedCharacteristicGroup,
+    "overTime": overTime,
   }
 
   network.get("datalab/data", opts).then(res => {
-    console.log(res);
-    const chartData = generateChart(res);
+    let chartData = {};
+
+    if (overTime) {
+      chartData = generateOverTimeChart(res);
+    } else {
+      chartData = generateChart(res);
+    }
+
     Highcharts.chart('chart-container', chartData);
   });
 };
