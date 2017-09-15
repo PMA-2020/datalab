@@ -15,25 +15,6 @@ const append = (parent, el) => parent.appendChild(el);
 
 const getSelectedLanguage = () => $('#select-language option:selected').val();
 
-const flattenHash = (hsh, key) => {
-  return hsh.reduce((a, b) => ( [...a, ...b[key]]), []);
-};
-
-const rekeyHash = (currentHash, format) => {
-  const key = format.key;
-  const value = format.value;
-
-  const newHash = {};
-
-  currentHash.forEach(item => { newHash[item[key]] = item[value]; });
-
-  return newHash;
-};
-
-const getLabelIdFromId = id => {
-  return JSON.parse(localStorage.getItem('idToLabel'))[id];
-};
-
 const getString = item => {
   const strings = loadStringsFromLocalStorage();
   const labelId = item['label.id'];
@@ -88,9 +69,6 @@ const utility = {
   getSelectedText,
   getSelectedChartType,
   getSelectedCountryRounds,
-  rekeyHash,
-  flattenHash,
-  getLabelIdFromId,
 };
 
 export default utility;

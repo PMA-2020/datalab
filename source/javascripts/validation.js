@@ -1,3 +1,5 @@
+import utility from './utility';
+
 function validateFilters() {
   var chartType = getInput('chart_types');
   var selectedDates = getSelectedYearRounds();
@@ -77,27 +79,8 @@ function disablePieOption(countries, dates) {
   }
 };
 
-function toggleBlackAndWhiteOption(countryDateRounds) {
-  var blackAndWhiteCheck = $("#dataset_black_and_white");
 
-  if((countryDateRounds.length >= 1 && countryDateRounds.length < 3) &&
-      selectedData().overTime == false) {
-    blackAndWhiteCheck.prop('disabled', '');
-  }
-  else {
-    blackAndWhiteCheck.prop('disabled', 'disabled');
-    blackAndWhiteCheck.prop('checked', false);
-  }
-}
 
-function toggleOverTimeOption(dates, countries) {
-  var overTimeCheckbox = $(".overtime-check");
-  if(dates.length > 1 && countries.length > 0) { overTimeCheckbox.prop('disabled', ''); }
-  else {
-    overTimeCheckbox.prop('disabled', 'disabled');
-    overTimeCheckbox.prop('checked', false);
-  }
-}
 
 function chartable(dates) {
   var selectedIndicator = getSelectedItemValue('indicators');
@@ -158,3 +141,36 @@ function disableFilters(filters, input) {
     });
   }
 };
+
+const checkOverTime = () => {
+  const countryRounds = utility.getSelectedCountryRounds();
+  const overTimeCheckbox = $("#dataset_overtime");
+
+  if(countryRounds.length > 1) { overTimeCheckbox.prop('disabled', ''); }
+  else {
+    overTimeCheckbox.prop('disabled', 'disabled');
+    overTimeCheckbox.prop('checked', false);
+  }
+};
+
+const checkBlackAndWhite = () => {
+  const countryRounds = utility.getSelectedCountryRounds();
+  const blackAndWhiteCheck = $("#dataset_black_and_white");
+  const overTimeCheckbox = $("#dataset_overtime")[0];
+
+  if((countryRounds.length >= 1 && countryRounds.length < 3) &&
+      overTimeCheckbox.checked == false) {
+    blackAndWhiteCheck.prop('disabled', '');
+  }
+  else {
+    blackAndWhiteCheck.prop('disabled', 'disabled');
+    blackAndWhiteCheck.prop('checked', false);
+  }
+}
+
+const validation = {
+  checkOverTime,
+  checkBlackAndWhite,
+};
+
+export default validation;
