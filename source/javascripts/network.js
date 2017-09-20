@@ -35,6 +35,7 @@ const get = (path, opts) => {
 
 const network = {
   get,
+  buildUrl,
 };
 
 export default network;

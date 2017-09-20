@@ -5,11 +5,10 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Use the title from a page's frontmatter if it has one -->
-    <title><%= current_page.data.title || "PMA-2020 Datalab" %></title>
-
+    <title>PMA-2020 Datalab</title>
     <%= javascript_include_tag 'dist/main' %>
     <%= javascript_include_tag 'dist/styles' %>
-    <link rel="stylesheet" type="text/css" href="/dist/bundle.styles.css">
+    <%= stylesheet_link_tag 'dist/bundle.styles' %>
   </head>
   <%= partial 'layouts/header' %>
   <%= partial 'layouts/navigation' %>

@@ -85,4 +85,3 @@ function chartOverrides() {
     "chart-font" : font,
   }
 };
-

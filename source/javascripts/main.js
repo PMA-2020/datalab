@@ -1,6 +1,7 @@
 import 'bootstrap';
 import 'bootstrap-select';
-import 'bootstrap/dist/css/bootstrap.css'; import 'bootstrap-select/dist/css/bootstrap-select.css';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-select/dist/css/bootstrap-select.css';
 import 'font-awesome/css/font-awesome.css';
 
 import chart from './chart';
@@ -12,16 +13,12 @@ $(function() {
   chart.initialize();
 
   $(".clear-input").click((e) => {
+    validation.checkCharting();
     const clearId = e.target.dataset.id;
     $(`#${clearId}`).selectpicker('val', '');
     chart.surveyCombo();
   });
 
-  $("#select-all").click(() => { interaction.selectAll(); });
-  $("#select-latest").click(() => { interaction.selectLatest(); });
-  $("#clear-all").click(() => { interaction.clear(); });
-  $("#dataset_overtime").click(() => { validation.checkBlackAndWhite(); });
-  $("#closeCountryRoundModal").click(() => { interaction.closeModal(); });
   $("#finishCountryRoundModal").click(() => {
     interaction.finishModal();
     validation.checkOverTime();
@@ -39,11 +36,11 @@ $(function() {
     validation.checkCharting();
     utility.setDefinitionText();
   });
-  $("#chart-types input").click(() => {
-    validation.checkCharting();
-  });
-
-  $("#submit-chart").click(() => {
-    chart.data();
-  });
+  $("#select-all").click(() => (interaction.selectAll()));
+  $("#select-latest").click(() => (interaction.selectLatest()));
+  $("#clear-all").click(() => (interaction.clear()));
+  $("#dataset_overtime").click(() => (validation.checkBlackAndWhite()));
+  $("#closeCountryRoundModal").click(() => (interaction.closeModal()));
+  $("#chart-types input").click(() => (validation.checkCharting()));
+  $("#submit-chart").click(() => (chart.data()));
 });

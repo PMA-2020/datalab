@@ -1,10 +1,3 @@
-function multiSeries() {
-  var countries = selectedData().countries;
-  var years = selectedData().years;
-  return (countries.length >= 1 && years.length > 1);
-};
-
-
 const loadStringsFromLocalStorage = () => {
   return JSON.parse(localStorage.getItem('pma2020Strings'));
 };

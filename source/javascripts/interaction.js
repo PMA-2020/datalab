@@ -1,22 +1,5 @@
 import utility from './utility';
 
-function clearSelect(el) {
-  var select = el.data('id');
-  $('#' + select).prop('selectedIndex', 0);
-  $('#' + select).selectpicker('deselectAll');
-  validateFilters();
-}
-
-function resetChart() {
-  if (confirm('Are you sure you want to reset the chart styles?')) {
-    $(".tab-pane#style").find("input[type=text], textarea").val("");
-    $(".color").attr('style', '');
-    $(".bfh-selectbox").val($(".bfh-selectbox").data('font'));
-    generateChart();
-    $('#download-csv').prop('disabled', '');
-  };
-};
-
 const selectAll = () => {
   $('#countryRoundModal .collapse.in input[type=checkbox]').prop('checked', true);
 };
