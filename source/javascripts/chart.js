@@ -31,6 +31,8 @@ const initializeCharacteristicGroups = (characteristicGroups) => {
       let opt = utility.createNode('option');
 
       opt.value = characteristic.id;
+      opt.setAttribute('data-definition-id', characteristic["definition.id"]);
+      opt.setAttribute('data-label-id', characteristic["label.id"]);
       opt.innerHTML = utility.getString(characteristic);
       optGroup.append(opt);
     });
@@ -50,6 +52,8 @@ const initializeIndicators = (indicators) => {
       let opt = utility.createNode('option');
 
       opt.value = indicator.id;
+      opt.setAttribute('data-definition-id', indicator["definition.id"]);
+      opt.setAttribute('data-label-id', indicator["label.id"]);
       opt.innerHTML = utility.getString(indicator);
       optGroup.append(opt);
     });
@@ -382,6 +386,7 @@ const setOptionsDisabled = (type, availableValues) => {
     availableItems.each(item => {
       const itemDomElement = availableItems[item];
       if (!availableValues.includes(itemDomElement.value)) { itemDomElement.disabled = true; }
+      else { itemDomElement.disabled = false; }
     });
   }
 };

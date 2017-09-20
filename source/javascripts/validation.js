@@ -79,32 +79,6 @@ function disablePieOption(countries, dates) {
   }
 };
 
-
-
-
-function chartable(dates) {
-  var selectedIndicator = getSelectedItemValue('indicators');
-  var selectedGrouping = getSelectedItemValue('disaggregators');
-  var chartType = getSelectedChartType('chart_types');
-
-  if(dates.length > 0 &&
-     selectedIndicator.length > 0 &&
-       selectedGrouping.length > 0 &&
-         chartType != undefined &&
-         chartType.length > 0) {
-    enableCharting('');
-    return true;
-  } else {
-    enableCharting('disabled');
-    return false;
-  }
-}
-
-function enableCharting(state) {
-  $('.submit-chart').prop('disabled', state)
-  $('#download-csv').prop('disabled', state)
-};
-
 function disableUnavailableFilters() {
   var selectedIndicator = getSelectedItemValue('indicators');
   var selectedGrouping = getSelectedItemValue('disaggregators');
@@ -168,9 +142,28 @@ const checkBlackAndWhite = () => {
   }
 }
 
+
+const checkCharting = () => {
+  const countryRounds = utility.getSelectedCountryRounds().length;
+  const selectedIndicator = utility.getSelectedValue('select-indicator-group').length;
+  const selectedCharacteristicGroup = utility.getSelectedValue('select-characteristic-group').length;
+  const chartType = utility.getSelectedChartType();
+
+  if(countryRounds > 0 && selectedIndicator > 0 && selectedCharacteristicGroup > 0 &&
+         chartType != undefined &&
+         chartType.length > 0) {
+    $('#submit-chart').prop('disabled', '');
+    $('#download-csv').prop('disabled', '');
+  } else {
+    $('#submit-chart').prop('disabled', 'disabled');
+    $('#download-csv').prop('disabled', 'disabled');
+  }
+}
+
 const validation = {
   checkOverTime,
   checkBlackAndWhite,
+  checkCharting,
 };
 
 export default validation;

@@ -13,6 +13,24 @@ const createNode = el => document.createElement(el);
 
 const append = (parent, el) => parent.appendChild(el);
 
+const getDefinition = item => {
+  if (item) {
+    const definition = getStringById(item.dataset.definitionId);
+    const itemName = getStringById(item.dataset.labelId);
+    return `${itemName}: ${definition}`;
+  } else {
+    return '';
+  }
+};
+
+const setDefinitionText = () => {
+  const selectedIndicator = getSelectedItem('select-indicator-group');
+  const selectedCharacteristicGroup = getSelectedItem('select-characteristic-group');
+
+  $(".help-definition.indicator").html(getDefinition(selectedIndicator));
+  $(".help-definition.characteristic-group").html(getDefinition(selectedCharacteristicGroup));
+};
+
 const getSelectedLanguage = () => $('#select-language option:selected').val();
 
 const getString = item => {
@@ -32,17 +50,15 @@ const getStringById = labelId => {
   return strings[labelId][lang] || enString;
 };
 
-const getSelectedValue = id => {
+const getSelectedItem = id => {
   const el = document.getElementById(id);
-  const selectedVal = el.options[el.selectedIndex].value;
-  return selectedVal;
-};
+  const selectedVal = el.options[el.selectedIndex];
 
-const getSelectedText = id => {
-  const el = document.getElementById(id);
-  const selectedVal = el.options[el.selectedIndex].text;
   return selectedVal;
-};
+}
+
+const getSelectedValue = id => ( getSelectedItem(id).value );
+const getSelectedText = id => ( getSelectedItem(id).text );
 
 const getSelectedCountryRounds = () => {
   const countries = [];
@@ -69,6 +85,7 @@ const utility = {
   getSelectedText,
   getSelectedChartType,
   getSelectedCountryRounds,
+  setDefinitionText,
 };
 
 export default utility;
