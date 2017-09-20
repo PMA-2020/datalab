@@ -269,6 +269,7 @@ const generateLegend = () => {
 const generateOverTimeSeriesData = dataPoints => (
   dataPoints.reduce((res, dataPoint) => {
     const characteristicGroupId = dataPoint["characteristic.label.id"];
+    const precision = dataPoint["precision"];
 
     return [
       ...res,
@@ -288,12 +289,19 @@ const generateSeriesData = dataPoints => (
     const countryId = dataPoint["country.label.id"];
     const geographyId = dataPoint["geography.label.id"];
     const surveyId = dataPoint["survey.label.id"];
+    const precision = dataPoint["precision"];
 
     return [
       ...res,
       {
         name: generateSeriesName(countryId, geographyId, surveyId),
-        data: dataPoint.values.reduce((tot, item) => { return [...tot, item.value] }, [])
+        data: dataPoint.values.reduce((tot, item) => {
+          const precision = item["precision"];
+          const value = parseFloat(item.value.toFixed(precision));
+
+
+          return [...tot, value]
+        }, [])
       }
     ]
   }, [])
