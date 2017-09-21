@@ -14,8 +14,11 @@ $(function() {
 
   $(".clear-input").click((e) => {
     validation.checkCharting();
-    const clearId = e.target.dataset.id;
-    $(`#${clearId}`).selectpicker('val', '');
+    const clearId = e.target.dataset.type;
+
+    $(`#select-${clearId}`).selectpicker('val', '');
+    $(`.help-definition.${clearId}`).html('');
+
     chart.surveyCombo();
   });
 

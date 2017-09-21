@@ -7,9 +7,12 @@ const createNode = el => document.createElement(el);
 const append = (parent, el) => parent.appendChild(el);
 
 const getDefinition = item => {
-  if (item) {
-    const definition = getStringById(item.dataset.definitionId);
-    const itemName = getStringById(item.dataset.labelId);
+  const definitionId = item.dataset.definitionId;
+  const itemNameId = item.dataset.labelId;
+
+  if (definitionId && itemNameId) {
+    const definition = getStringById(definitionId);
+    const itemName = getStringById(itemNameId);
     return `${itemName}: ${definition}`;
   } else {
     return '';
@@ -20,7 +23,7 @@ const setDefinitionText = () => {
   const selectedIndicator = getSelectedItem('select-indicator-group');
   const selectedCharacteristicGroup = getSelectedItem('select-characteristic-group');
 
-  $(".help-definition.indicator").html(getDefinition(selectedIndicator));
+  $(".help-definition.indicator-group").html(getDefinition(selectedIndicator));
   $(".help-definition.characteristic-group").html(getDefinition(selectedCharacteristicGroup));
 };
 
