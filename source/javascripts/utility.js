@@ -30,20 +30,21 @@ const setDefinitionText = () => {
 const getSelectedLanguage = () => $('#select-language option:selected').val();
 
 const getString = item => {
-  const strings = loadStringsFromLocalStorage();
   const labelId = item['label.id'];
-  const lang = getSelectedLanguage();
-  const enString = strings[labelId]['en'];
-
-  return strings[labelId][lang] || enString;
+  return getStringById(labelId);
 };
 
 const getStringById = labelId => {
   const strings = loadStringsFromLocalStorage();
   const lang = getSelectedLanguage();
-  const enString = strings[labelId]['en'];
-
-  return strings[labelId][lang] || enString;
+  const string = strings[labelId];
+  if (string) {
+    const enString = string['en'];
+    return string[lang] || enString;
+  } else {
+    console.log(`No String for "${labelId}"`);
+    return false;
+  }
 };
 
 const getSelectedItem = id => {

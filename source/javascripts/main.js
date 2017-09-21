@@ -8,9 +8,12 @@ import chart from './chart';
 import interaction from './interaction';
 import validation from './validation';
 import utility from './utility';
+import translate from './translate';
 
 $(function() {
   chart.initialize();
+
+  $("#select-language").change((e) => (translate.translatePage()));
 
   $(".clear-input").click((e) => {
     validation.checkCharting();

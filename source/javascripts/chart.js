@@ -26,13 +26,17 @@ const initializeCharacteristicGroups = (characteristicGroups) => {
     let optGroup = utility.createNode('optgroup');
 
     optGroup.label = optGroupName;
+    optGroup.className = 'i18nable-optgroup';
+    optGroup.setAttribute('data-key', group["label.id"]);
 
     group.characteristicGroups.forEach(characteristic => {
       let opt = utility.createNode('option');
 
       opt.value = characteristic.id;
+      opt.className = 'i18nable';
       opt.setAttribute('data-definition-id', characteristic["definition.id"]);
       opt.setAttribute('data-label-id', characteristic["label.id"]);
+      opt.setAttribute('data-key', characteristic["label.id"]);
       opt.innerHTML = utility.getString(characteristic);
       optGroup.append(opt);
     });
@@ -47,13 +51,17 @@ const initializeIndicators = (indicators) => {
     let optGroup = utility.createNode('optgroup');
 
     optGroup.label = optGroupName;
+    optGroup.className = 'i18nable-optgroup';
+    optGroup.setAttribute('data-key', group["label.id"]);
 
     group.indicators.forEach(indicator => {
       let opt = utility.createNode('option');
 
       opt.value = indicator.id;
+      opt.className = 'i18nable';
       opt.setAttribute('data-definition-id', indicator["definition.id"]);
       opt.setAttribute('data-label-id', indicator["label.id"]);
+      opt.setAttribute('data-key', indicator["label.id"]);
       opt.innerHTML = utility.getString(indicator);
       optGroup.append(opt);
     });
