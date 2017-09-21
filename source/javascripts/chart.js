@@ -269,15 +269,17 @@ const generateLegend = () => {
 const generateOverTimeSeriesData = dataPoints => (
   dataPoints.reduce((res, dataPoint) => {
     const characteristicGroupId = dataPoint["characteristic.label.id"];
-    const precision = dataPoint["precision"];
 
     return [
       ...res,
       {
         name: utility.getStringById(characteristicGroupId),
         data: dataPoint.values.reduce((tot, item) => {
+          const precision = item["precision"];
+          const value = parseFloat(item.value.toFixed(precision));
           const utcDate = new Date(item["survey.date"]).getTime();
-          return [...tot, [utcDate, item.value]];
+
+          return [...tot, [utcDate, value]];
         }, [])
       }
     ]
