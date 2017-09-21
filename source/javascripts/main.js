@@ -30,6 +30,7 @@ $(function() {
     validation.checkOverTime();
     validation.checkBlackAndWhite();
     validation.checkCharting();
+    validation.checkPie();
     chart.surveyCombo();
   });
   $("#select-indicator-group").change(() => {

@@ -231,15 +231,15 @@ const generateOverTimeXAxis = () => {
   }
 };
 
-const generateXaxis = characteristicGroups => {
-  let characteristicGroupsNames = [];
-
-  characteristicGroups.forEach(charGroup => {
+const getCharacteristicGroupNames = (groups) => {
+  return groups.reduce((tot, charGroup) => {
     const charGroupName = utility.getStringById(charGroup["characteristic.label.id"]);
-    characteristicGroupsNames.push(charGroupName);
-  });
+    return [...tot, charGroupName];
+  }, []);
+};
 
-  return { categories: characteristicGroupsNames }
+const generateXaxis = characteristicGroups => {
+  return { categories: getCharacteristicGroupNames(characteristicGroups) }
 };
 
 const generateYaxis = indicator => {
@@ -272,6 +272,20 @@ const generateLegend = () => {
     align: 'right',
     verticalAlign: 'middle'
   }
+};
+
+const generatePieData = (charGroup, charGroups, dataPoints) => {
+  let series = [];
+  const charGroupNames = getCharacteristicGroupNames(charGroups);
+
+  charGroupNames.forEach((charGroup) => {
+    const dataPoint = dataPoints[0].values[charGroupNames.indexOf(charGroup)];
+    const precision = dataPoint["precision"];
+    const value = parseFloat(dataPoint.value.toFixed(precision));
+    series.push({ name: charGroup, y: value });
+  });
+
+  return [{ name: charGroup, data: series }];
 };
 
 const generateOverTimeSeriesData = dataPoints => (
@@ -316,6 +330,30 @@ const generateSeriesData = dataPoints => (
     ]
   }, [])
 );
+
+
+const generatePieChart = res => {
+  const inputs = res.queryInput;
+  const characteristicGroups = res.results[0].values;
+  const indicator = utility.getStringById(inputs.indicators[0]["label.id"]);
+  const dataPoints = res.results;
+  const chartType = utility.getSelectedChartType();
+
+  return {
+    chart: { type: chartType },
+    title: generateTitle(inputs),
+    subtitle: generateSubtitle(),
+    series: generatePieData(
+      utility.getSelectedValue('select-characteristic-group'),
+      characteristicGroups,
+      dataPoints
+    ),
+    credits: generateCredits(inputs),
+    legend: generateLegend(),
+    exporting: generateExporting(),
+    plotOptions: generatePlotOptions(),
+  }
+};
 
 const generateOverTimeChart = res => {
   const inputs = res.queryInput;
@@ -376,6 +414,7 @@ const data = () => {
   const selectedIndicator = utility.getSelectedValue('select-indicator-group');
   const selectedCharacteristicGroup = utility.getSelectedValue('select-characteristic-group');
   const overTime = $('#dataset_overtime')[0].checked;
+  const chartType = utility.getSelectedChartType();
 
   const opts = {
     "survey": selectedSurveys,
@@ -389,6 +428,8 @@ const data = () => {
 
     if (overTime) {
       chartData = generateOverTimeChart(res);
+    } else if (chartType === 'pie') {
+      chartData = generatePieChart(res);
     } else {
       chartData = generateChart(res);
     }

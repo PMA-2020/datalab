@@ -1,6 +1,35 @@
 import chart from './chart';
 import utility from './utility';
 
+const checkPie = () => {
+  const countryRounds = utility.getSelectedCountryRounds();
+  const pieChartType = $("#chart-types").find($("#option-pie")).parent();
+
+  if(countryRounds.length > 1) {
+    pieChartType.remove();
+  } else {
+    if(pieChartType.length <= 0) {
+      const buttonLabel = utility.createNode('label');
+      buttonLabel.className = 'btn btn-primary';
+
+      const pieChartInput = utility.createNode('input');
+      pieChartInput.setAttribute('type', 'radio');
+      pieChartInput.setAttribute('name', 'options');
+      pieChartInput.setAttribute('id', 'option-pie');
+      pieChartInput.setAttribute('autocomplete', 'off');
+      pieChartInput.setAttribute('checked', '');
+      pieChartInput.setAttribute('data-type', 'pie');
+
+      const pieIcon = utility.createNode('i');
+      pieIcon.className = 'fa fa-pie-chart';
+
+      buttonLabel.append(pieChartInput);
+      buttonLabel.append(pieIcon);
+      $('#chart-types').append(buttonLabel);
+    }
+  }
+}
+
 const checkOverTime = () => {
   const countryRounds = utility.getSelectedCountryRounds();
   const overTimeCheckbox = $("#dataset_overtime");
@@ -49,6 +78,7 @@ const validation = {
   checkOverTime,
   checkBlackAndWhite,
   checkCharting,
+  checkPie,
 };
 
 export default validation;
