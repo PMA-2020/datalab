@@ -1,7 +1,9 @@
 import network from './network';
 import utility from './utility';
 import selectors from './selectors';
+import validation from './validation';
 import Highcharts from 'highcharts';
+require('highcharts/modules/exporting')(Highcharts);
 
 /* Chart initialization */
 
@@ -176,7 +178,14 @@ const setOptionsDisabled = (type, availableValues) => {
 
     availableItems.each(item => {
       const itemDomElement = availableItems[item];
-      if (!availableValues.includes(itemDomElement.value)) { itemDomElement.disabled = true; }
+      if (!availableValues.includes(itemDomElement.value)) {
+        itemDomElement.disabled = true;
+        const selectedItem = selectors.getSelectedValue(`select-${type}-group`);
+        if (selectedItem === itemDomElement.value) {
+          $(`#select-${type}`).selectpicker('val', '');
+          $(`.help-definition.${type}`).html('');
+        }
+      }
       else { itemDomElement.disabled = false; }
     });
   }
@@ -502,6 +511,7 @@ const handleCombos = (opts) => {
     setOptionsDisabled('indicator', res['indicator.id']);
 
     $('.selectpicker').selectpicker('refresh');
+    validation.checkCharting();
   });
 };
 

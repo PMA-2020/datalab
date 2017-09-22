@@ -22,8 +22,10 @@ $(function() {
 
     $(`#select-${clearId}`).selectpicker('val', '');
     $(`.help-definition.${clearId}`).html('');
+    $('.selectpicker').selectpicker('refresh');
 
     chart.surveyCombo();
+    validation.checkCharting();
   });
 
   $("#finishCountryRoundModal").click(() => {
