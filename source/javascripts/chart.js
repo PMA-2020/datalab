@@ -26,11 +26,17 @@ const initializeCharacteristicGroups = (characteristicGroups) => {
     let optGroup = utility.createNode('optgroup');
 
     optGroup.label = optGroupName;
+    optGroup.className = 'i18nable-optgroup';
+    optGroup.setAttribute('data-key', group["label.id"]);
 
     group.characteristicGroups.forEach(characteristic => {
       let opt = utility.createNode('option');
 
       opt.value = characteristic.id;
+      opt.className = 'i18nable';
+      opt.setAttribute('data-definition-id', characteristic["definition.id"]);
+      opt.setAttribute('data-label-id', characteristic["label.id"]);
+      opt.setAttribute('data-key', characteristic["label.id"]);
       opt.innerHTML = utility.getString(characteristic);
       optGroup.append(opt);
     });
@@ -45,11 +51,17 @@ const initializeIndicators = (indicators) => {
     let optGroup = utility.createNode('optgroup');
 
     optGroup.label = optGroupName;
+    optGroup.className = 'i18nable-optgroup';
+    optGroup.setAttribute('data-key', group["label.id"]);
 
     group.indicators.forEach(indicator => {
       let opt = utility.createNode('option');
 
       opt.value = indicator.id;
+      opt.className = 'i18nable';
+      opt.setAttribute('data-definition-id', indicator["definition.id"]);
+      opt.setAttribute('data-label-id', indicator["label.id"]);
+      opt.setAttribute('data-key', indicator["label.id"]);
       opt.innerHTML = utility.getString(indicator);
       optGroup.append(opt);
     });
@@ -219,15 +231,15 @@ const generateOverTimeXAxis = () => {
   }
 };
 
-const generateXaxis = characteristicGroups => {
-  let characteristicGroupsNames = [];
-
-  characteristicGroups.forEach(charGroup => {
+const getCharacteristicGroupNames = (groups) => {
+  return groups.reduce((tot, charGroup) => {
     const charGroupName = utility.getStringById(charGroup["characteristic.label.id"]);
-    characteristicGroupsNames.push(charGroupName);
-  });
+    return [...tot, charGroupName];
+  }, []);
+};
 
-  return { categories: characteristicGroupsNames }
+const generateXaxis = characteristicGroups => {
+  return { categories: getCharacteristicGroupNames(characteristicGroups) }
 };
 
 const generateYaxis = indicator => {
@@ -262,6 +274,20 @@ const generateLegend = () => {
   }
 };
 
+const generatePieData = (charGroup, charGroups, dataPoints) => {
+  let series = [];
+  const charGroupNames = getCharacteristicGroupNames(charGroups);
+
+  charGroupNames.forEach((charGroup) => {
+    const dataPoint = dataPoints[0].values[charGroupNames.indexOf(charGroup)];
+    const precision = dataPoint["precision"];
+    const value = parseFloat(dataPoint.value.toFixed(precision));
+    series.push({ name: charGroup, y: value });
+  });
+
+  return [{ name: charGroup, data: series }];
+};
+
 const generateOverTimeSeriesData = dataPoints => (
   dataPoints.reduce((res, dataPoint) => {
     const characteristicGroupId = dataPoint["characteristic.label.id"];
@@ -271,8 +297,11 @@ const generateOverTimeSeriesData = dataPoints => (
       {
         name: utility.getStringById(characteristicGroupId),
         data: dataPoint.values.reduce((tot, item) => {
-          const utcDate = new Date(item["survey.date"]).getTime();
-          return [...tot, [utcDate, item.value]];
+          const precision = item["precision"];
+          const value = parseFloat(item.value.toFixed(precision));
+          const utcDate = utility.parseDate(item["survey.date"]);
+
+          return [...tot, [utcDate, value]];
         }, [])
       }
     ]
@@ -284,16 +313,47 @@ const generateSeriesData = dataPoints => (
     const countryId = dataPoint["country.label.id"];
     const geographyId = dataPoint["geography.label.id"];
     const surveyId = dataPoint["survey.label.id"];
+    const precision = dataPoint["precision"];
 
     return [
       ...res,
       {
         name: generateSeriesName(countryId, geographyId, surveyId),
-        data: dataPoint.values.reduce((tot, item) => { return [...tot, item.value] }, [])
+        data: dataPoint.values.reduce((tot, item) => {
+          const precision = item["precision"];
+          const value = parseFloat(item.value.toFixed(precision));
+
+
+          return [...tot, value]
+        }, [])
       }
     ]
   }, [])
 );
+
+
+const generatePieChart = res => {
+  const inputs = res.queryInput;
+  const characteristicGroups = res.results[0].values;
+  const indicator = utility.getStringById(inputs.indicators[0]["label.id"]);
+  const dataPoints = res.results;
+  const chartType = utility.getSelectedChartType();
+
+  return {
+    chart: { type: chartType },
+    title: generateTitle(inputs),
+    subtitle: generateSubtitle(),
+    series: generatePieData(
+      utility.getSelectedValue('select-characteristic-group'),
+      characteristicGroups,
+      dataPoints
+    ),
+    credits: generateCredits(inputs),
+    legend: generateLegend(),
+    exporting: generateExporting(),
+    plotOptions: generatePlotOptions(),
+  }
+};
 
 const generateOverTimeChart = res => {
   const inputs = res.queryInput;
@@ -354,6 +414,7 @@ const data = () => {
   const selectedIndicator = utility.getSelectedValue('select-indicator-group');
   const selectedCharacteristicGroup = utility.getSelectedValue('select-characteristic-group');
   const overTime = $('#dataset_overtime')[0].checked;
+  const chartType = utility.getSelectedChartType();
 
   const opts = {
     "survey": selectedSurveys,
@@ -367,12 +428,33 @@ const data = () => {
 
     if (overTime) {
       chartData = generateOverTimeChart(res);
+    } else if (chartType === 'pie') {
+      chartData = generatePieChart(res);
     } else {
       chartData = generateChart(res);
     }
 
     Highcharts.chart('chart-container', chartData);
   });
+};
+
+const setCSVDownloadUrl = () => {
+  const selectedSurveys = utility.getSelectedCountryRounds();
+  const selectedIndicator = utility.getSelectedValue('select-indicator-group');
+  const selectedCharacteristicGroup = utility.getSelectedValue('select-characteristic-group');
+  const overTime = $('#dataset_overtime')[0].checked;
+
+  const opts = {
+    "survey": selectedSurveys,
+    "indicator": selectedIndicator,
+    "characteristicGroup": selectedCharacteristicGroup,
+    "overTime": overTime,
+    "format": "csv",
+  }
+
+  const url = network.buildUrl("datalab/data", opts);
+  const csvDownloadLink = $("#download-csv");
+  csvDownloadLink.attr("href", url);
 };
 
 const setOptionsDisabled = (type, availableValues) => {
@@ -382,6 +464,7 @@ const setOptionsDisabled = (type, availableValues) => {
     availableItems.each(item => {
       const itemDomElement = availableItems[item];
       if (!availableValues.includes(itemDomElement.value)) { itemDomElement.disabled = true; }
+      else { itemDomElement.disabled = false; }
     });
   }
 };
@@ -413,6 +496,7 @@ const characteristicGroupCombo = () => {
 const chart = {
   initialize,
   data,
+  setCSVDownloadUrl,
   surveyCombo,
   indicatorCombo,
   characteristicGroupCombo,

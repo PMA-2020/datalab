@@ -1,10 +1,3 @@
-function multiSeries() {
-  var countries = selectedData().countries;
-  var years = selectedData().years;
-  return (countries.length >= 1 && years.length > 1);
-};
-
-
 const loadStringsFromLocalStorage = () => {
   return JSON.parse(localStorage.getItem('pma2020Strings'));
 };
@@ -13,36 +6,66 @@ const createNode = el => document.createElement(el);
 
 const append = (parent, el) => parent.appendChild(el);
 
+const parseDate = (date) => {
+  const splitDate = date.split("-");
+  if (splitDate.length === 2) {
+    splitDate.splice(1, 0, '01');
+    return new Date(splitDate.join("-")).getTime();
+  } else {
+    return new Date(date).getTime();
+  }
+};
+
+const getDefinition = item => {
+  const definitionId = item.dataset.definitionId;
+  const itemNameId = item.dataset.labelId;
+
+  if (definitionId && itemNameId) {
+    const definition = getStringById(definitionId);
+    const itemName = getStringById(itemNameId);
+    return `${itemName}: ${definition}`;
+  } else {
+    return '';
+  }
+};
+
+const setDefinitionText = () => {
+  const selectedIndicator = getSelectedItem('select-indicator-group');
+  const selectedCharacteristicGroup = getSelectedItem('select-characteristic-group');
+
+  $(".help-definition.indicator-group").html(getDefinition(selectedIndicator));
+  $(".help-definition.characteristic-group").html(getDefinition(selectedCharacteristicGroup));
+};
+
 const getSelectedLanguage = () => $('#select-language option:selected').val();
 
 const getString = item => {
-  const strings = loadStringsFromLocalStorage();
   const labelId = item['label.id'];
-  const lang = getSelectedLanguage();
-  const enString = strings[labelId]['en'];
-
-  return strings[labelId][lang] || enString;
+  return getStringById(labelId);
 };
 
 const getStringById = labelId => {
   const strings = loadStringsFromLocalStorage();
   const lang = getSelectedLanguage();
-  const enString = strings[labelId]['en'];
-
-  return strings[labelId][lang] || enString;
+  const string = strings[labelId];
+  if (string) {
+    const enString = string['en'];
+    return string[lang] || enString;
+  } else {
+    console.log(`No String for "${labelId}"`);
+    return false;
+  }
 };
 
-const getSelectedValue = id => {
+const getSelectedItem = id => {
   const el = document.getElementById(id);
-  const selectedVal = el.options[el.selectedIndex].value;
-  return selectedVal;
-};
+  const selectedVal = el.options[el.selectedIndex];
 
-const getSelectedText = id => {
-  const el = document.getElementById(id);
-  const selectedVal = el.options[el.selectedIndex].text;
   return selectedVal;
-};
+}
+
+const getSelectedValue = id => ( getSelectedItem(id).value );
+const getSelectedText = id => ( getSelectedItem(id).text );
 
 const getSelectedCountryRounds = () => {
   const countries = [];
@@ -69,6 +92,8 @@ const utility = {
   getSelectedText,
   getSelectedChartType,
   getSelectedCountryRounds,
+  setDefinitionText,
+  parseDate,
 };
 
 export default utility;

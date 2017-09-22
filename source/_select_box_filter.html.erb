@@ -1,13 +1,30 @@
 <div class='row'>
   <div class='col-md-12'>
     <div class='form-group'>
-      <label class='i18nable'><%= label_value %></label>
+      <label class='i18nable' data-key="<%= label_value.downcase %>">
+        <%= label_value %>
+      </label>
       <div class="input-group">
         <!-- picker -->
         <% if type == 'language' %>
-          <select id="select-<%= type %>" class="selectpicker" data-live-search="true"></select>
+          <select id="select-<%= type %>"
+                  class="selectpicker"
+                  data-width='fit'
+                  data-live-search="true"></select>
         <% else %>
-          <select id="select-<%= type %>" class="selectpicker" data-live-search="true" title='Select option'></select>
+          <select id="select-<%= type %>"
+                  class="selectpicker"
+                  data-live-search="true"
+                  title='Select option'></select>
+          <!-- clear button -->
+          <span class="input-group-btn">
+            <button type="button"
+                    class="btn btn-primary clear-input"
+                    data-type="<%= type %>"
+                    title='Clear Selection'>
+              &times
+            </button>
+          </span>
         <% end %>
       </div>
     </div>
