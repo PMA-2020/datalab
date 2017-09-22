@@ -299,7 +299,7 @@ const generateOverTimeSeriesData = dataPoints => (
         data: dataPoint.values.reduce((tot, item) => {
           const precision = item["precision"];
           const value = parseFloat(item.value.toFixed(precision));
-          const utcDate = new Date(item["survey.date"]).getTime();
+          const utcDate = utility.parseDate(item["survey.date"]);
 
           return [...tot, [utcDate, value]];
         }, [])

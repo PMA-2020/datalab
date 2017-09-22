@@ -6,6 +6,16 @@ const createNode = el => document.createElement(el);
 
 const append = (parent, el) => parent.appendChild(el);
 
+const parseDate = (date) => {
+  const splitDate = date.split("-");
+  if (splitDate.length === 2) {
+    splitDate.splice(1, 0, '01');
+    return new Date(splitDate.join("-")).getTime();
+  } else {
+    return new Date(date).getTime();
+  }
+};
+
 const getDefinition = item => {
   const definitionId = item.dataset.definitionId;
   const itemNameId = item.dataset.labelId;
@@ -83,6 +93,7 @@ const utility = {
   getSelectedChartType,
   getSelectedCountryRounds,
   setDefinitionText,
+  parseDate,
 };
 
 export default utility;
