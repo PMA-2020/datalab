@@ -32,32 +32,10 @@ const parseDate = (date) => {
   }
 };
 
-const getDefinition = item => {
-  const definitionId = item.dataset.definitionId;
-  const itemNameId = item.dataset.labelId;
-
-  if (definitionId && itemNameId) {
-    const definition = getStringById(definitionId);
-    const itemName = getStringById(itemNameId);
-    return `${itemName}: ${definition}`;
-  } else {
-    return '';
-  }
-};
-
-const setDefinitionText = () => {
-  const selectedIndicator = selectors.getSelectedItem('select-indicator-group');
-  const selectedCharacteristicGroup = selectors.getSelectedItem('select-characteristic-group');
-
-  $(".help-definition.indicator-group").html(getDefinition(selectedIndicator));
-  $(".help-definition.characteristic-group").html(getDefinition(selectedCharacteristicGroup));
-};
-
 const utility = {
   createNode,
   append,
   parseDate,
-  setDefinitionText,
   getString,
   getStringById,
 };

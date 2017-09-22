@@ -9,6 +9,7 @@ import interaction from './interaction';
 import validation from './validation';
 import utility from './utility';
 import translate from './translate';
+import definitions from './definitions';
 
 $(function() {
   chart.initialize();
@@ -36,12 +37,12 @@ $(function() {
   $("#select-indicator-group").change(() => {
     chart.indicatorCombo();
     validation.checkCharting();
-    utility.setDefinitionText();
+    definitions.setDefinitionText();
   });
   $("#select-characteristic-group").change(() => {
     chart.characteristicGroupCombo();
     validation.checkCharting();
-    utility.setDefinitionText();
+    definitions.setDefinitionText();
   });
   $("#select-all").click(() => (interaction.selectAll()));
   $("#select-latest").click(() => (interaction.selectLatest()));
