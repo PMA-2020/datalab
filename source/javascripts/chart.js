@@ -439,12 +439,18 @@ const surveyCombo = () => {
 };
 
 const indicatorCombo = () => {
-  const opts = { indicator: selectors.getSelectedValue('select-indicator-group') }
+  const surveys = selectors.getSelectedCountryRounds();
+  let opts = { indicator: selectors.getSelectedValue('select-indicator-group') }
+  if (surveys) { opts["survey"] = surveys }
+
   handleCombos(opts);
 };
 
 const characteristicGroupCombo = () => {
-  const opts = { characteristicGroup: selectors.getSelectedValue('select-characteristic-group') }
+  const surveys = selectors.getSelectedCountryRounds();
+  let opts = { characteristicGroup: selectors.getSelectedValue('select-characteristic-group') }
+  if (surveys) { opts["survey"] = surveys }
+
   handleCombos(opts);
 };
 
