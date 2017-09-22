@@ -17,13 +17,13 @@ const runTranslate = (items, type) => {
 };
 
 const translateOptGroup = () => {
-  const items = $(".i18nable-optgroup");
+  const items = $(".i18nable-optgroup").not($("a.opt.i18nable"));
   runTranslate(items, 'optgroup');
 };
 
 const translatePage = () => {
-  const items = $(".i18nable");
-  runTranslate(items, 'optgroup');
+  const items = $(".i18nable").not($("a.opt.i18nable"));
+  runTranslate(items);
   translateOptGroup();
 
   $('.selectpicker').selectpicker('refresh');
