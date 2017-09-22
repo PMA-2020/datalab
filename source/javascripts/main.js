@@ -34,16 +34,19 @@ $(function() {
     validation.checkPie();
     chart.surveyCombo();
   });
+
   $("#select-indicator-group").change(() => {
     chart.indicatorCombo();
     validation.checkCharting();
     definitions.setDefinitionText();
   });
+
   $("#select-characteristic-group").change(() => {
     chart.characteristicGroupCombo();
     validation.checkCharting();
     definitions.setDefinitionText();
   });
+
   $("#select-all").click(() => (interaction.selectAll()));
   $("#select-latest").click(() => (interaction.selectLatest()));
   $("#clear-all").click(() => (interaction.clear()));
