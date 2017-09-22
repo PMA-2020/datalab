@@ -3,6 +3,8 @@ import utility from './utility';
 import selectors from './selectors';
 import Highcharts from 'highcharts';
 
+/* Chart initialization */
+
 const initializeStrings = (strings) => {
   if (typeof(Storage) !== "undefined") {
     localStorage.removeItem('pma2020Strings', strings);
@@ -147,6 +149,41 @@ const initializeSurveyCountries = (surveyCountries) => {
   });
 };
 
+/* Chart interctions */
+
+const setCSVDownloadUrl = () => {
+  const selectedSurveys = selectors.getSelectedCountryRounds();
+  const selectedIndicator = selectors.getSelectedValue('select-indicator-group');
+  const selectedCharacteristicGroup = selectors.getSelectedValue('select-characteristic-group');
+  const overTime = $('#dataset_overtime')[0].checked;
+
+  const opts = {
+    "survey": selectedSurveys,
+    "indicator": selectedIndicator,
+    "characteristicGroup": selectedCharacteristicGroup,
+    "overTime": overTime,
+    "format": "csv",
+  }
+
+  const url = network.buildUrl("datalab/data", opts);
+  const csvDownloadLink = $("#download-csv");
+  csvDownloadLink.attr("href", url);
+};
+
+const setOptionsDisabled = (type, availableValues) => {
+  if (availableValues) {
+    const availableItems = $(`#select-${type}-group option`);
+
+    availableItems.each(item => {
+      const itemDomElement = availableItems[item];
+      if (!availableValues.includes(itemDomElement.value)) { itemDomElement.disabled = true; }
+      else { itemDomElement.disabled = false; }
+    });
+  }
+};
+
+/* Chart building */
+
 const generateTitle = inputs => {
   const characteristicGroupLabel = utility.getStringById(
     inputs.characteristicGroups[0]["label.id"]
@@ -199,7 +236,6 @@ const generateSubtitle = () => {
     text: "PMA2020"
   }
 };
-
 
 const generateCitation = partners => {
   let citation = "Performance Monitoring and Accountability 2020. Johns Hopkins University;";
@@ -332,7 +368,6 @@ const generateSeriesData = dataPoints => (
   }, [])
 );
 
-
 const generatePieChart = res => {
   const inputs = res.queryInput;
   const characteristicGroups = res.results[0].values;
@@ -398,6 +433,21 @@ const generateChart = res => {
   }
 };
 
+const surveyCombo = () => {
+  const opts = { survey: selectors.getSelectedCountryRounds() }
+  handleCombos(opts);
+};
+
+const indicatorCombo = () => {
+  const opts = { indicator: selectors.getSelectedValue('select-indicator-group') }
+  handleCombos(opts);
+};
+
+const characteristicGroupCombo = () => {
+  const opts = { characteristicGroup: selectors.getSelectedValue('select-characteristic-group') }
+  handleCombos(opts);
+};
+
 const initialize = () => {
   network.get("datalab/init").then(res => {
     initializeStrings(res.strings);
@@ -411,6 +461,7 @@ const initialize = () => {
 };
 
 const data = () => {
+  // Gather options from chart inputs
   const selectedSurveys = selectors.getSelectedCountryRounds();
   const selectedIndicator = selectors.getSelectedValue('select-indicator-group');
   const selectedCharacteristicGroup = selectors.getSelectedValue('select-characteristic-group');
@@ -427,47 +478,16 @@ const data = () => {
   network.get("datalab/data", opts).then(res => {
     let chartData = {};
 
-    if (overTime) {
+    if (overTime) { // Overtime series option selected
       chartData = generateOverTimeChart(res);
-    } else if (chartType === 'pie') {
+    } else if (chartType === 'pie') { // Pie chart type option selected
       chartData = generatePieChart(res);
-    } else {
+    } else { // Everything else
       chartData = generateChart(res);
     }
 
     Highcharts.chart('chart-container', chartData);
   });
-};
-
-const setCSVDownloadUrl = () => {
-  const selectedSurveys = selectors.getSelectedCountryRounds();
-  const selectedIndicator = selectors.getSelectedValue('select-indicator-group');
-  const selectedCharacteristicGroup = selectors.getSelectedValue('select-characteristic-group');
-  const overTime = $('#dataset_overtime')[0].checked;
-
-  const opts = {
-    "survey": selectedSurveys,
-    "indicator": selectedIndicator,
-    "characteristicGroup": selectedCharacteristicGroup,
-    "overTime": overTime,
-    "format": "csv",
-  }
-
-  const url = network.buildUrl("datalab/data", opts);
-  const csvDownloadLink = $("#download-csv");
-  csvDownloadLink.attr("href", url);
-};
-
-const setOptionsDisabled = (type, availableValues) => {
-  if (availableValues) {
-    const availableItems = $(`#select-${type}-group option`);
-
-    availableItems.each(item => {
-      const itemDomElement = availableItems[item];
-      if (!availableValues.includes(itemDomElement.value)) { itemDomElement.disabled = true; }
-      else { itemDomElement.disabled = false; }
-    });
-  }
 };
 
 const handleCombos = (opts) => {
@@ -477,21 +497,6 @@ const handleCombos = (opts) => {
 
     $('.selectpicker').selectpicker('refresh');
   });
-};
-
-const surveyCombo = () => {
-  const opts = { survey: selectors.getSelectedCountryRounds() }
-  handleCombos(opts);
-};
-
-const indicatorCombo = () => {
-  const opts = { indicator: selectors.getSelectedValue('select-indicator-group') }
-  handleCombos(opts);
-};
-
-const characteristicGroupCombo = () => {
-  const opts = { characteristicGroup: selectors.getSelectedValue('select-characteristic-group') }
-  handleCombos(opts);
 };
 
 const chart = {
