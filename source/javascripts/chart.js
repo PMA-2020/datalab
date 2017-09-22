@@ -1,5 +1,6 @@
 import network from './network';
 import utility from './utility';
+import selectors from './selectors';
 import Highcharts from 'highcharts';
 
 const initializeStrings = (strings) => {
@@ -71,7 +72,7 @@ const initializeIndicators = (indicators) => {
 };
 
 const initializeSurveyCountries = (surveyCountries) => {
-  const language = utility.getSelectedLanguage();
+  const language = selectors.getSelectedLanguage();
 
   surveyCountries.forEach(country => {
     const countryName = utility.getString(country);
@@ -337,14 +338,14 @@ const generatePieChart = res => {
   const characteristicGroups = res.results[0].values;
   const indicator = utility.getStringById(inputs.indicators[0]["label.id"]);
   const dataPoints = res.results;
-  const chartType = utility.getSelectedChartType();
+  const chartType = selectors.getSelectedChartType();
 
   return {
     chart: { type: chartType },
     title: generateTitle(inputs),
     subtitle: generateSubtitle(),
     series: generatePieData(
-      utility.getSelectedValue('select-characteristic-group'),
+      selectors.getSelectedValue('select-characteristic-group'),
       characteristicGroups,
       dataPoints
     ),
@@ -360,7 +361,7 @@ const generateOverTimeChart = res => {
   const characteristicGroups = res.results[0].values;
   const indicator = utility.getStringById(inputs.indicators[0]["label.id"]);
   const dataPoints = res.results;
-  const chartType = utility.getSelectedChartType();
+  const chartType = selectors.getSelectedChartType();
 
   return {
     chart: { type: chartType },
@@ -381,7 +382,7 @@ const generateChart = res => {
   const characteristicGroups = res.results[0].values;
   const indicator = utility.getStringById(inputs.indicators[0]["label.id"]);
   const dataPoints = res.results;
-  const chartType = utility.getSelectedChartType();
+  const chartType = selectors.getSelectedChartType();
 
   return {
     chart: { type: chartType },
@@ -410,11 +411,11 @@ const initialize = () => {
 };
 
 const data = () => {
-  const selectedSurveys = utility.getSelectedCountryRounds();
-  const selectedIndicator = utility.getSelectedValue('select-indicator-group');
-  const selectedCharacteristicGroup = utility.getSelectedValue('select-characteristic-group');
+  const selectedSurveys = selectors.getSelectedCountryRounds();
+  const selectedIndicator = selectors.getSelectedValue('select-indicator-group');
+  const selectedCharacteristicGroup = selectors.getSelectedValue('select-characteristic-group');
   const overTime = $('#dataset_overtime')[0].checked;
-  const chartType = utility.getSelectedChartType();
+  const chartType = selectors.getSelectedChartType();
 
   const opts = {
     "survey": selectedSurveys,
@@ -439,9 +440,9 @@ const data = () => {
 };
 
 const setCSVDownloadUrl = () => {
-  const selectedSurveys = utility.getSelectedCountryRounds();
-  const selectedIndicator = utility.getSelectedValue('select-indicator-group');
-  const selectedCharacteristicGroup = utility.getSelectedValue('select-characteristic-group');
+  const selectedSurveys = selectors.getSelectedCountryRounds();
+  const selectedIndicator = selectors.getSelectedValue('select-indicator-group');
+  const selectedCharacteristicGroup = selectors.getSelectedValue('select-characteristic-group');
   const overTime = $('#dataset_overtime')[0].checked;
 
   const opts = {
@@ -479,17 +480,17 @@ const handleCombos = (opts) => {
 };
 
 const surveyCombo = () => {
-  const opts = { survey: utility.getSelectedCountryRounds() }
+  const opts = { survey: selectors.getSelectedCountryRounds() }
   handleCombos(opts);
 };
 
 const indicatorCombo = () => {
-  const opts = { indicator: utility.getSelectedValue('select-indicator-group') }
+  const opts = { indicator: selectors.getSelectedValue('select-indicator-group') }
   handleCombos(opts);
 };
 
 const characteristicGroupCombo = () => {
-  const opts = { characteristicGroup: utility.getSelectedValue('select-characteristic-group') }
+  const opts = { characteristicGroup: selectors.getSelectedValue('select-characteristic-group') }
   handleCombos(opts);
 };
 

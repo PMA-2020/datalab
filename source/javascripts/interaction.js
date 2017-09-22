@@ -1,4 +1,5 @@
 import utility from './utility';
+import selectors from './selectors';
 
 const selectAll = () => {
   $('#countryRoundModal .collapse.in input[type=checkbox]').prop('checked', true);
@@ -30,7 +31,7 @@ const closeModal = () => {
 const finishModal = () => {
   if (typeof(Storage) !== "undefined") {
     localStorage.removeItem('selectedCountryRounds');
-    localStorage.selectedCountryRounds = utility.getSelectedCountryRounds();
+    localStorage.selectedCountryRounds = selectors.getSelectedCountryRounds();
   } else {
     console.log('Warning: Local Storage is unavailable.');
   }
