@@ -9,8 +9,7 @@ const append = (parent, el) => parent.appendChild(el);
 const parseDate = (date) => {
   const splitDate = date.split("-");
   if (splitDate.length === 2) {
-    splitDate.splice(1, 0, '01');
-    return new Date(splitDate.join("-")).getTime();
+    return new Date(splitDate[1], splitDate[0] - 1, 1).getTime();
   } else {
     return new Date(date).getTime();
   }
