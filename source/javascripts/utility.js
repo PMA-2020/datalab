@@ -38,6 +38,11 @@ const setDefinitionText = () => {
 
 const getSelectedLanguage = () => $('#select-language option:selected').val();
 
+const getOverrideValue = (id, fallback) => {
+  const overRideValue = document.getElementById(id).value;
+  return overRideValue || fallback;
+};
+
 const getString = item => {
   const labelId = item['label.id'];
   return getStringById(labelId);
@@ -91,6 +96,7 @@ const utility = {
   getSelectedText,
   getSelectedChartType,
   getSelectedCountryRounds,
+  getOverrideValue,
   setDefinitionText,
   parseDate,
 };

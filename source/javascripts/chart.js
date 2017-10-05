@@ -17,7 +17,10 @@ const generateTitle = inputs => {
 
   const title = `${indicatorLabel} by ${characteristicGroupLabel} for ${countries}`;
 
-  return { text: title };
+  return {
+    style: { color: utility.getOverrideValue('title-color') },
+    text: title,
+  };
 };
 
 const generateSeriesName = (countryId, geographyId, surveyId) => {
@@ -50,9 +53,7 @@ const generatePlotOptions = () => {
 
 const generateSubtitle = () => {
   return {
-    style: {
-      color: '#000' // styles['title-color']
-    },
+    style: { color: utility.getOverrideValue('title-color') },
     text: "PMA2020"
   }
 };
@@ -102,8 +103,16 @@ const generateXaxis = characteristicGroups => {
 const generateYaxis = indicator => {
   return {
     title: {
-      text: indicator
-    }
+      text: utility.getOverrideValue("y-axis-label", indicator),
+      style: { color: utility.getOverrideValue("label-color") },
+      x: utility.getOverrideValue('y-axis-x-position'),
+      y: utility.getOverrideValue('y-axis-y-position')
+    },
+    lineColor: utility.getOverrideValue('y-axis-color'),
+    lineWidth: utility.getOverrideValue('y-axis-width'),
+    labels: { style: { color: utility.getOverrideValue('label-color') } },
+    tickColor: utility.getOverrideValue('tick-color'),
+    minorTickColor: utility.getOverrideValue('minor-tick-color')
   }
 };
 
@@ -124,11 +133,21 @@ const generateExporting = () => {
 };
 
 const generateLegend = () => {
-  return {
+  const countryRounds = utility.getSelectedCountryRounds();
+
+  let legendContent = {
     layout: 'vertical',
     align: 'center',
-    verticalAlign: 'bottom'
+    verticalAlign: 'bottom',
+    itemStyle: { color: utility.getOverrideValue('label-color'), }
   }
+
+  if (countryRounds.length > 5) {
+    legendContent['verticalAlign'] = 'top'
+    legendContent['layout'] = 'vertical'
+  }
+
+  return legendContent;
 };
 
 const generatePieData = (charGroup, charGroups, dataPoints) => {

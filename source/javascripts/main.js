@@ -2,6 +2,7 @@ import 'bootstrap';
 import 'bootstrap-select';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-select/dist/css/bootstrap-select.css';
+import 'bootstrap-colorpicker';
 import 'font-awesome/css/font-awesome.css';
 
 import chart from './chart';
@@ -44,6 +45,7 @@ $(function() {
     validation.checkCharting();
     utility.setDefinitionText();
   });
+  $('.colorpicker').colorpicker();
   $("#select-all").click(() => (interaction.selectAll()));
   $("#select-latest").click(() => (interaction.selectLatest()));
   $("#clear-all").click(() => (interaction.clear()));

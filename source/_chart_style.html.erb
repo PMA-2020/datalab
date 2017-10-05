@@ -1,33 +1,9 @@
-<h4 class='text-center'>Chart Font</h4>
-<div class='bfh-selectbox bfh-fonts' data-font='Arial'>
-</div>
-
-<select class="form-control bfh-googlefonts" data-font="Lato"></select>
 <h4 class='text-center'>Chart Color Options</h4>
 <div>
   <div class='form-group'>
     <div class='row'>
-      <div class='col-md-6'>
-        <%= partial 'black_and_white_button' %>
-      </div>
-    </div>
-    <div class='row'>
-      <div class='col-md-6'>
-        <label for='chart-color-palette' class='text-right'>
-          Color Palette:
-        </label>
-      </div>
-      <div class='col-md-6'>
-        <%= select_tag(
-          'chart-color-palette',
-          { options: [], class: 'form-control', id: 'chart-palette' }) %>
-      </div>
-    </div>
-    <div class='row'>
       <div class='col-md-12'>
-        <div id='color-palette-preview'></div>
-        <br/>
-        <br/>
+        <%= partial 'black_and_white_button' %>
       </div>
     </div>
   </div>
@@ -39,12 +15,7 @@
         </label>
       </div>
       <div class='col-md-6'>
-        <%= text_field_tag(
-          'chart-background-color',
-          {
-            class: 'color form-control',
-            id: 'chart-background-color'
-          }) %>
+        <input id="chart-background-color" type="text" class="form-control colorpicker" />
       </div>
     </div>
   </div>
@@ -56,12 +27,7 @@
         </label>
       </div>
       <div class='col-md-6'>
-        <%= text_field_tag(
-          'title-color',
-          {
-            class: 'color form-control',
-            id: 'title-color'
-          }) %>
+        <input id="title-color" type="text" class="form-control colorpicker" />
       </div>
     </div>
   </div>
@@ -73,12 +39,7 @@
         </label>
       </div>
       <div class='col-md-6'>
-        <%= text_field_tag(
-          'label-color',
-          {
-            class: 'color form-control',
-            id: 'label-color'
-          }) %>
+        <input id="label-color" type="text" class="form-control colorpicker" />
       </div>
     </div>
   </div>
@@ -90,7 +51,7 @@
         </label>
       </div>
       <div class='col-md-6'>
-        <%= text_field_tag('y-axis-color', class: 'color form-control', id: 'y-axis-color') %>
+        <input id="y-axis-color" type="text" class="form-control colorpicker" />
       </div>
     </div>
   </div>
@@ -102,7 +63,7 @@
         </label>
       </div>
       <div class='col-md-6'>
-        <%= text_field_tag('x-axis-color', class: 'color form-control', id: 'x-axis-color') %>
+        <input id="x-axis-color" type="text" class="form-control colorpicker" />
       </div>
     </div>
   </div>
@@ -114,7 +75,7 @@
         </label>
       </div>
       <div class='col-md-6'>
-        <%= text_field_tag('tick-color', class: 'color form-control', id: 'tick-color') %>
+        <input id="tick-color" type="text" class="form-control colorpicker" />
       </div>
     </div>
   </div>
@@ -126,7 +87,7 @@
         </label>
       </div>
       <div class='col-md-6'>
-        <%= text_field_tag('minor-tick-color', class: 'color form-control', id: 'minor-tick-color') %>
+        <input id="minor-tick-color" type="text" class="form-control colorpicker" />
       </div>
     </div>
   </div>
