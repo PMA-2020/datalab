@@ -1,150 +1,8 @@
 import network from './network';
 import utility from './utility';
+import initialization from './initialization';
+import csv from './csv';
 import Highcharts from 'highcharts';
-
-const initializeStrings = (strings) => {
-  if (typeof(Storage) !== "undefined") {
-    localStorage.removeItem('pma2020Strings', strings);
-    localStorage.pma2020Strings = JSON.stringify(strings);
-  } else {
-    console.log('Warning: Local Storage is unavailable.');
-  }
-};
-
-const initializeLanguage = (languages) => {
-  for(var k in languages) {
-    let opt = utility.createNode('option');
-    opt.value = k;
-    opt.innerHTML = languages[k];
-    $('#select-language').append(opt);
-  }
-};
-
-const initializeCharacteristicGroups = (characteristicGroups) => {
-  characteristicGroups.forEach(group => {
-    const optGroupName = utility.getString(group);
-    let optGroup = utility.createNode('optgroup');
-
-    optGroup.label = optGroupName;
-    optGroup.className = 'i18nable-optgroup';
-    optGroup.setAttribute('data-key', group["label.id"]);
-
-    group.characteristicGroups.forEach(characteristic => {
-      let opt = utility.createNode('option');
-
-      opt.value = characteristic.id;
-      opt.className = 'i18nable';
-      opt.setAttribute('data-definition-id', characteristic["definition.id"]);
-      opt.setAttribute('data-label-id', characteristic["label.id"]);
-      opt.setAttribute('data-key', characteristic["label.id"]);
-      opt.innerHTML = utility.getString(characteristic);
-      optGroup.append(opt);
-    });
-
-    $('#select-characteristic-group').append(optGroup);
-  });
-};
-
-const initializeIndicators = (indicators) => {
-  indicators.forEach(group => {
-    const optGroupName = utility.getString(group);
-    let optGroup = utility.createNode('optgroup');
-
-    optGroup.label = optGroupName;
-    optGroup.className = 'i18nable-optgroup';
-    optGroup.setAttribute('data-key', group["label.id"]);
-
-    group.indicators.forEach(indicator => {
-      let opt = utility.createNode('option');
-
-      opt.value = indicator.id;
-      opt.className = 'i18nable';
-      opt.setAttribute('data-definition-id', indicator["definition.id"]);
-      opt.setAttribute('data-label-id', indicator["label.id"]);
-      opt.setAttribute('data-key', indicator["label.id"]);
-      opt.innerHTML = utility.getString(indicator);
-      optGroup.append(opt);
-    });
-
-    $('#select-indicator-group').append(optGroup);
-  });
-};
-
-const initializeSurveyCountries = (surveyCountries) => {
-  const language = utility.getSelectedLanguage();
-
-  surveyCountries.forEach(country => {
-    const countryName = utility.getString(country);
-    let panelContainer  = utility.createNode('div');
-
-    let panelHeading  = utility.createNode('div');
-    let panelTitle  = utility.createNode('div');
-    let panelLink  = utility.createNode('a');
-
-    let panelBodyContainer  = utility.createNode('div');
-    let panelBody  = utility.createNode('div');
-
-    panelContainer.className = 'panel panel-default';
-
-    panelHeading.className = 'panel-heading';
-    panelHeading.setAttribute('role', 'tab');
-    panelHeading.id = countryName;
-
-    panelTitle.className = 'panel-title';
-
-    panelLink.href = `#collapse${country["label.id"]}`
-    panelLink.setAttribute('role', 'button');
-    panelLink.setAttribute('data-toggle', 'collapse');
-    panelLink.setAttribute('data-parent', '#accordion');
-    panelLink.innerHTML = countryName;
-
-    panelTitle.append(panelLink);
-    panelHeading.append(panelTitle);
-    panelContainer.append(panelHeading);
-
-    panelBodyContainer.id = `collapse${country["label.id"]}`;
-    panelBodyContainer.className = 'panel-collapse collapse';
-
-    panelBody.className = 'panel-body';
-
-    country.geographies.forEach(geography => {
-      const geographyName = utility.getString(geography);
-
-      let listHeader = utility.createNode('h4');
-
-      listHeader.innerHTML = geographyName;
-
-      panelBody.append(listHeader);
-
-      geography.surveys.forEach(survey => {
-        const surveyName = utility.getString(survey);
-        const surveyId = survey["id"];
-
-        let listItem  = utility.createNode('div');
-        let surveyInput = utility.createNode('input');
-
-        surveyInput.type = 'checkbox';
-        surveyInput.name = surveyId;
-        surveyInput.value = surveyId;
-        surveyInput.id = surveyId;
-
-        let surveyInputLabel = utility.createNode('label');
-
-        surveyInputLabel.htmlFor = surveyId;
-        surveyInputLabel.innerHTML = surveyName;
-
-        listItem.append(surveyInput);
-        listItem.append(surveyInputLabel);
-        panelBody.append(listItem);
-      });
-    });
-
-    panelBodyContainer.append(panelBody);
-    panelContainer.append(panelBodyContainer);
-
-    $('#countryRoundModal .modal-body').append(panelContainer);
-  });
-};
 
 const generateTitle = inputs => {
   const characteristicGroupLabel = utility.getStringById(
@@ -198,7 +56,6 @@ const generateSubtitle = () => {
     text: "PMA2020"
   }
 };
-
 
 const generateCitation = partners => {
   let citation = "Performance Monitoring and Accountability 2020. Johns Hopkins University;";
@@ -331,7 +188,6 @@ const generateSeriesData = dataPoints => (
   }, [])
 );
 
-
 const generatePieChart = res => {
   const inputs = res.queryInput;
   const characteristicGroups = res.results[0].values;
@@ -397,18 +253,6 @@ const generateChart = res => {
   }
 };
 
-const initialize = () => {
-  network.get("datalab/init").then(res => {
-    initializeStrings(res.strings);
-    initializeLanguage(res.languages);
-    initializeCharacteristicGroups(res.characteristicGroupCategories);
-    initializeIndicators(res.indicatorCategories);
-    initializeSurveyCountries(res.surveyCountries);
-
-    $('.selectpicker').selectpicker('refresh');
-  });
-};
-
 const data = () => {
   const selectedSurveys = utility.getSelectedCountryRounds();
   const selectedIndicator = utility.getSelectedValue('select-indicator-group');
@@ -438,68 +282,13 @@ const data = () => {
   });
 };
 
-const setCSVDownloadUrl = () => {
-  const selectedSurveys = utility.getSelectedCountryRounds();
-  const selectedIndicator = utility.getSelectedValue('select-indicator-group');
-  const selectedCharacteristicGroup = utility.getSelectedValue('select-characteristic-group');
-  const overTime = $('#dataset_overtime')[0].checked;
-
-  const opts = {
-    "survey": selectedSurveys,
-    "indicator": selectedIndicator,
-    "characteristicGroup": selectedCharacteristicGroup,
-    "overTime": overTime,
-    "format": "csv",
-  }
-
-  const url = network.buildUrl("datalab/data", opts);
-  const csvDownloadLink = $("#download-csv");
-  csvDownloadLink.attr("href", url);
-};
-
-const setOptionsDisabled = (type, availableValues) => {
-  if (availableValues) {
-    const availableItems = $(`#select-${type}-group option`);
-
-    availableItems.each(item => {
-      const itemDomElement = availableItems[item];
-      if (!availableValues.includes(itemDomElement.value)) { itemDomElement.disabled = true; }
-      else { itemDomElement.disabled = false; }
-    });
-  }
-};
-
-const handleCombos = (opts) => {
-  network.get("datalab/combos", opts).then(res => {
-    setOptionsDisabled('characteristic', res['characteristicGroup.id']);
-    setOptionsDisabled('indicator', res['indicator.id']);
-
-    $('.selectpicker').selectpicker('refresh');
-  });
-};
-
-const surveyCombo = () => {
-  const opts = { survey: utility.getSelectedCountryRounds() }
-  handleCombos(opts);
-};
-
-const indicatorCombo = () => {
-  const opts = { indicator: utility.getSelectedValue('select-indicator-group') }
-  handleCombos(opts);
-};
-
-const characteristicGroupCombo = () => {
-  const opts = { characteristicGroup: utility.getSelectedValue('select-characteristic-group') }
-  handleCombos(opts);
-};
+const initialize = () => initialization.initialize();
+const setCSVDownloadUrl = () => csv.setDownloadUrl();
 
 const chart = {
   initialize,
   data,
   setCSVDownloadUrl,
-  surveyCombo,
-  indicatorCombo,
-  characteristicGroupCombo,
 };
 
 export default chart;
