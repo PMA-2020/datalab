@@ -6,11 +6,7 @@ const selectAll = () => {
 
 const selectLatest = () => {
   $('#countryRoundModal .collapse input[type=checkbox]').prop('checked', false);
-  const openCollapse = $('#countryRoundModal .collapse.in');
-  openCollapse.each(collapse => {
-    const currentCollapse = openCollapse[collapse];
-    $(currentCollapse).find('input[type=checkbox]').last().prop('checked', true);
-  });
+  $("#countryRoundModal .collapse.in .country-round.latest").prop('checked', true);
 };
 
 const clear = () => {

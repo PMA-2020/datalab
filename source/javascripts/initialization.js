@@ -115,7 +115,7 @@ const initializeSurveyCountries = (surveyCountries) => {
 
       panelBody.append(listHeader);
 
-      geography.surveys.forEach(survey => {
+      geography.surveys.forEach((survey, i) => {
         const surveyName = utility.getString(survey);
         const surveyId = survey["id"];
 
@@ -126,7 +126,11 @@ const initializeSurveyCountries = (surveyCountries) => {
         surveyInput.name = surveyId;
         surveyInput.value = surveyId;
         surveyInput.id = surveyId;
-        surveyInput.className = 'country-round';
+        if (i === geography.surveys.length - 1) {
+          surveyInput.className = 'country-round latest';
+        } else {
+          surveyInput.className = 'country-round';
+        }
 
         let surveyInputLabel = utility.createNode('label');
 

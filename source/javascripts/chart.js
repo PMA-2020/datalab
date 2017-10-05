@@ -126,8 +126,8 @@ const generateExporting = () => {
 const generateLegend = () => {
   return {
     layout: 'vertical',
-    align: 'right',
-    verticalAlign: 'middle'
+    align: 'center',
+    verticalAlign: 'bottom'
   }
 };
 
