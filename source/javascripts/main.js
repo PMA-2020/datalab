@@ -5,6 +5,7 @@ import 'bootstrap-select/dist/css/bootstrap-select.css';
 import 'font-awesome/css/font-awesome.css';
 
 import chart from './chart';
+import combo from './combo';
 import interaction from './interaction';
 import validation from './validation';
 import utility from './utility';
@@ -22,7 +23,7 @@ $(function() {
     $(`#select-${clearId}`).selectpicker('val', '');
     $(`.help-definition.${clearId}`).html('');
 
-    chart.surveyCombo();
+    combo.filter();
   });
 
   $("#finishCountryRoundModal").click(() => {
@@ -31,15 +32,15 @@ $(function() {
     validation.checkBlackAndWhite();
     validation.checkCharting();
     validation.checkPie();
-    chart.surveyCombo();
+    combo.filter();
   });
   $("#select-indicator-group").change(() => {
-    chart.indicatorCombo();
+    combo.filter();
     validation.checkCharting();
     utility.setDefinitionText();
   });
   $("#select-characteristic-group").change(() => {
-    chart.characteristicGroupCombo();
+    combo.filter();
     validation.checkCharting();
     utility.setDefinitionText();
   });
