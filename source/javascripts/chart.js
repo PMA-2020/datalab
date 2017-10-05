@@ -17,7 +17,10 @@ const generateTitle = inputs => {
 
   const title = `${indicatorLabel} by ${characteristicGroupLabel} for ${countries}`;
 
-  return { text: title };
+  return {
+    style: { color: utility.getOverrideValue('title-color') },
+    text: title,
+  };
 };
 
 const generateSeriesName = (countryId, geographyId, surveyId) => {
@@ -32,7 +35,7 @@ const generatePlotOptions = () => {
   return {
     series: {
       connectNulls: true,
-      marker: { radius: 2 }, // add override when available
+      marker: { radius: utility.getOverrideValue('marker-size')},
     },
     bar: { dataLabels: { enabled: true } },
     column: { dataLabels: { enabled: true } },
@@ -50,9 +53,7 @@ const generatePlotOptions = () => {
 
 const generateSubtitle = () => {
   return {
-    style: {
-      color: '#000' // styles['title-color']
-    },
+    style: { color: utility.getOverrideValue('title-color') },
     text: "PMA2020"
   }
 };
@@ -102,8 +103,15 @@ const generateXaxis = characteristicGroups => {
 const generateYaxis = indicator => {
   return {
     title: {
-      text: indicator
-    }
+      text: utility.getOverrideValue("y-axis-label", indicator),
+      style: { color: utility.getOverrideValue("label-color") },
+      x: utility.getOverrideValue('y-axis-x-position'),
+      y: utility.getOverrideValue('y-axis-y-position')
+    },
+    lineColor: utility.getOverrideValue('y-axis-color'),
+    labels: { style: { color: utility.getOverrideValue('label-color') } },
+    tickColor: utility.getOverrideValue('tick-color'),
+    minorTickColor: utility.getOverrideValue('minor-tick-color')
   }
 };
 
@@ -124,10 +132,31 @@ const generateExporting = () => {
 };
 
 const generateLegend = () => {
-  return {
+  const countryRounds = utility.getSelectedCountryRounds();
+
+  let legendContent = {
     layout: 'vertical',
     align: 'center',
-    verticalAlign: 'bottom'
+    verticalAlign: 'bottom',
+    itemStyle: { color: utility.getOverrideValue('label-color'), }
+  }
+
+  if (countryRounds.length > 5) {
+    legendContent['verticalAlign'] = 'top'
+    legendContent['layout'] = 'vertical'
+  }
+
+  return legendContent;
+};
+
+const generateChartSettings = () => {
+  const chartType = utility.getSelectedChartType();
+
+  return {
+    type: chartType,
+    marginBottom: utility.getOverrideValue('bottom-margin-offset'),
+    backgroundColor: utility.getOverrideValue('chart-background-color'),
+    style: { }
   }
 };
 
@@ -193,10 +222,9 @@ const generatePieChart = res => {
   const characteristicGroups = res.results[0].values;
   const indicator = utility.getStringById(inputs.indicators[0]["label.id"]);
   const dataPoints = res.results;
-  const chartType = utility.getSelectedChartType();
 
   return {
-    chart: { type: chartType },
+    chart: generateChartSettings(),
     title: generateTitle(inputs),
     subtitle: generateSubtitle(),
     series: generatePieData(
@@ -216,10 +244,9 @@ const generateOverTimeChart = res => {
   const characteristicGroups = res.results[0].values;
   const indicator = utility.getStringById(inputs.indicators[0]["label.id"]);
   const dataPoints = res.results;
-  const chartType = utility.getSelectedChartType();
 
   return {
-    chart: { type: chartType },
+    chart: generateChartSettings(),
     title: generateTitle(inputs),
     subtitle: generateSubtitle(),
     xAxis: generateOverTimeXAxis(),
@@ -237,10 +264,9 @@ const generateChart = res => {
   const characteristicGroups = res.results[0].values;
   const indicator = utility.getStringById(inputs.indicators[0]["label.id"]);
   const dataPoints = res.results;
-  const chartType = utility.getSelectedChartType();
 
   return {
-    chart: { type: chartType },
+    chart: generateChartSettings(),
     title: generateTitle(inputs),
     subtitle: generateSubtitle(),
     xAxis: generateXaxis(characteristicGroups),

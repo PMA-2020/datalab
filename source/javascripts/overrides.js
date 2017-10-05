@@ -1,3 +1,5 @@
+import utility from "./utility";
+
 function xAxisData(components) {
   var styles = chartStyles();
   var overrides = chartOverrides();
@@ -30,7 +32,7 @@ function xAxisData(components) {
 };
 
 function chartStyles() {
-  var chartBackgroundColor = $('input#chart-background-color').val() || '#FFFFFF';
+  var chartBackgroundColor = $('#chart-background-color').val() || '#FFFFFF';
   var yAxisColor = $('input#y-axis-color').val() || '#FFFFFF';
   var yAxisWidth = 0;
   if(yAxisColor != '#FFFFFF'){yAxisWidth=1};
