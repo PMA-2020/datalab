@@ -2,6 +2,7 @@ import 'bootstrap';
 import 'bootstrap-select';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-select/dist/css/bootstrap-select.css';
+import 'bootstrap-colorpicker';
 import 'font-awesome/css/font-awesome.css';
 
 import chart from './chart';
@@ -44,11 +45,13 @@ $(function() {
     validation.checkCharting();
     utility.setDefinitionText();
   });
+  $('.colorpicker').colorpicker();
   $("#select-all").click(() => (interaction.selectAll()));
   $("#select-latest").click(() => (interaction.selectLatest()));
   $("#clear-all").click(() => (interaction.clear()));
   $("#dataset_overtime").click(() => (validation.checkBlackAndWhite()));
   $("#closeCountryRoundModal").click(() => (interaction.closeModal()));
   $("#chart-types input").click(() => (validation.checkCharting()));
-  $("#submit-chart").click(() => (chart.data()));
+  $(".submit-chart").click(() => (chart.data()));
+  $(".reset-chart").click(() => (interaction.resetChart()));
 });

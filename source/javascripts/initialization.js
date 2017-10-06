@@ -152,6 +152,7 @@ const initializeSurveyCountries = (surveyCountries) => {
 
 const initialize = () => {
   network.get("datalab/init").then(res => {
+    console.log(`PMA2020 Datalab Version: ${res.metadata.version}`);
     initializeStrings(res.strings);
     initializeLanguage(res.languages);
     initializeCharacteristicGroups(res.characteristicGroupCategories);

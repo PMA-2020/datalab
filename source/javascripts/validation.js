@@ -66,10 +66,12 @@ const checkCharting = () => {
          chartType != undefined &&
          chartType.length > 0) {
     chart.setCSVDownloadUrl();
-    $('#submit-chart').prop('disabled', '');
+    $('.submit-chart').prop('disabled', '');
+    $('.reset-chart').prop('disabled', '');
     $('#download-csv').removeClass('disabled');
   } else {
-    $('#submit-chart').prop('disabled', 'disabled');
+    $('.submit-chart').prop('disabled', 'disabled');
+    $('.reset-chart').prop('disabled', '');
     $('#download-csv').addClass('disabled');
   }
 }
