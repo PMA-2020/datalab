@@ -236,5 +236,15 @@
 </div>
 <br/>
 <br/>
-<%= button_tag('Chart', type: :button, value: 'Update Chart', id: 'submit-chart-filters', class: 'submit-chart i18nable-button btn btn-success btn-block btn-lg', disabled: 'disabled') %>
-<%= button_tag('Chart', type: :button, value: 'Reset Chart', id: 'reset-chart-filters', class: 'reset-chart i18nable-button btn btn-success btn-block btn-lg') %>
+<button class='submit-chart btn btn-success btn-block btn-lg' disabled='disabled'>
+  <i class='fa fa-refresh'></i>
+  <span class='i18nable' data-key='chart'>
+    Update Chart
+  </span>
+</button>
+<button class='reset-chart btn btn-success btn-block btn-lg' disabled='disabled'>
+  <i class='fa fa-close'></i>
+  <span class='i18nable' data-key='chart'>
+    Reset Chart
+  </span>
+</button>

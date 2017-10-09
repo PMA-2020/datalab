@@ -35,7 +35,7 @@ const generatePlotOptions = () => {
   return {
     series: {
       connectNulls: true,
-      marker: { radius: 2 }, // add override when available
+      marker: { radius: utility.getOverrideValue('marker-size')},
     },
     bar: { dataLabels: { enabled: true } },
     column: { dataLabels: { enabled: true } },
@@ -109,7 +109,6 @@ const generateYaxis = indicator => {
       y: utility.getOverrideValue('y-axis-y-position')
     },
     lineColor: utility.getOverrideValue('y-axis-color'),
-    lineWidth: utility.getOverrideValue('y-axis-width'),
     labels: { style: { color: utility.getOverrideValue('label-color') } },
     tickColor: utility.getOverrideValue('tick-color'),
     minorTickColor: utility.getOverrideValue('minor-tick-color')
@@ -148,6 +147,17 @@ const generateLegend = () => {
   }
 
   return legendContent;
+};
+
+const generateChartSettings = () => {
+  const chartType = utility.getSelectedChartType();
+
+  return {
+    type: chartType,
+    marginBottom: utility.getOverrideValue('bottom-margin-offset'),
+    backgroundColor: utility.getOverrideValue('chart-background-color'),
+    style: { }
+  }
 };
 
 const generatePieData = (charGroup, charGroups, dataPoints) => {
@@ -212,10 +222,9 @@ const generatePieChart = res => {
   const characteristicGroups = res.results[0].values;
   const indicator = utility.getStringById(inputs.indicators[0]["label.id"]);
   const dataPoints = res.results;
-  const chartType = utility.getSelectedChartType();
 
   return {
-    chart: { type: chartType },
+    chart: generateChartSettings(),
     title: generateTitle(inputs),
     subtitle: generateSubtitle(),
     series: generatePieData(
@@ -235,10 +244,9 @@ const generateOverTimeChart = res => {
   const characteristicGroups = res.results[0].values;
   const indicator = utility.getStringById(inputs.indicators[0]["label.id"]);
   const dataPoints = res.results;
-  const chartType = utility.getSelectedChartType();
 
   return {
-    chart: { type: chartType },
+    chart: generateChartSettings(),
     title: generateTitle(inputs),
     subtitle: generateSubtitle(),
     xAxis: generateOverTimeXAxis(),
@@ -256,10 +264,9 @@ const generateChart = res => {
   const characteristicGroups = res.results[0].values;
   const indicator = utility.getStringById(inputs.indicators[0]["label.id"]);
   const dataPoints = res.results;
-  const chartType = utility.getSelectedChartType();
 
   return {
-    chart: { type: chartType },
+    chart: generateChartSettings(),
     title: generateTitle(inputs),
     subtitle: generateSubtitle(),
     xAxis: generateXaxis(characteristicGroups),

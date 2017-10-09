@@ -32,12 +32,20 @@ const finishModal = () => {
   }
 }
 
+const resetChart = () => {
+  if (confirm('Are you sure you want to reset the chart styles?')) {
+    $(".tab-pane#style").find("input[type=text], textarea").val("");
+    generateChart();
+  };
+}
+
 const interaction = {
   selectAll,
   selectLatest,
   clear,
   closeModal,
   finishModal,
+  resetChart,
 };
 
 export default interaction;
