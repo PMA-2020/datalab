@@ -16,7 +16,7 @@ page '/*.txt', layout: false
 activate :external_pipeline,
          name: :webpack,
          command: build? ?
-         "./node_modules/webpack/bin/webpack.js" :
+         "./node_modules/webpack/bin/webpack.js -p" :
          "./node_modules/webpack/bin/webpack.js --watch -d --progress --color",
          source: ".tmp/dist",
          latency: 1

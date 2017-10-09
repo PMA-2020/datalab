@@ -2,6 +2,8 @@
 require('babel-polyfill');
 var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+
 module.exports = {
   entry: [
     'babel-polyfill',
@@ -17,6 +19,7 @@ module.exports = {
       "window.jQuery": "jquery",
       Tether: 'tether',
     }),
+    new UglifyJSPlugin(),
   ],
 
   output: {
@@ -40,15 +43,13 @@ module.exports = {
         }],
       },
       { // Load support for ES6
-        test: /source\/assets\/javascripts\/.*\.js$/,
+        test: /\.js$/,
         exclude: /node_modules|\.tmp|vendor/,
         loader: 'babel-loader',
         options: {
           babelrc: false,
-          query: {
-            plugins: ["transform-runtime", "transform-async-to-generator"],
-            presets: ['es2016', 'stage-0'],
-          }
+          plugins: ["transform-runtime"],
+          presets: ['es2015', 'stage-0'],
         }
       },
       { // Load SASS pre processed CSS
