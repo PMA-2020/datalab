@@ -1,7 +1,6 @@
-const baseUrl = "http://api.pma2020.org";
-const headers = new Headers({
-  'Access-Control-Allow-Origin':'*',
-});
+import env from '../../env';
+const baseUrl = env.api_url;
+const headers = new Headers({'Access-Control-Allow-Origin':'*'});
 const requestOptions = {
   method: 'get',
   mode: 'cors',
