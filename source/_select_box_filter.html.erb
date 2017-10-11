@@ -8,18 +8,19 @@
         <!-- picker -->
         <% if type == 'language' %>
           <select id="select-<%= type %>"
-                  class="selectpicker"
+                  class="selectpicker chart-control"
                   data-width='fit'
-                  data-live-search="true"></select>
+                  data-live-search="true">
+          </select>
         <% else %>
           <select id="select-<%= type %>"
-                  class="selectpicker"
+                  class="selectpicker chart-control"
                   data-live-search="true"
                   title='Select option'></select>
           <!-- clear button -->
           <span class="input-group-btn">
             <button type="button"
-                    class="btn btn-primary clear-input"
+                    class="btn btn-primary clear-input chart-control"
                     data-type="<%= type %>"
                     title='Clear Selection'>
               &times

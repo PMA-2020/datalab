@@ -9,6 +9,7 @@ const requestOptions = {
 };
 
 const displayLoading = () => {
+  $(".chart-control").prop('disabled', true);
   $(".row-error").hide();
   $(".row-loading").show();
 };
@@ -19,6 +20,7 @@ const displayError = () => {
 };
 
 const removeAlerts = () => {
+  $(".chart-control").prop('disabled', false);
   $(".row-loading").hide();
   $(".row-error").hide();
 };
