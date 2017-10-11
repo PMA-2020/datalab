@@ -8,11 +8,32 @@ const requestOptions = {
   headers
 };
 
+const displayLoading = () => {
+  $(".chart-control").prop('disabled', true);
+  $(".row-error").hide();
+  $(".row-loading").show();
+};
+
+const displayError = () => {
+  $(".row-loading").hide();
+  $(".row-error").show();
+};
+
+const removeAlerts = () => {
+  $(".chart-control").prop('disabled', false);
+  $(".row-loading").hide();
+  $(".row-error").hide();
+};
+
 const sendRequest = request => {
+  displayLoading();
   return fetch(request).then(function(response) {
+    removeAlerts();
     return response.json();
   }).catch(function(err) {
+    displayError();
     console.log("Error while attempting to request resource. Please contact site administrator.");
+    console.log(err);
   });
 };
 
