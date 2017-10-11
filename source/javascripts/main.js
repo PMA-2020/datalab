@@ -2,9 +2,11 @@ import 'bootstrap';
 import 'bootstrap-select';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-select/dist/css/bootstrap-select.css';
+import 'bootstrap-colorpicker';
 import 'font-awesome/css/font-awesome.css';
 
 import chart from './chart';
+import combo from './combo';
 import interaction from './interaction';
 import validation from './validation';
 import utility from './utility';
@@ -24,7 +26,7 @@ $(function() {
     $(`.help-definition.${clearId}`).html('');
     $('.selectpicker').selectpicker('refresh');
 
-    chart.surveyCombo();
+    combo.filter();
     validation.checkCharting();
   });
 
@@ -34,26 +36,27 @@ $(function() {
     validation.checkBlackAndWhite();
     validation.checkCharting();
     validation.checkPie();
-    chart.surveyCombo();
+    combo.filter();
   });
 
   $("#select-indicator-group").change(() => {
-    chart.indicatorCombo();
+    combo.filter();
     validation.checkCharting();
     definitions.setDefinitionText();
   });
 
   $("#select-characteristic-group").change(() => {
-    chart.characteristicGroupCombo();
+    combo.filter();
     validation.checkCharting();
     definitions.setDefinitionText();
   });
-
+  $('.colorpicker').colorpicker();
   $("#select-all").click(() => (interaction.selectAll()));
   $("#select-latest").click(() => (interaction.selectLatest()));
   $("#clear-all").click(() => (interaction.clear()));
   $("#dataset_overtime").click(() => (validation.checkBlackAndWhite()));
   $("#closeCountryRoundModal").click(() => (interaction.closeModal()));
   $("#chart-types input").click(() => (validation.checkCharting()));
-  $("#submit-chart").click(() => (chart.data()));
+  $(".submit-chart").click(() => (chart.data()));
+  $(".reset-chart").click(() => (interaction.resetChart()));
 });

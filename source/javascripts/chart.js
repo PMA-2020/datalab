@@ -2,196 +2,10 @@ import network from './network';
 import utility from './utility';
 import selectors from './selectors';
 import validation from './validation';
+import initialization from './initialization';
+import csv from './csv';
 import Highcharts from 'highcharts';
 require('highcharts/modules/exporting')(Highcharts);
-
-/* Chart initialization */
-
-const initializeStrings = (strings) => {
-  if (typeof(Storage) !== "undefined") {
-    localStorage.removeItem('pma2020Strings', strings);
-    localStorage.pma2020Strings = JSON.stringify(strings);
-  } else {
-    console.log('Warning: Local Storage is unavailable.');
-  }
-};
-
-const initializeLanguage = (languages) => {
-  for(var k in languages) {
-    let opt = utility.createNode('option');
-    opt.value = k;
-    opt.innerHTML = languages[k];
-    $('#select-language').append(opt);
-  }
-};
-
-const initializeCharacteristicGroups = (characteristicGroups) => {
-  characteristicGroups.forEach(group => {
-    const optGroupName = utility.getString(group);
-    let optGroup = utility.createNode('optgroup');
-
-    optGroup.label = optGroupName;
-    optGroup.className = 'i18nable-optgroup';
-    optGroup.setAttribute('data-key', group["label.id"]);
-
-    group.characteristicGroups.forEach(characteristic => {
-      let opt = utility.createNode('option');
-
-      opt.value = characteristic.id;
-      opt.className = 'i18nable';
-      opt.setAttribute('data-definition-id', characteristic["definition.id"]);
-      opt.setAttribute('data-label-id', characteristic["label.id"]);
-      opt.setAttribute('data-key', characteristic["label.id"]);
-      opt.innerHTML = utility.getString(characteristic);
-      optGroup.append(opt);
-    });
-
-    $('#select-characteristic-group').append(optGroup);
-  });
-};
-
-const initializeIndicators = (indicators) => {
-  indicators.forEach(group => {
-    const optGroupName = utility.getString(group);
-    let optGroup = utility.createNode('optgroup');
-
-    optGroup.label = optGroupName;
-    optGroup.className = 'i18nable-optgroup';
-    optGroup.setAttribute('data-key', group["label.id"]);
-
-    group.indicators.forEach(indicator => {
-      let opt = utility.createNode('option');
-
-      opt.value = indicator.id;
-      opt.className = 'i18nable';
-      opt.setAttribute('data-definition-id', indicator["definition.id"]);
-      opt.setAttribute('data-label-id', indicator["label.id"]);
-      opt.setAttribute('data-key', indicator["label.id"]);
-      opt.innerHTML = utility.getString(indicator);
-      optGroup.append(opt);
-    });
-
-    $('#select-indicator-group').append(optGroup);
-  });
-};
-
-const initializeSurveyCountries = (surveyCountries) => {
-  const language = selectors.getSelectedLanguage();
-
-  surveyCountries.forEach(country => {
-    const countryName = utility.getString(country);
-    let panelContainer  = utility.createNode('div');
-
-    let panelHeading  = utility.createNode('div');
-    let panelTitle  = utility.createNode('div');
-    let panelLink  = utility.createNode('a');
-
-    let panelBodyContainer  = utility.createNode('div');
-    let panelBody  = utility.createNode('div');
-
-    panelContainer.className = 'panel panel-default';
-
-    panelHeading.className = 'panel-heading';
-    panelHeading.setAttribute('role', 'tab');
-    panelHeading.id = countryName;
-
-    panelTitle.className = 'panel-title';
-
-    panelLink.href = `#collapse${country["label.id"]}`
-    panelLink.setAttribute('role', 'button');
-    panelLink.setAttribute('data-toggle', 'collapse');
-    panelLink.setAttribute('data-parent', '#accordion');
-    panelLink.innerHTML = countryName;
-
-    panelTitle.append(panelLink);
-    panelHeading.append(panelTitle);
-    panelContainer.append(panelHeading);
-
-    panelBodyContainer.id = `collapse${country["label.id"]}`;
-    panelBodyContainer.className = 'panel-collapse collapse';
-
-    panelBody.className = 'panel-body';
-
-    country.geographies.forEach(geography => {
-      const geographyName = utility.getString(geography);
-
-      let listHeader = utility.createNode('h4');
-
-      listHeader.innerHTML = geographyName;
-
-      panelBody.append(listHeader);
-
-      geography.surveys.forEach(survey => {
-        const surveyName = utility.getString(survey);
-        const surveyId = survey["id"];
-
-        let listItem  = utility.createNode('div');
-        let surveyInput = utility.createNode('input');
-
-        surveyInput.type = 'checkbox';
-        surveyInput.name = surveyId;
-        surveyInput.value = surveyId;
-        surveyInput.id = surveyId;
-
-        let surveyInputLabel = utility.createNode('label');
-
-        surveyInputLabel.htmlFor = surveyId;
-        surveyInputLabel.innerHTML = surveyName;
-
-        listItem.append(surveyInput);
-        listItem.append(surveyInputLabel);
-        panelBody.append(listItem);
-      });
-    });
-
-    panelBodyContainer.append(panelBody);
-    panelContainer.append(panelBodyContainer);
-
-    $('#countryRoundModal .modal-body').append(panelContainer);
-  });
-};
-
-/* Chart interctions */
-
-const setCSVDownloadUrl = () => {
-  const selectedSurveys = selectors.getSelectedCountryRounds();
-  const selectedIndicator = selectors.getSelectedValue('select-indicator-group');
-  const selectedCharacteristicGroup = selectors.getSelectedValue('select-characteristic-group');
-  const overTime = $('#dataset_overtime')[0].checked;
-
-  const opts = {
-    "survey": selectedSurveys,
-    "indicator": selectedIndicator,
-    "characteristicGroup": selectedCharacteristicGroup,
-    "overTime": overTime,
-    "format": "csv",
-  }
-
-  const url = network.buildUrl("datalab/data", opts);
-  const csvDownloadLink = $("#download-csv");
-  csvDownloadLink.attr("href", url);
-};
-
-const setOptionsDisabled = (type, availableValues) => {
-  if (availableValues) {
-    const availableItems = $(`#select-${type}-group option`);
-
-    availableItems.each(item => {
-      const itemDomElement = availableItems[item];
-      if (!availableValues.includes(itemDomElement.value)) {
-        itemDomElement.disabled = true;
-        const selectedItem = selectors.getSelectedValue(`select-${type}-group`);
-        if (selectedItem === itemDomElement.value) {
-          $(`#select-${type}`).selectpicker('val', '');
-          $(`.help-definition.${type}`).html('');
-        }
-      }
-      else { itemDomElement.disabled = false; }
-    });
-  }
-};
-
-/* Chart building */
 
 const generateTitle = inputs => {
   const characteristicGroupLabel = utility.getStringById(
@@ -206,7 +20,10 @@ const generateTitle = inputs => {
 
   const title = `${indicatorLabel} by ${characteristicGroupLabel} for ${countries}`;
 
-  return { text: title };
+  return {
+    style: { color: utility.getOverrideValue('title-color') },
+    text: title,
+  };
 };
 
 const generateSeriesName = (countryId, geographyId, surveyId) => {
@@ -221,7 +38,7 @@ const generatePlotOptions = () => {
   return {
     series: {
       connectNulls: true,
-      marker: { radius: 2 }, // add override when available
+      marker: { radius: utility.getOverrideValue('marker-size')},
     },
     bar: { dataLabels: { enabled: true } },
     column: { dataLabels: { enabled: true } },
@@ -239,9 +56,7 @@ const generatePlotOptions = () => {
 
 const generateSubtitle = () => {
   return {
-    style: {
-      color: '#000' // styles['title-color']
-    },
+    style: { color: utility.getOverrideValue('title-color') },
     text: "PMA2020"
   }
 };
@@ -291,8 +106,15 @@ const generateXaxis = characteristicGroups => {
 const generateYaxis = indicator => {
   return {
     title: {
-      text: indicator
-    }
+      text: utility.getOverrideValue("y-axis-label", indicator),
+      style: { color: utility.getOverrideValue("label-color") },
+      x: utility.getOverrideValue('y-axis-x-position'),
+      y: utility.getOverrideValue('y-axis-y-position')
+    },
+    lineColor: utility.getOverrideValue('y-axis-color'),
+    labels: { style: { color: utility.getOverrideValue('label-color') } },
+    tickColor: utility.getOverrideValue('tick-color'),
+    minorTickColor: utility.getOverrideValue('minor-tick-color')
   }
 };
 
@@ -313,10 +135,31 @@ const generateExporting = () => {
 };
 
 const generateLegend = () => {
-  return {
+  const countryRounds = selectors.getSelectedCountryRounds();
+
+  let legendContent = {
     layout: 'vertical',
-    align: 'right',
-    verticalAlign: 'middle'
+    align: 'center',
+    verticalAlign: 'bottom',
+    itemStyle: { color: utility.getOverrideValue('label-color'), }
+  }
+
+  if (countryRounds.length > 5) {
+    legendContent['verticalAlign'] = 'top'
+    legendContent['layout'] = 'vertical'
+  }
+
+  return legendContent;
+};
+
+const generateChartSettings = () => {
+  const chartType = selectors.getSelectedChartType();
+
+  return {
+    type: chartType,
+    marginBottom: utility.getOverrideValue('bottom-margin-offset'),
+    backgroundColor: utility.getOverrideValue('chart-background-color'),
+    style: { }
   }
 };
 
@@ -382,10 +225,9 @@ const generatePieChart = res => {
   const characteristicGroups = res.results[0].values;
   const indicator = utility.getStringById(inputs.indicators[0]["label.id"]);
   const dataPoints = res.results;
-  const chartType = selectors.getSelectedChartType();
 
   return {
-    chart: { type: chartType },
+    chart: generateChartSettings(),
     title: generateTitle(inputs),
     subtitle: generateSubtitle(),
     series: generatePieData(
@@ -405,10 +247,9 @@ const generateOverTimeChart = res => {
   const characteristicGroups = res.results[0].values;
   const indicator = utility.getStringById(inputs.indicators[0]["label.id"]);
   const dataPoints = res.results;
-  const chartType = selectors.getSelectedChartType();
 
   return {
-    chart: { type: chartType },
+    chart: generateChartSettings(),
     title: generateTitle(inputs),
     subtitle: generateSubtitle(),
     xAxis: generateOverTimeXAxis(),
@@ -426,10 +267,9 @@ const generateChart = res => {
   const characteristicGroups = res.results[0].values;
   const indicator = utility.getStringById(inputs.indicators[0]["label.id"]);
   const dataPoints = res.results;
-  const chartType = selectors.getSelectedChartType();
 
   return {
-    chart: { type: chartType },
+    chart: generateChartSettings(),
     title: generateTitle(inputs),
     subtitle: generateSubtitle(),
     xAxis: generateXaxis(characteristicGroups),
@@ -440,39 +280,6 @@ const generateChart = res => {
     exporting: generateExporting(),
     plotOptions: generatePlotOptions(),
   }
-};
-
-const surveyCombo = () => {
-  const opts = { survey: selectors.getSelectedCountryRounds() }
-  handleCombos(opts);
-};
-
-const indicatorCombo = () => {
-  const surveys = selectors.getSelectedCountryRounds();
-  let opts = { indicator: selectors.getSelectedValue('select-indicator-group') }
-  if (surveys) { opts["survey"] = surveys }
-
-  handleCombos(opts);
-};
-
-const characteristicGroupCombo = () => {
-  const surveys = selectors.getSelectedCountryRounds();
-  let opts = { characteristicGroup: selectors.getSelectedValue('select-characteristic-group') }
-  if (surveys) { opts["survey"] = surveys }
-
-  handleCombos(opts);
-};
-
-const initialize = () => {
-  network.get("datalab/init").then(res => {
-    initializeStrings(res.strings);
-    initializeLanguage(res.languages);
-    initializeCharacteristicGroups(res.characteristicGroupCategories);
-    initializeIndicators(res.indicatorCategories);
-    initializeSurveyCountries(res.surveyCountries);
-
-    $('.selectpicker').selectpicker('refresh');
-  });
 };
 
 const data = () => {
@@ -505,23 +312,13 @@ const data = () => {
   });
 };
 
-const handleCombos = (opts) => {
-  network.get("datalab/combos", opts).then(res => {
-    setOptionsDisabled('characteristic', res['characteristicGroup.id']);
-    setOptionsDisabled('indicator', res['indicator.id']);
-
-    $('.selectpicker').selectpicker('refresh');
-    validation.checkCharting();
-  });
-};
+const initialize = () => initialization.initialize();
+const setCSVDownloadUrl = () => csv.setDownloadUrl();
 
 const chart = {
   initialize,
   data,
   setCSVDownloadUrl,
-  surveyCombo,
-  indicatorCombo,
-  characteristicGroupCombo,
 };
 
 export default chart;

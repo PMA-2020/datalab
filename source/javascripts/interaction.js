@@ -7,11 +7,7 @@ const selectAll = () => {
 
 const selectLatest = () => {
   $('#countryRoundModal .collapse input[type=checkbox]').prop('checked', false);
-  const openCollapse = $('#countryRoundModal .collapse.in');
-  openCollapse.each(collapse => {
-    const currentCollapse = openCollapse[collapse];
-    $(currentCollapse).find('input[type=checkbox]').last().prop('checked', true);
-  });
+  $("#countryRoundModal .collapse.in .country-round.latest").prop('checked', true);
 };
 
 const clear = () => {
@@ -37,12 +33,20 @@ const finishModal = () => {
   }
 }
 
+const resetChart = () => {
+  if (confirm('Are you sure you want to reset the chart styles?')) {
+    $(".tab-pane#style").find("input[type=text], textarea").val("");
+    generateChart();
+  };
+}
+
 const interaction = {
   selectAll,
   selectLatest,
   clear,
   closeModal,
   finishModal,
+  resetChart,
 };
 
 export default interaction;
