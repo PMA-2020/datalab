@@ -1,6 +1,7 @@
 import network from './network';
 import utility from './utility';
 import selectors from './selectors';
+import env from '../../env';
 
 const initializeStrings = (strings) => {
   if (typeof(Storage) !== "undefined") {
@@ -153,7 +154,11 @@ const initializeSurveyCountries = (surveyCountries) => {
 
 const initialize = () => {
   network.get("datalab/init").then(res => {
-    console.log(`PMA2020 Datalab Version: ${res.metadata.version}`);
+    console.log("------------------------------------------------");
+    console.log(`PMA2020 Datalab API Version: ${res.metadata.version}`);
+    console.log(`PMA2020 Datalab Client:      ${env.version}`);
+    console.log(`Environment Used:            ${env.environment}`);
+    console.log("------------------------------------------------");
     initializeStrings(res.strings);
     initializeLanguage(res.languages);
     initializeCharacteristicGroups(res.characteristicGroupCategories);
