@@ -11,6 +11,7 @@ import interaction from './interaction';
 import validation from './validation';
 import utility from './utility';
 import translate from './translate';
+import definitions from './definitions';
 
 $(function() {
   chart.initialize();
@@ -23,8 +24,10 @@ $(function() {
 
     $(`#select-${clearId}`).selectpicker('val', '');
     $(`.help-definition.${clearId}`).html('');
+    $('.selectpicker').selectpicker('refresh');
 
     combo.filter();
+    validation.checkCharting();
   });
 
   $("#finishCountryRoundModal").click(() => {
@@ -35,15 +38,17 @@ $(function() {
     validation.checkPie();
     combo.filter();
   });
+
   $("#select-indicator-group").change(() => {
     combo.filter();
     validation.checkCharting();
-    utility.setDefinitionText();
+    definitions.setDefinitionText();
   });
+
   $("#select-characteristic-group").change(() => {
     combo.filter();
     validation.checkCharting();
-    utility.setDefinitionText();
+    definitions.setDefinitionText();
   });
   $('.colorpicker').colorpicker();
   $("#select-all").click(() => (interaction.selectAll()));

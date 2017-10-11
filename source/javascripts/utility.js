@@ -1,19 +1,8 @@
-const loadStringsFromLocalStorage = () => {
-  return JSON.parse(localStorage.getItem('pma2020Strings'));
-};
+import selectors from './selectors';
 
+const loadStringsFromLocalStorage = () => JSON.parse(localStorage.getItem('pma2020Strings'));
 const createNode = el => document.createElement(el);
-
 const append = (parent, el) => parent.appendChild(el);
-
-const parseDate = (date) => {
-  const splitDate = date.split("-");
-  if (splitDate.length === 2) {
-    return new Date(splitDate[1], splitDate[0] - 1, 1).getTime();
-  } else {
-    return new Date(date).getTime();
-  }
-};
 
 const getDefinition = item => {
   const definitionId = item.dataset.definitionId;
@@ -50,7 +39,7 @@ const getString = item => {
 
 const getStringById = labelId => {
   const strings = loadStringsFromLocalStorage();
-  const lang = getSelectedLanguage();
+  const lang = selectors.getSelectedLanguage();
   const string = strings[labelId];
   if (string) {
     const enString = string['en'];
@@ -61,44 +50,23 @@ const getStringById = labelId => {
   }
 };
 
-const getSelectedItem = id => {
-  const el = document.getElementById(id);
-  const selectedVal = el.options[el.selectedIndex];
-
-  return selectedVal;
-}
-
-const getSelectedValue = id => ( getSelectedItem(id).value );
-const getSelectedText = id => ( getSelectedItem(id).text );
-
-const getSelectedCountryRounds = () => {
-  const countries = [];
-  const checkboxes = $("#countryRoundModal input[type=checkbox]:checked");
-
-  checkboxes.map(checkbox => {
-    countries.push(checkboxes[checkbox].value);
-  });
-
-  return countries;
-};
-
-const getSelectedChartType = () => {
-  return $("#chart-types label.active input").data("type");
+const parseDate = (date) => {
+  const splitDate = date.split("-");
+  if (splitDate.length === 2) {
+    return new Date(splitDate[1], splitDate[0] - 1, 1).getTime();
+  } else {
+    return new Date(date).getTime();
+  }
 };
 
 const utility = {
   createNode,
   append,
-  getSelectedLanguage,
+  parseDate,
   getString,
   getStringById,
-  getSelectedValue,
-  getSelectedText,
-  getSelectedChartType,
-  getSelectedCountryRounds,
   getOverrideValue,
   setDefinitionText,
-  parseDate,
 };
 
 export default utility;

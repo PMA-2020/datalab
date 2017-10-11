@@ -1,10 +1,10 @@
 import network from './network';
-import utility from './utility';
+import selectors from './selectors';
 
 const setDownloadUrl = () => {
-  const selectedSurveys = utility.getSelectedCountryRounds();
-  const selectedIndicator = utility.getSelectedValue('select-indicator-group');
-  const selectedCharacteristicGroup = utility.getSelectedValue('select-characteristic-group');
+  const selectedSurveys = selectors.getSelectedCountryRounds();
+  const selectedIndicator = selectors.getSelectedValue('select-indicator-group');
+  const selectedCharacteristicGroup = selectors.getSelectedValue('select-characteristic-group');
   const overTime = $('#dataset_overtime')[0].checked;
 
   const opts = {

@@ -1,8 +1,9 @@
 import chart from './chart';
 import utility from './utility';
+import selectors from './selectors';
 
 const checkPie = () => {
-  const countryRounds = utility.getSelectedCountryRounds();
+  const countryRounds = selectors.getSelectedCountryRounds();
   const pieChartType = $("#chart-types").find($("#option-pie")).parent();
 
   if(countryRounds.length > 1) {
@@ -31,7 +32,7 @@ const checkPie = () => {
 }
 
 const checkOverTime = () => {
-  const countryRounds = utility.getSelectedCountryRounds();
+  const countryRounds = selectors.getSelectedCountryRounds();
   const overTimeCheckbox = $("#dataset_overtime");
 
   if(countryRounds.length > 1) { overTimeCheckbox.prop('disabled', ''); }
@@ -42,7 +43,7 @@ const checkOverTime = () => {
 };
 
 const checkBlackAndWhite = () => {
-  const countryRounds = utility.getSelectedCountryRounds();
+  const countryRounds = selectors.getSelectedCountryRounds();
   const blackAndWhiteCheck = $("#dataset_black_and_white");
   const overTimeCheckbox = $("#dataset_overtime")[0];
 
@@ -57,10 +58,10 @@ const checkBlackAndWhite = () => {
 }
 
 const checkCharting = () => {
-  const countryRounds = utility.getSelectedCountryRounds().length;
-  const selectedIndicator = utility.getSelectedValue('select-indicator-group').length;
-  const selectedCharacteristicGroup = utility.getSelectedValue('select-characteristic-group').length;
-  const chartType = utility.getSelectedChartType();
+  const countryRounds = selectors.getSelectedCountryRounds().length;
+  const selectedIndicator = selectors.getSelectedValue('select-indicator-group').length;
+  const selectedCharacteristicGroup = selectors.getSelectedValue('select-characteristic-group').length;
+  const chartType = selectors.getSelectedChartType();
 
   if(countryRounds > 0 && selectedIndicator > 0 && selectedCharacteristicGroup > 0 &&
          chartType != undefined &&

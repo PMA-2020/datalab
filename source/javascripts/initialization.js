@@ -1,5 +1,6 @@
 import network from './network';
 import utility from './utility';
+import selectors from './selectors';
 
 const initializeStrings = (strings) => {
   if (typeof(Storage) !== "undefined") {
@@ -70,7 +71,7 @@ const initializeIndicators = (indicators) => {
 };
 
 const initializeSurveyCountries = (surveyCountries) => {
-  const language = utility.getSelectedLanguage();
+  const language = selectors.getSelectedLanguage();
 
   surveyCountries.forEach(country => {
     const countryName = utility.getString(country);
