@@ -1,8 +1,11 @@
 import network from './network';
 import utility from './utility';
+import selectors from './selectors';
+import validation from './validation';
 import initialization from './initialization';
 import csv from './csv';
 import Highcharts from 'highcharts';
+require('highcharts/modules/exporting')(Highcharts);
 
 const generateTitle = inputs => {
   const characteristicGroupLabel = utility.getStringById(
@@ -132,7 +135,7 @@ const generateExporting = () => {
 };
 
 const generateLegend = () => {
-  const countryRounds = utility.getSelectedCountryRounds();
+  const countryRounds = selectors.getSelectedCountryRounds();
 
   let legendContent = {
     layout: 'vertical',
@@ -150,7 +153,7 @@ const generateLegend = () => {
 };
 
 const generateChartSettings = () => {
-  const chartType = utility.getSelectedChartType();
+  const chartType = selectors.getSelectedChartType();
 
   return {
     type: chartType,
@@ -228,7 +231,7 @@ const generatePieChart = res => {
     title: generateTitle(inputs),
     subtitle: generateSubtitle(),
     series: generatePieData(
-      utility.getSelectedValue('select-characteristic-group'),
+      selectors.getSelectedValue('select-characteristic-group'),
       characteristicGroups,
       dataPoints
     ),
@@ -280,11 +283,12 @@ const generateChart = res => {
 };
 
 const data = () => {
-  const selectedSurveys = utility.getSelectedCountryRounds();
-  const selectedIndicator = utility.getSelectedValue('select-indicator-group');
-  const selectedCharacteristicGroup = utility.getSelectedValue('select-characteristic-group');
+  // Gather options from chart inputs
+  const selectedSurveys = selectors.getSelectedCountryRounds();
+  const selectedIndicator = selectors.getSelectedValue('select-indicator-group');
+  const selectedCharacteristicGroup = selectors.getSelectedValue('select-characteristic-group');
   const overTime = $('#dataset_overtime')[0].checked;
-  const chartType = utility.getSelectedChartType();
+  const chartType = selectors.getSelectedChartType();
 
   const opts = {
     "survey": selectedSurveys,
@@ -296,11 +300,11 @@ const data = () => {
   network.get("datalab/data", opts).then(res => {
     let chartData = {};
 
-    if (overTime) {
+    if (overTime) { // Overtime series option selected
       chartData = generateOverTimeChart(res);
-    } else if (chartType === 'pie') {
+    } else if (chartType === 'pie') { // Pie chart type option selected
       chartData = generatePieChart(res);
-    } else {
+    } else { // Everything else
       chartData = generateChart(res);
     }
 
