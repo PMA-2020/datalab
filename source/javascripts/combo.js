@@ -1,5 +1,5 @@
 import network from './network';
-import utility from './utility';
+import selectors from './selectors';
 
 const setOptionsDisabled = (type, availableValues) => {
   if (availableValues) {
@@ -44,9 +44,9 @@ const handleCombos = (opts) => {
 const filter = () => {
   const opts = {};
 
-  const selectedSurvey = utility.getSelectedCountryRounds();
-  const selectedIndicator = utility.getSelectedValue('select-indicator-group');
-  const selectedCharacteristicGroup = utility.getSelectedValue('select-characteristic-group');
+  const selectedSurvey = selectors.getSelectedCountryRounds();
+  const selectedIndicator = selectors.getSelectedValue('select-indicator-group');
+  const selectedCharacteristicGroup = selectors.getSelectedValue('select-characteristic-group');
 
   if (selectedSurvey !== "") { opts["survey"] = selectedSurvey; }
   if (selectedIndicator !== "") { opts["indicator"] = selectedIndicator; }
