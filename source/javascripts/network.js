@@ -1,5 +1,5 @@
 import env from '../../env';
-const baseUrl = env.api_url;
+const baseUrl = env.api_url || 'http://api.pma2020.org';
 const headers = new Headers({'Access-Control-Allow-Origin':'*'});
 const requestOptions = {
   method: 'get',
