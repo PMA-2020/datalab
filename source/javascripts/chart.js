@@ -83,12 +83,19 @@ const generateCredits = (inputs) => {
   }
 };
 
+const generateToolTip = () => {
+  return { xDateFormat: '%m-%Y' }
+};
+
 const generateOverTimeXAxis = () => {
   return {
     type: 'datetime',
-    title: {
-      text: 'Date'
-    }
+    title: { text: 'Date' },
+    dateTimeLabelFormats: {
+      month: '%m-%Y',
+      year: '%m-%Y',
+      day: '%m-%Y',
+    },
   }
 };
 
@@ -259,6 +266,7 @@ const generateOverTimeChart = res => {
     legend: generateLegend(),
     exporting: generateExporting(),
     plotOptions: generatePlotOptions(),
+    tooltip: generateToolTip(),
   }
 };
 
