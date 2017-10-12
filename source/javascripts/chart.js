@@ -83,8 +83,11 @@ const generateCredits = (inputs) => {
   }
 };
 
-const generateToolTip = () => {
-  return { xDateFormat: '%m-%Y' }
+const generateToolTip = (precision) => {
+  return {
+    xDateFormat: '%m-%Y',
+    pointFormat: `{series.name}: {point.y:.${precision}f}`
+  }
 };
 
 const generateOverTimeXAxis = () => {
@@ -176,9 +179,7 @@ const generatePieData = (charGroup, charGroups, dataPoints) => {
 
   charGroupNames.forEach((charGroup) => {
     const dataPoint = dataPoints[0].values[charGroupNames.indexOf(charGroup)];
-    const precision = dataPoint["precision"];
-    const value = parseFloat(dataPoint.value.toFixed(precision));
-    series.push({ name: charGroup, y: value });
+    series.push({ name: charGroup, y: dataPoint.value });
   });
 
   return [{ name: charGroup, data: series }];
@@ -193,11 +194,9 @@ const generateOverTimeSeriesData = dataPoints => (
       {
         name: utility.getStringById(characteristicGroupId),
         data: dataPoint.values.reduce((tot, item) => {
-          const precision = item["precision"];
-          const value = parseFloat(item.value.toFixed(precision));
           const utcDate = utility.parseDate(item["survey.date"]);
 
-          return [...tot, [utcDate, value]];
+          return [...tot, [utcDate, item.value]];
         }, [])
       }
     ]
@@ -209,18 +208,13 @@ const generateSeriesData = dataPoints => (
     const countryId = dataPoint["country.label.id"];
     const geographyId = dataPoint["geography.label.id"];
     const surveyId = dataPoint["survey.label.id"];
-    const precision = dataPoint["precision"];
 
     return [
       ...res,
       {
         name: generateSeriesName(countryId, geographyId, surveyId),
         data: dataPoint.values.reduce((tot, item) => {
-          const precision = item["precision"];
-          const value = parseFloat(item.value.toFixed(precision));
-
-
-          return [...tot, value]
+          return [...tot, item.value]
         }, [])
       }
     ]
@@ -232,6 +226,7 @@ const generatePieChart = res => {
   const characteristicGroups = res.results[0].values;
   const indicator = utility.getStringById(inputs.indicators[0]["label.id"]);
   const dataPoints = res.results;
+  const precision = res.chartOptions.precision;
 
   return {
     chart: generateChartSettings(),
@@ -246,6 +241,7 @@ const generatePieChart = res => {
     legend: generateLegend(),
     exporting: generateExporting(),
     plotOptions: generatePlotOptions(),
+    tooltip: generateToolTip(precision),
   }
 };
 
@@ -254,6 +250,7 @@ const generateOverTimeChart = res => {
   const characteristicGroups = res.results[0].values;
   const indicator = utility.getStringById(inputs.indicators[0]["label.id"]);
   const dataPoints = res.results;
+  const precision = res.chartOptions.precision;
 
   return {
     chart: generateChartSettings(),
@@ -266,7 +263,7 @@ const generateOverTimeChart = res => {
     legend: generateLegend(),
     exporting: generateExporting(),
     plotOptions: generatePlotOptions(),
-    tooltip: generateToolTip(),
+    tooltip: generateToolTip(precision),
   }
 };
 
@@ -275,6 +272,7 @@ const generateChart = res => {
   const characteristicGroups = res.results[0].values;
   const indicator = utility.getStringById(inputs.indicators[0]["label.id"]);
   const dataPoints = res.results;
+  const precision = res.chartOptions.precision;
 
   return {
     chart: generateChartSettings(),
@@ -287,6 +285,7 @@ const generateChart = res => {
     legend: generateLegend(),
     exporting: generateExporting(),
     plotOptions: generatePlotOptions(),
+    tooltip: generateToolTip(precision),
   }
 };
 
