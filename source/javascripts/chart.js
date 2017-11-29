@@ -22,7 +22,7 @@ const generateTitle = inputs => {
 
   return {
     style: { color: utility.getOverrideValue('title-color') },
-    text: title,
+    text: utility.getOverrideValue('chart-title', title),
   };
 };
 
