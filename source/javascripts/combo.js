@@ -38,6 +38,9 @@ const handleCombos = (opts) => {
     setCountryRoundsDisabled(res['survey.id']);
 
     $('.selectpicker').selectpicker('refresh');
+
+    if (opts["indicator"] === undefined) { $("#select-indicator-group").selectpicker('val', ''); }
+    if (opts["characteristicGroup"] === undefined) { $("#select-characteristic-group").selectpicker('val', ''); }
   });
 };
 
@@ -48,7 +51,7 @@ const filter = () => {
   const selectedIndicator = selectors.getSelectedValue('select-indicator-group');
   const selectedCharacteristicGroup = selectors.getSelectedValue('select-characteristic-group');
 
-  if (selectedSurvey !== "") { opts["survey"] = selectedSurvey; }
+  if (selectedSurvey.length > 0) { opts["survey"] = selectedSurvey; }
   if (selectedIndicator !== "") { opts["indicator"] = selectedIndicator; }
   if (selectedCharacteristicGroup !== "") { opts["characteristicGroup"] = selectedCharacteristicGroup; }
 
