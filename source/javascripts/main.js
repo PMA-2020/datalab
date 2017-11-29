@@ -19,12 +19,13 @@ $(function() {
   $("#select-language").change((e) => (translate.translatePage()));
 
   $(".clear-input").click((e) => {
-    validation.checkCharting();
     const clearId = e.target.dataset.type;
 
-    $(`#select-${clearId}`).selectpicker('val', '');
     $(`.help-definition.${clearId}`).html('');
-    $('.selectpicker').selectpicker('refresh');
+    $(`#select-${clearId}`).selectpicker('val', '');
+    $(`#select-${clearId}`).value = '';
+    $(`#select-${clearId}`).selectpicker('deselectAll');
+    $(`#select-${clearId}`).selectpicker('refresh');
 
     combo.filter();
     validation.checkCharting();
