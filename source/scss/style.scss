@@ -27,3 +27,7 @@
     list-style-type: none;
     font-size:0.6em;
 }
+
+input:disabled+label {
+  color: #d3d3d3;
+}
