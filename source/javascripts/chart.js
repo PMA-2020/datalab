@@ -22,7 +22,7 @@ const generateTitle = inputs => {
 
   return {
     style: { color: utility.getOverrideValue('title-color') },
-    text: title,
+    text: utility.getOverrideValue('chart-title', title),
   };
 };
 
@@ -110,7 +110,12 @@ const getCharacteristicGroupNames = (groups) => {
 };
 
 const generateXaxis = characteristicGroups => {
-  return { categories: getCharacteristicGroupNames(characteristicGroups) }
+  return {
+    categories: getCharacteristicGroupNames(characteristicGroups),
+    title: {
+      text: utility.getOverrideValue("x-axis-label", ""),
+    }
+  }
 };
 
 const generateYaxis = indicator => {
