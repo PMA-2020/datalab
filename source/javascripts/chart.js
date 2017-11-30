@@ -18,7 +18,7 @@ const generateTitle = inputs => {
     return [...tot, utility.getStringById(country["country.label.id"])];
   }, []))).join(", ");
 
-  const title = `${indicatorLabel} by ${characteristicGroupLabel} for ${countries}`;
+  const title = `${indicatorLabel} ${utility.getStringById('by')} ${characteristicGroupLabel} ${utility.getStringById('for')} ${countries}`;
 
   return {
     style: { color: utility.getOverrideValue('title-color') },

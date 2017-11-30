@@ -45,7 +45,7 @@ const getStringById = labelId => {
     const enString = string['en'];
     return string[lang] || enString;
   } else {
-    console.log(`No String for "${labelId}"`);
+    if (labelId !== undefined) { console.log(`No String for "${labelId}"`) }
     return false;
   }
 };
