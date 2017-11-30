@@ -42,12 +42,14 @@ $(function() {
 
   $("#select-indicator-group").change(() => {
     combo.filter();
+    validation.checkPie();
     validation.checkCharting();
     definitions.setDefinitionText();
   });
 
   $("#select-characteristic-group").change(() => {
     combo.filter();
+    validation.checkPie();
     validation.checkCharting();
     definitions.setDefinitionText();
   });

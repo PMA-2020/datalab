@@ -3,10 +3,13 @@ import utility from './utility';
 import selectors from './selectors';
 
 const checkPie = () => {
+  const selectedIndicator = selectors.getSelectedItem('select-indicator-group');
   const countryRounds = selectors.getSelectedCountryRounds();
   const pieChartType = $("#chart-types").find($("#option-pie")).parent();
 
   if(countryRounds.length > 1) {
+    pieChartType.remove();
+  } else if (selectedIndicator.dataset.type !== 'distribution') {
     pieChartType.remove();
   } else {
     if(pieChartType.length <= 0) {

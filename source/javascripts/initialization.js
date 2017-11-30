@@ -63,6 +63,7 @@ const initializeIndicators = (indicators) => {
       opt.setAttribute('data-definition-id', indicator["definition.id"]);
       opt.setAttribute('data-label-id', indicator["label.id"]);
       opt.setAttribute('data-key', indicator["label.id"]);
+      opt.setAttribute('data-type', indicator["type"]);
       opt.innerHTML = utility.getString(indicator);
       optGroup.append(opt);
     });
