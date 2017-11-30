@@ -34,11 +34,15 @@ const generateSeriesName = (countryId, geographyId, surveyId) => {
   return `${country} ${geography} ${survey}`
 };
 
-const generatePlotOptions = () => {
+const generatePlotOptions = (precision) => {
   return {
     series: {
       connectNulls: true,
       marker: { radius: utility.getOverrideValue('marker-size')},
+      dataLabels: {
+        enabled: true,
+        format: `{y:.${precision}f}`
+      }
     },
     bar: { dataLabels: { enabled: true } },
     column: { dataLabels: { enabled: true } },
@@ -245,7 +249,7 @@ const generatePieChart = res => {
     credits: generateCredits(inputs),
     legend: generateLegend(),
     exporting: generateExporting(),
-    plotOptions: generatePlotOptions(),
+    plotOptions: generatePlotOptions(precision),
     tooltip: generateToolTip(precision),
   }
 };
@@ -267,7 +271,7 @@ const generateOverTimeChart = res => {
     credits: generateCredits(inputs),
     legend: generateLegend(),
     exporting: generateExporting(),
-    plotOptions: generatePlotOptions(),
+    plotOptions: generatePlotOptions(precision),
     tooltip: generateToolTip(precision),
   }
 };
@@ -289,7 +293,7 @@ const generateChart = res => {
     credits: generateCredits(inputs),
     legend: generateLegend(),
     exporting: generateExporting(),
-    plotOptions: generatePlotOptions(),
+    plotOptions: generatePlotOptions(precision),
     tooltip: generateToolTip(precision),
   }
 };
