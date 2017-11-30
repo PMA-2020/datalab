@@ -110,7 +110,12 @@ const getCharacteristicGroupNames = (groups) => {
 };
 
 const generateXaxis = characteristicGroups => {
-  return { categories: getCharacteristicGroupNames(characteristicGroups) }
+  return {
+    categories: getCharacteristicGroupNames(characteristicGroups),
+    title: {
+      text: utility.getOverrideValue("x-axis-label", ""),
+    }
+  }
 };
 
 const generateYaxis = indicator => {
