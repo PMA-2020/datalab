@@ -29,6 +29,7 @@ $(function() {
 
     combo.filter();
     validation.checkCharting();
+    validation.checkPie();
   });
 
   $("#finishCountryRoundModal").click(() => {
