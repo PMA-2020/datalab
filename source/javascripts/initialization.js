@@ -98,6 +98,8 @@ const initializeSurveyCountries = (surveyCountries) => {
     panelLink.setAttribute('role', 'button');
     panelLink.setAttribute('data-toggle', 'collapse');
     panelLink.setAttribute('data-parent', '#accordion');
+    panelLink.setAttribute('data-key', country["label.id"]);
+    panelLink.className = 'i18nable';
     panelLink.innerHTML = countryName;
 
     panelTitle.append(panelLink);
@@ -114,6 +116,8 @@ const initializeSurveyCountries = (surveyCountries) => {
 
       let listHeader = utility.createNode('h4');
 
+      listHeader.setAttribute('data-key', geography["label.id"]);
+      listHeader.className = 'i18nable';
       listHeader.innerHTML = geographyName;
 
       panelBody.append(listHeader);
@@ -137,6 +141,8 @@ const initializeSurveyCountries = (surveyCountries) => {
 
         let surveyInputLabel = utility.createNode('label');
 
+        surveyInputLabel.setAttribute('data-key', survey["label.id"]);
+        surveyInputLabel.className = 'i18nable';
         surveyInputLabel.htmlFor = surveyId;
         surveyInputLabel.innerHTML = surveyName;
 
