@@ -9,7 +9,7 @@ const checkPie = () => {
 
   if(countryRounds.length > 1) {
     pieChartType.remove();
-  } else if (selectedIndicator.dataset.type !== 'distribution') {
+  } else if (selectedIndicator.dataset.type && selectedIndicator.dataset.type !== 'distribution') {
     pieChartType.remove();
   } else {
     if(pieChartType.length <= 0) {
