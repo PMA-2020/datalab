@@ -12,6 +12,7 @@ import validation from './validation';
 import utility from './utility';
 import translate from './translate';
 import definitions from './definitions';
+import urlparse from './url-parse';
 
 $(function() {
   chart.initialize();
@@ -63,4 +64,9 @@ $(function() {
   $("#chart-types input").click(() => (validation.checkCharting()));
   $(".submit-chart").click(() => (chart.data()));
   $(".reset-chart").click(() => (interaction.resetChart()));
+
+  if (urlparse.getQuery() !== false)
+  {
+      urlparse.parseQuery();
+  }
 });
