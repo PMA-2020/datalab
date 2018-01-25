@@ -14,13 +14,18 @@ const getQuery = () => {
 const parseQuery = () => {
 	const queryString = getQuery();
 	let queryArray = queryString.split('&');
-	console.log(queryArray);
+	let parseResult = [];
+	queryArray.forEach((query)=>{
+		const _temp = query.split('=');
+		parseResult[_temp[0]] = _temp[1];
+	});
+	return parseResult;
 }
 
 const urlparse = {
-  show,
-  getQuery,
-  parseQuery,
+	show,
+	getQuery,
+	parseQuery,
 };
 
 export default urlparse;

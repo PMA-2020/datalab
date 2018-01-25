@@ -2,6 +2,8 @@ import network from './network';
 import utility from './utility';
 import selectors from './selectors';
 import env from '../../env';
+import urlparse from './url-parse';
+import chart from './chart';
 
 const initializeStrings = (strings) => {
   if (typeof(Storage) !== "undefined") {
@@ -173,6 +175,22 @@ const initialize = () => {
     initializeSurveyCountries(res.surveyCountries);
 
     $('.selectpicker').selectpicker('refresh');
+    if (urlparse.getQuery() !== false)
+    {
+        const query = urlparse.parseQuery();
+        $('#select-indicator-group').selectpicker('val', query['indicators']);
+        $('#select-characteristic-group').selectpicker('val', query['characteristicGroups']);
+        $('#chart-types #option-'+query['chartType']).click();
+        const selectedCountries = query['surveyCountries'].split(',');
+        selectedCountries.forEach(country_id => {
+          $('#'+country_id).click();
+        });
+        if (query['overTime']=='true'){
+          $('#dataset_overtime').prop('checked', true);
+          $('#dataset_overtime').prop('disabled', false);
+        }
+        chart.data(query);
+    }
   });
 };
 
