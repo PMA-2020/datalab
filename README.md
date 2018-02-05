@@ -40,3 +40,4 @@ When you are ready to deploy a new version run these steps:
 
 - `middleman build` - generates static assets that are uglified and minified to the `build/` directory
 - Copy the static assets in the build folder to the Amazon S3 Bucket
+- If the build does not automatically create an updated `env.js` in `build/`, copy/patse `env.js.example` into `build/` and change the name to `env.js`.
