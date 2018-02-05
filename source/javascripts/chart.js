@@ -298,13 +298,13 @@ const generateChart = res => {
   }
 };
 
-const data = () => {
+const data = (query) => {
   // Gather options from chart inputs
-  const selectedSurveys = selectors.getSelectedCountryRounds();
-  const selectedIndicator = selectors.getSelectedValue('select-indicator-group');
-  const selectedCharacteristicGroup = selectors.getSelectedValue('select-characteristic-group');
-  const overTime = $('#dataset_overtime')[0].checked;
-  const chartType = selectors.getSelectedChartType();
+  const selectedSurveys = query['surveyCountries'].split(',');
+  const selectedIndicator = query['indicators'];
+  const selectedCharacteristicGroup = query['characteristicGroups'];
+  const overTime = query['overTime']=='true';
+  const chartType = query['chartType'];
 
   const opts = {
     "survey": selectedSurveys,
@@ -328,6 +328,17 @@ const data = () => {
   });
 };
 
+const loadData = () => {
+  const selectedSurveys = selectors.getSelectedCountryRounds();
+  const selectedIndicator = selectors.getSelectedValue('select-indicator-group');
+  const selectedCharacteristicGroup = selectors.getSelectedValue('select-characteristic-group');
+  const overTime = $('#dataset_overtime')[0].checked;
+  const chartType = selectors.getSelectedChartType();
+  const url_root = window.location.href.split('?')[0];
+  const url = url_root + '?surveyCountries=' + selectedSurveys.join(',') + '&indicators=' + selectedIndicator + '&characteristicGroups=' + selectedCharacteristicGroup + '&chartType=' + chartType + '&overTime=' + overTime.toString();
+  window.location.href = url;
+}
+
 const initialize = () => initialization.initialize();
 const setCSVDownloadUrl = () => csv.setDownloadUrl();
 
@@ -335,6 +346,7 @@ const chart = {
   initialize,
   data,
   setCSVDownloadUrl,
+  loadData,
 };
 
 export default chart;

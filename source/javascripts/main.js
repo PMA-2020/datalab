@@ -61,6 +61,7 @@ $(function() {
   $("#dataset_overtime").click(() => (validation.checkBlackAndWhite()));
   $("#closeCountryRoundModal").click(() => (interaction.closeModal()));
   $("#chart-types input").click(() => (validation.checkCharting()));
-  $(".submit-chart").click(() => (chart.data()));
+  $(".submit-chart").click(() => (chart.loadData()));
   $(".reset-chart").click(() => (interaction.resetChart()));
+
 });
