@@ -20,6 +20,8 @@ activate :external_pipeline,
          "./node_modules/webpack/bin/webpack.js --watch -d --progress --color",
          source: ".tmp/dist",
          latency: 1
+         
+activate :livereload
 # With alternative layout
 # page '/path/to/file.html', layout: 'other_layout'
 
