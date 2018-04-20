@@ -66,6 +66,9 @@ $light-purple: lighten($dark-purple, 25%);
           border-color: $dark-purple;
           background-color: $dark-purple;
         }
+        &.submit-chart:disabled {
+          pointer-events: none;
+        }
       }
       .nav {
         &.nav-tabs {

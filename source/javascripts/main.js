@@ -12,8 +12,10 @@ import validation from './validation';
 import utility from './utility';
 import translate from './translate';
 import definitions from './definitions';
+import tooltips from './tooltip';
 
 $(function() {
+  tooltips.initialize();
   chart.initialize();
 
   $("#select-language").change((e) => (translate.translatePage()));
