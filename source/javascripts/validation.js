@@ -1,6 +1,7 @@
 import chart from './chart';
 import utility from './utility';
 import selectors from './selectors';
+import tooltips from './tooltip';
 
 const checkPie = () => {
   const selectedIndicator = selectors.getSelectedItem('select-indicator-group');
@@ -71,10 +72,12 @@ const checkCharting = () => {
          chartType.length > 0) {
     chart.setCSVDownloadUrl();
     $('.submit-chart').prop('disabled', '');
+    tooltips.disableBtnSubmitChart();
     $('.reset-chart').prop('disabled', '');
     $('#download-csv').removeClass('disabled');
   } else {
     $('.submit-chart').prop('disabled', 'disabled');
+    tooltips.enableBtnSubmitChart();
     $('.reset-chart').prop('disabled', '');
     $('#download-csv').addClass('disabled');
   }
