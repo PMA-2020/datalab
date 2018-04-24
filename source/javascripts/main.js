@@ -57,6 +57,7 @@ $(function() {
     definitions.setDefinitionText();
   });
   $('.colorpicker').colorpicker();
+  chart.setStyleEvents();
   $("#select-all").click(() => (interaction.selectAll()));
   $("#select-latest").click(() => (interaction.selectLatest()));
   $("#clear-all").click(() => (interaction.clear()));
