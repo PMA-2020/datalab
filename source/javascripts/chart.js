@@ -398,31 +398,31 @@ const setStyleEvents = () => {
               option_obj.xAxis.title.text = input_value;
               break;
           case 'y-axis-x-position': 
-              option_obj.yAxis.title.x = parseInt(input_value);
+              option_obj.yAxis.title.x = !!input_value ? parseInt(input_value) : 0;
               break;
           case 'y-axis-y-position': 
-              option_obj.yAxis.title.y = parseInt(input_value);
+              option_obj.yAxis.title.y = !!input_value ? parseInt(input_value) : 0;
               break;
           case 'x-axis-x-position': 
-              option_obj.xAxis.title.x = parseInt(input_value);
+              option_obj.xAxis.title.x = !!input_value ? parseInt(input_value) : 0;
               break;
           case 'x-axis-y-position': 
-              option_obj.xAxis.title.y = parseInt(input_value);
+              option_obj.xAxis.title.y = !!input_value ? parseInt(input_value) : 0;
               break;
           case 'marker-size': 
-              option_obj.plotOptions.series.marker.radius = parseInt(input_value);
+              option_obj.plotOptions.series.marker.radius = !!input_value ? parseInt(input_value) : 4;
               break;
           case 'data-label-x-position': 
-              option_obj.plotOptions.series.dataLabels.x = parseInt(input_value);
+              option_obj.plotOptions.series.dataLabels.x = !!input_value ? parseInt(input_value) : 0;
               break;
           case 'data-label-y-position': 
-              option_obj.plotOptions.series.dataLabels.y = parseInt(input_value);
+              option_obj.plotOptions.series.dataLabels.y = !!input_value ? parseInt(input_value) : -6;
               break;
           case 'credits-y-position': 
-              option_obj.credits.position.y = parseInt(input_value);
+              option_obj.credits.position.y = !!input_value ? parseInt(input_value) : 0;
               break;
           case 'bottom-margin-offset': 
-              option_obj.chart.marginBottom = parseInt(input_value);
+              option_obj.chart.marginBottom = !!input_value ? parseInt(input_value) : 115;
               break;
       }
       chart_obj.update(option_obj);
