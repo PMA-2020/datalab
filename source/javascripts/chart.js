@@ -543,12 +543,24 @@ const setStyleEvents = () => {
 const initialize = () => initialization.initialize();
 const setCSVDownloadUrl = () => csv.setDownloadUrl();
 
+const saveChartStyle = () => {
+    const chart_style_wrapper = document.getElementsByClassName('chart-style-wrapper')[0];
+    const style_DOMs = chart_style_wrapper.getElementsByClassName('form-control');
+    localStorage.saved_style = 1;
+    for (let i = 0; i < style_DOMs.length; i++ )
+    {
+        localStorage.setItem('styles.'+style_DOMs[i].id, style_DOMs[i].value);
+    }
+    loadData();
+}
+
 const chart = {
   initialize,
   data,
   setCSVDownloadUrl,
   loadData,
   setStyleEvents,
+  saveChartStyle,
 };
 
 export default chart;

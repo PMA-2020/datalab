@@ -161,6 +161,17 @@ const initializeSurveyCountries = (surveyCountries) => {
   });
 };
 
+const initializeStyles = () => {
+    if (!!localStorage.saved_style && localStorage.saved_style == 1) {
+        for (let i=0; i<localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.startsWith('styles.')){
+                document.getElementById(key.substr(7)).value = localStorage.getItem(key);
+            }
+        }
+    }
+}
+
 const initialize = () => {
   network.get("datalab/init").then(res => {
     console.log("------------------------------------------------");
@@ -173,6 +184,7 @@ const initialize = () => {
     initializeCharacteristicGroups(res.characteristicGroupCategories);
     initializeIndicators(res.indicatorCategories);
     initializeSurveyCountries(res.surveyCountries);
+    initializeStyles();
 
     $('.selectpicker').selectpicker('refresh');
     if (urlparse.getQuery() !== false)

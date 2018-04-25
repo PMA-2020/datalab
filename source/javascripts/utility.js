@@ -28,7 +28,9 @@ const setDefinitionText = () => {
 const getSelectedLanguage = () => $('#select-language option:selected').val();
 
 const getOverrideValue = (id, fallback) => {
-  const overRideValue = document.getElementById(id).value;
+  let overRideValue = document.getElementById(id).value;
+  if (!!localStorage.saved_style && localStorage.saved_style==1)
+      overRideValue = localStorage.getItem('styles.'+id);
   return overRideValue || fallback;
 };
 

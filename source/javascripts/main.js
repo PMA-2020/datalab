@@ -66,5 +66,5 @@ $(function() {
   $("#chart-types input").click(() => (validation.checkCharting()));
   $(".submit-chart").click(() => (chart.loadData()));
   $(".reset-chart").click(() => (interaction.resetChart()));
-
+  $(".btn-save-style").click(() => (chart.saveChartStyle()))
 });
