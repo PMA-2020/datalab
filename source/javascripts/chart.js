@@ -5,6 +5,7 @@ import validation from './validation';
 import initialization from './initialization';
 import csv from './csv';
 import Highcharts from 'highcharts';
+import Highchart_theme from './chart-theme';
 require('highcharts/modules/exporting')(Highcharts);
 
 let chart_obj = {};
@@ -423,9 +424,15 @@ const setStyleEvents = () => {
           case 'bottom-margin-offset': 
               option_obj.chart.marginBottom = parseInt(input_value);
               break;
-
       }
       chart_obj.update(option_obj);
+  });
+
+  $("#dataset_black_and_white").on('change', function() {
+      if ($(this).prop('checked'))
+        chart_obj.update(Highchart_theme.gray);
+      else 
+        chart_obj.update(Highchart_theme.sunset);
   });
 }
 
