@@ -7,7 +7,8 @@ import csv from './csv';
 import Highcharts from 'highcharts';
 require('highcharts/modules/exporting')(Highcharts);
 
-let chart_obj = '';
+let chart_obj = {};
+let option_obj = {};
 
 const generateTitle = inputs => {
   const characteristicGroupLabel = utility.getStringById(
@@ -43,7 +44,9 @@ const generatePlotOptions = (precision) => {
       marker: { radius: utility.getOverrideValue('marker-size')},
       dataLabels: {
         enabled: true,
-        format: `{y:.${precision}f}`
+        format: `{y:.${precision}f}`,
+        x: utility.getOverrideValue('data-label-x-position'),
+        y: utility.getOverrideValue('data-label-y-position'),
       }
     },
     bar: { dataLabels: { enabled: true } },
@@ -85,6 +88,7 @@ const generateCredits = (inputs) => {
     href: '',
     position: {
       align: 'center',
+      y: utility.getOverrideValue('credits-y-position')
     }
   }
 };
@@ -119,8 +123,13 @@ const generateXaxis = characteristicGroups => {
   return {
     categories: getCharacteristicGroupNames(characteristicGroups),
     title: {
-      text: utility.getOverrideValue("x-axis-label", "")
-    }
+      text: utility.getOverrideValue("x-axis-label", ""),
+      x: utility.getOverrideValue('x-axis-x-position'),
+      y: utility.getOverrideValue('x-axis-y-position')
+    },
+    lineColor: utility.getOverrideValue('x-axis-color'),
+    tickColor: utility.getOverrideValue('tick-color'),
+    minorTickColor: utility.getOverrideValue('minor-tick-color'),
   }
 };
 
@@ -181,7 +190,9 @@ const generateChartSettings = () => {
     type: chartType,
     marginBottom: utility.getOverrideValue('bottom-margin-offset'),
     backgroundColor: utility.getOverrideValue('chart-background-color'),
-    style: { }
+    style: { 
+        color: utility.getOverrideValue('label-color')
+    }
   }
 };
 
@@ -317,17 +328,17 @@ const data = (query) => {
   }
 
   network.get("datalab/data", opts).then(res => {
-    let chartData = {};
+    //let chartData = {};
 
     if (overTime) { // Overtime series option selected
-      chartData = generateOverTimeChart(res);
+      option_obj = generateOverTimeChart(res);
     } else if (chartType === 'pie') { // Pie chart type option selected
-      chartData = generatePieChart(res);
+      option_obj = generatePieChart(res);
     } else { // Everything else
-      chartData = generateChart(res);
+      option_obj = generateChart(res);
     }
 
-    chart_obj = Highcharts.chart('chart-container', chartData);
+    chart_obj = Highcharts.chart('chart-container', option_obj);
   });
 };
 
@@ -345,76 +356,29 @@ const loadData = () => {
 const setStyleEvents = () => {
   $('.colorpicker').on('change', (e) => {
       const color_value = e.target.value;
-      let option_obj = {};
       switch (e.target.id) {
           case 'chart-background-color':
-              option_obj = {
-                  chart: {
-                      backgroundColor: color_value
-                  }
-              };
+              option_obj.chart.backgroundColor = color_value;
               break;
           case 'title-color':
-              option_obj = {
-                  title: {
-                      style: {
-                          color: color_value
-                      }
-                  }
-              };
+              option_obj.title.style.color = color_value;
               break;
           case 'label-color':
-              option_obj = {
-                  chart: {
-                      style: {
-                          color: color_value
-                      }
-                  }
-              };
+              option_obj.chart.style.color = color_value;
               break;
           case 'y-axis-color':
-              option_obj = {
-                  yAxis: {
-                      lineColor: color_value,
-                      labels: {
-                          style: {
-                              color: color_value
-                          }
-                      }
-                  }
-              };
+              option_obj.yAxis.lineColor = color_value;
               break;
           case 'x-axis-color':
-              option_obj = {
-                  xAxis: {
-                      lineColor: color_value,
-                      labels: {
-                          style: {
-                              color: color_value
-                          }
-                      }
-                  }
-              };
+              option_obj.xAxis.lineColor = color_value;
               break;
           case 'tick-color':
-              option_obj = {
-                  xAxis: {
-                      tickColor: color_value
-                  }, 
-                  yAxis: {
-                      tickColor: color_value
-                  }
-              };
+              option_obj.xAxis.tickColor = color_value;
+              option_obj.yAxis.tickColor = color_value;
               break;
           case 'minor-tick-color':
-              option_obj = {
-                  xAxis: {
-                      minorTickColor: color_value
-                  }, 
-                  yAxis: {
-                      minorTickColor: color_value
-                  }
-              };
+              option_obj.xAxis.minorTickColor = color_value;
+              option_obj.yAxis.minorTickColor = color_value;
               break;
       }
       chart_obj.update(option_obj);
@@ -422,117 +386,42 @@ const setStyleEvents = () => {
 
   $('.form-control').on('blur', (e) => {
       const input_value = e.target.value;
-      let option_obj = {};
       switch (e.target.id) {
           case 'chart-title': 
-              option_obj = {
-                  title: {
-                      text: input_value
-                  }
-              };
+              option_obj.title.text = input_value;
               break;
           case 'y-axis-label': 
-              option_obj = {
-                  yAxis: {
-                      title: {
-                          text: input_value 
-                      }
-                  }
-              };
+              option_obj.yAxis.title.text = input_value;
               break;
           case 'x-axis-label': 
-              option_obj = {
-                  xAxis: {
-                      title: {
-                          text: input_value 
-                      }
-                  }
-              };
+              option_obj.xAxis.title.text = input_value;
               break;
           case 'y-axis-x-position': 
-              option_obj = {
-                  yAxis: {
-                      title: {
-                          x: parseInt(input_value)
-                      }
-                  }
-              };
+              option_obj.yAxis.title.x = parseInt(input_value);
               break;
           case 'y-axis-y-position': 
-              option_obj = {
-                  yAxis: {
-                      title: {
-                          y: parseInt(input_value)
-                      }
-                  }
-              };
+              option_obj.yAxis.title.y = parseInt(input_value);
               break;
           case 'x-axis-x-position': 
-              option_obj = {
-                  xAxis: {
-                      title: {
-                          x: parseInt(input_value)
-                      }
-                  }
-              };
+              option_obj.xAxis.title.x = parseInt(input_value);
               break;
           case 'x-axis-y-position': 
-              option_obj = {
-                  xAxis: {
-                      title: {
-                          y: parseInt(input_value)
-                      }
-                  }
-              };
+              option_obj.xAxis.title.y = parseInt(input_value);
               break;
           case 'marker-size': 
-              option_obj = {
-                  plotOptions: {
-                      series: {
-                          marker: {
-                              radius: parseInt(input_value)
-                          }
-                      }
-                  }
-              };
+              option_obj.plotOptions.series.marker.radius = parseInt(input_value);
               break;
           case 'data-label-x-position': 
-              option_obj = {
-                  plotOptions: {
-                      series: {
-                          dataLabels: {
-                              x: parseInt(input_value)
-                          }
-                      }
-                  }
-              };
+              option_obj.plotOptions.series.dataLabels.x = parseInt(input_value);
               break;
           case 'data-label-y-position': 
-              option_obj = {
-                  plotOptions: {
-                      series: {
-                          dataLabels: {
-                              y: parseInt(input_value)
-                          }
-                      }
-                  }
-              };
+              option_obj.plotOptions.series.dataLabels.y = parseInt(input_value);
               break;
           case 'credits-y-position': 
-              option_obj = {
-                  credits: {
-                      position: {
-                          y: parseInt(input_value)
-                      }
-                  }
-              };
+              option_obj.credits.position.y = parseInt(input_value);
               break;
           case 'bottom-margin-offset': 
-              option_obj = {
-                  chart: {
-                      marginBottom: parseInt(input_value)
-                  }
-              };
+              option_obj.chart.marginBottom = parseInt(input_value);
               break;
 
       }
