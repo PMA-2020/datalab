@@ -35,10 +35,8 @@ const finishModal = () => {
 }
 
 const resetChart = () => {
-  if (confirm('Are you sure you want to reset the chart styles?')) {
     $(".chart-style-wrapper").find("input[type=text], textarea").val("");
     chart.saveChartStyle();
-  };
 }
 
 const interaction = {
