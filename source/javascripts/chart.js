@@ -456,7 +456,7 @@ const saveChartStyle = () => {
     {
         localStorage.setItem('styles.'+style_DOMs[i].id, style_DOMs[i].value);
     }
-    initialize();
+    loadData();
 }
 
 const chart = {

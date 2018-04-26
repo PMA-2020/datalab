@@ -36,7 +36,7 @@ const finishModal = () => {
 
 const resetChart = () => {
     $(".chart-style-wrapper").find("input[type=text], textarea").val("");
-    chart.saveChartStyle();
+    chart.initialize();
 }
 
 const interaction = {
