@@ -1,6 +1,7 @@
 import network from './network';
 import utility from './utility';
 import selectors from './selectors';
+import combo from './combo';
 import validation from './validation';
 import initialization from './initialization';
 import csv from './csv';
@@ -340,6 +341,10 @@ const data = (query) => {
     }
 
     chart_obj = Highcharts.chart('chart-container', option_obj);
+    
+    combo.filter();
+    validation.checkPie();
+    validation.checkCharting();
   });
 };
 
