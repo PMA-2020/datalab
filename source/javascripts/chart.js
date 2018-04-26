@@ -24,6 +24,7 @@ const generateTitle = inputs => {
   }, []))).join(", ");
 
   const title = `${indicatorLabel} ${utility.getStringById('by')} ${characteristicGroupLabel} ${utility.getStringById('for')} ${countries}`;
+  localStorage.setItem('chart-title', title);
 
   return {
     style: { color: utility.getOverrideValue('title-color') },
@@ -136,19 +137,21 @@ const generateXaxis = characteristicGroups => {
 };
 
 const generateYaxis = indicator => {
-  return {
-    title: {
-      text: utility.getOverrideValue("y-axis-label", indicator),
-      style: { color: utility.getOverrideValue("label-color") },
-      x: utility.getOverrideValue('y-axis-x-position'),
-      y: utility.getOverrideValue('y-axis-y-position')
-    },
-    lineColor: utility.getOverrideValue('y-axis-color'),
-    labels: { style: { color: utility.getOverrideValue('label-color') } },
-    tickColor: utility.getOverrideValue('tick-color'),
-    minorTickColor: utility.getOverrideValue('minor-tick-color'),
-    minorTickInterval: 'auto'
-  }
+    localStorage.setItem('chart-axis-label', indicator);
+
+    return {
+      title: {
+        text: utility.getOverrideValue("y-axis-label", indicator),
+        style: { color: utility.getOverrideValue("label-color") },
+        x: utility.getOverrideValue('y-axis-x-position'),
+        y: utility.getOverrideValue('y-axis-y-position')
+      },
+      lineColor: utility.getOverrideValue('y-axis-color'),
+      labels: { style: { color: utility.getOverrideValue('label-color') } },
+      tickColor: utility.getOverrideValue('tick-color'),
+      minorTickColor: utility.getOverrideValue('minor-tick-color'),
+      minorTickInterval: 'auto'
+    }
 };
 
 const generateExporting = () => {
@@ -186,16 +189,17 @@ const generateLegend = () => {
 };
 
 const generateChartSettings = () => {
-  const chartType = selectors.getSelectedChartType();
+    const chartType = selectors.getSelectedChartType();
+    localStorage.setItem('chart-type', chartType);
 
-  return {
-    type: chartType,
-    marginBottom: utility.getOverrideValue('bottom-margin-offset'),
-    backgroundColor: utility.getOverrideValue('chart-background-color'),
-    style: { 
-        color: utility.getOverrideValue('label-color')
+    return {
+      type: chartType,
+      marginBottom: utility.getOverrideValue('bottom-margin-offset'),
+      backgroundColor: utility.getOverrideValue('chart-background-color'),
+      style: { 
+          color: utility.getOverrideValue('label-color')
+      }
     }
-  }
 };
 
 const generatePieData = (charGroup, charGroups, dataPoints) => {
@@ -315,37 +319,37 @@ const generateChart = res => {
 };
 
 const data = (query) => {
-  // Gather options from chart inputs
-  const selectedSurveys = query['surveyCountries'].split(',');
-  const selectedIndicator = query['indicators'];
-  const selectedCharacteristicGroup = query['characteristicGroups'];
-  const overTime = query['overTime']=='true';
-  const chartType = query['chartType'];
+    // Gather options from chart inputs
+    const selectedSurveys = query['surveyCountries'].split(',');
+    const selectedIndicator = query['indicators'];
+    const selectedCharacteristicGroup = query['characteristicGroups'];
+    const overTime = query['overTime']=='true';
+    const chartType = query['chartType'];
 
-  const opts = {
-    "survey": selectedSurveys,
-    "indicator": selectedIndicator,
-    "characteristicGroup": selectedCharacteristicGroup,
-    "overTime": overTime,
-  }
-
-  network.get("datalab/data", opts).then(res => {
-    //let chartData = {};
-
-    if (overTime) { // Overtime series option selected
-      option_obj = generateOverTimeChart(res);
-    } else if (chartType === 'pie') { // Pie chart type option selected
-      option_obj = generatePieChart(res);
-    } else { // Everything else
-      option_obj = generateChart(res);
+    const opts = {
+      "survey": selectedSurveys,
+      "indicator": selectedIndicator,
+      "characteristicGroup": selectedCharacteristicGroup,
+      "overTime": overTime,
     }
 
-    chart_obj = Highcharts.chart('chart-container', option_obj);
-    
-    combo.filter();
-    validation.checkPie();
-    validation.checkCharting();
-  });
+    network.get("datalab/data", opts).then(res => {
+
+        if (overTime) { // Overtime series option selected
+          option_obj = generateOverTimeChart(res);
+        } else if (chartType === 'pie') { // Pie chart type option selected
+          option_obj = generatePieChart(res);
+        } else { // Everything else
+          option_obj = generateChart(res);
+        }
+
+        chart_obj = Highcharts.chart('chart-container', option_obj);
+        
+        combo.filter();
+        validation.checkPie();
+        validation.checkCharting();
+        initialization.initializeStyles();
+    });
 };
 
 const loadData = () => {

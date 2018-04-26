@@ -170,6 +170,16 @@ const initializeStyles = () => {
             }
         }
     }
+
+    /* Set Default Value and Placeholder of Chart Title and Axis Label */
+    const chart_type = localStorage.getItem('chart-type');
+    const chart_title = localStorage.getItem('chart-title');
+    const chart_axis_label = localStorage.getItem('chart-axis-label');
+    $('.chart-style-wrapper #chart-title').val(chart_title);
+    $('.chart-style-wrapper #chart-title').attr('placeholder', chart_title);
+    const select_axis = '.chart-style-wrapper #'+(chart_type=='bar' ? 'y' : 'x')+'-axis-label';
+    $(select_axis).val(chart_axis_label);
+    $(select_axis).attr('placeholder', chart_axis_label);
 }
 
 const initialize = () => {
@@ -184,7 +194,6 @@ const initialize = () => {
     initializeCharacteristicGroups(res.characteristicGroupCategories);
     initializeIndicators(res.indicatorCategories);
     initializeSurveyCountries(res.surveyCountries);
-    initializeStyles();
 
     $('.selectpicker').selectpicker('refresh');
     if (urlparse.getQuery() !== false)
@@ -208,6 +217,7 @@ const initialize = () => {
 
 const initialization = {
   initialize,
+  initializeStyles,
 };
 
 export default initialization;
