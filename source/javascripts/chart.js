@@ -346,6 +346,8 @@ const data = (query) => {
         chart_obj = Highcharts.chart('chart-container', option_obj);
         
         combo.filter();
+        validation.checkOverTime();
+        validation.checkBlackAndWhite();
         validation.checkPie();
         validation.checkCharting();
         initialization.initializeStyles();
@@ -365,6 +367,8 @@ const loadData = () => {
 
 const setStyleEvents = () => {
   $('.colorpicker').on('change', (e) => {
+      if (Object.keys(chart_obj).length == 0) return;
+
       const color_value = e.target.value;
       switch (e.target.id) {
           case 'chart-background-color':
@@ -395,6 +399,8 @@ const setStyleEvents = () => {
   });
 
   $('.form-control').on('blur', (e) => {
+      if (Object.keys(chart_obj).length == 0) return;
+
       const input_value = e.target.value;
       switch (e.target.id) {
           case 'chart-title': 
@@ -438,6 +444,8 @@ const setStyleEvents = () => {
   });
 
   $("#dataset_black_and_white").on('change', function() {
+      if (Object.keys(chart_obj).length == 0) return;
+
       if ($(this).prop('checked'))
         chart_obj.update(Highchart_theme.gray);
       else 

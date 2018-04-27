@@ -51,13 +51,15 @@ const checkBlackAndWhite = () => {
   const blackAndWhiteCheck = $("#dataset_black_and_white");
   const overTimeCheckbox = $("#dataset_overtime")[0];
 
-  if((countryRounds.length >= 1 && countryRounds.length < 3) &&
+  if((countryRounds.length >= 1 && countryRounds.length < 4) &&
       overTimeCheckbox.checked == false) {
-    blackAndWhiteCheck.prop('disabled', '');
+      blackAndWhiteCheck.prop('disabled', '');
+      tooltips.disableBlackAndWhite();
   }
   else {
-    blackAndWhiteCheck.prop('disabled', 'disabled');
-    blackAndWhiteCheck.prop('checked', false);
+      blackAndWhiteCheck.prop('disabled', 'disabled');
+      blackAndWhiteCheck.prop('checked', false);
+      tooltips.enableBlackAndWhite();
   }
 }
 
