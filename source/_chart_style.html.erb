@@ -120,7 +120,7 @@
         </label>
       </div>
       <div class='col-md-6'>
-        <%= text_field_tag('y-axis-x-position', class: 'form-control', id: 'y-axis-x-position', placeholder: 'Default: 0') %>
+        <%= text_field_tag('y-axis-x-position', class: 'form-control', id: 'y-axis-x-position', placeholder: 'Default: 0', type: 'number') %>
       </div>
     </div>
   </div>
@@ -132,7 +132,7 @@
         </label>
       </div>
       <div class='col-md-6'>
-        <%= text_field_tag('y-axis-y-position', class: 'form-control', id: 'y-axis-y-position', placeholder: 'Default: 0') %>
+        <%= text_field_tag('y-axis-y-position', class: 'form-control', id: 'y-axis-y-position', placeholder: 'Default: 0', type: 'number') %>
       </div>
     </div>
   </div>
@@ -144,7 +144,7 @@
         </label>
       </div>
       <div class='col-md-6'>
-        <%= text_field_tag('x-axis-x-position', class: 'form-control', id: 'x-axis-x-position', placeholder: 'Default: 0') %>
+        <%= text_field_tag('x-axis-x-position', class: 'form-control', id: 'x-axis-x-position', placeholder: 'Default: 0', type: 'number') %>
       </div>
     </div>
   </div>
@@ -156,7 +156,7 @@
         </label>
       </div>
       <div class='col-md-6'>
-        <%= text_field_tag('x-axis-y-position', class: 'form-control', id: 'x-axis-y-position', placeholder: 'Default: 0') %>
+        <%= text_field_tag('x-axis-y-position', class: 'form-control', id: 'x-axis-y-position', placeholder: 'Default: 0', type: 'number') %>
       </div>
     </div>
   </div>
@@ -169,7 +169,7 @@
         </label>
       </div>
       <div class='col-md-6'>
-        <%= text_field_tag('marker-size', class: 'form-control', id: 'marker-size', placeholder: 'Default: 4') %>
+        <%= text_field_tag('marker-size', class: 'form-control', id: 'marker-size', placeholder: 'Default: 4', type: 'number') %>
       </div>
     </div>
   </div>
@@ -181,7 +181,7 @@
         </label>
       </div>
       <div class='col-md-6'>
-        <%= text_field_tag('data-label-x-position', class: 'form-control', id: 'data-label-x-position', placeholder: 'Default: 0') %>
+        <%= text_field_tag('data-label-x-position', class: 'form-control', id: 'data-label-x-position', placeholder: 'Default: 0', type: 'number') %>
       </div>
     </div>
   </div>
@@ -193,7 +193,7 @@
         </label>
       </div>
       <div class='col-md-6'>
-        <%= text_field_tag('data-label-y-position', class: 'form-control', id: 'data-label-y-position', placeholder: 'Default: -6') %>
+        <%= text_field_tag('data-label-y-position', class: 'form-control', id: 'data-label-y-position', placeholder: 'Default: -6', type: 'number') %>
       </div>
     </div>
   </div>
@@ -210,7 +210,8 @@
           'credits-y-position',
           class: 'form-control',
           id: 'credits-y-position',
-          placeholder: 'Default: 0') %>
+          placeholder: 'Default: 0',
+          type: 'number') %>
       </div>
     </div>
   </div>
@@ -228,7 +229,8 @@
           {
             class: 'form-control',
             id: 'bottom-margin-offset',
-            placeholder: 'Default: 115'
+            placeholder: 'Default: 115',
+            type: 'number'
           }) %>
       </div>
     </div>
