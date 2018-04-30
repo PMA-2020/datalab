@@ -177,7 +177,7 @@ const initializeStyles = () => {
     const chart_axis_label = localStorage.getItem('chart-axis-label');
     $('.chart-style-wrapper #chart-title').val(chart_title);
     $('.chart-style-wrapper #chart-title').attr('placeholder', chart_title);
-    const select_axis = '.chart-style-wrapper #'+(chart_type=='bar' ? 'y' : 'x')+'-axis-label';
+    const select_axis = '.chart-style-wrapper #'+(chart_type=='bar' ? 'x' : 'y')+'-axis-label';
     $(select_axis).val(chart_axis_label);
     $(select_axis).attr('placeholder', chart_axis_label);
 }

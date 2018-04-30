@@ -368,7 +368,7 @@ const loadData = () => {
 const setStyleEvents = () => {
   $('.colorpicker').on('change', (e) => {
       if (Object.keys(chart_obj).length == 0) return;
-
+      const is_bar = localStorage.getItem('chart-type')==="bar";
       const color_value = e.target.value;
       switch (e.target.id) {
           case 'chart-background-color':
@@ -381,10 +381,10 @@ const setStyleEvents = () => {
               option_obj.chart.style.color = color_value;
               break;
           case 'y-axis-color':
-              option_obj.yAxis.lineColor = color_value;
+              is_bar ? option_obj.xAxis.lineColor = color_value : option_obj.yAxis.lineColor = color_value;
               break;
           case 'x-axis-color':
-              option_obj.xAxis.lineColor = color_value;
+              is_bar ? option_obj.yAxis.lineColor = color_value : option_obj.xAxis.lineColor = color_value;
               break;
           case 'tick-color':
               option_obj.xAxis.tickColor = color_value;
@@ -400,29 +400,34 @@ const setStyleEvents = () => {
 
   $('.form-control').on('blur', (e) => {
       if (Object.keys(chart_obj).length == 0) return;
-
+      const is_bar = localStorage.getItem('chart-type')==="bar";
       const input_value = e.target.value;
+      let num = 0;
       switch (e.target.id) {
           case 'chart-title': 
               option_obj.title.text = input_value;
               break;
           case 'y-axis-label': 
-              option_obj.yAxis.title.text = input_value;
+              is_bar ? option_obj.xAxis.title.text = input_value : option_obj.yAxis.title.text = input_value;
               break;
           case 'x-axis-label': 
-              option_obj.xAxis.title.text = input_value;
+              is_bar ? option_obj.yAxis.title.text = input_value : option_obj.xAxis.title.text = input_value;
               break;
           case 'y-axis-x-position': 
-              option_obj.yAxis.title.x = !!input_value ? parseInt(input_value) : 0;
+              num = !!input_value ? parseInt(input_value) : 0;
+              is_bar ? option_obj.xAxis.title.x = num : option_obj.yAxis.title.x = num;
               break;
           case 'y-axis-y-position': 
-              option_obj.yAxis.title.y = !!input_value ? parseInt(input_value) : 0;
+              num = !!input_value ? parseInt(input_value) : 0;
+              is_bar ? option_obj.xAxis.title.y = num : option_obj.yAxis.title.y = num;
               break;
           case 'x-axis-x-position': 
-              option_obj.xAxis.title.x = !!input_value ? parseInt(input_value) : 0;
+              num = !!input_value ? parseInt(input_value) : 0;
+              is_bar ? option_obj.yAxis.title.x = num : option_obj.xAxis.title.x = num;
               break;
           case 'x-axis-y-position': 
-              option_obj.xAxis.title.y = !!input_value ? parseInt(input_value) : 0;
+              num = !!input_value ? parseInt(input_value) : 0;
+              is_bar ? option_obj.yAxis.title.y = num : option_obj.xAxis.title.y = num;
               break;
           case 'marker-size': 
               option_obj.plotOptions.series.marker.radius = !!input_value ? parseInt(input_value) : 4;
