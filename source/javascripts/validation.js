@@ -1,6 +1,7 @@
 import chart from './chart';
 import utility from './utility';
 import selectors from './selectors';
+import tooltips from './tooltip';
 
 const checkPie = () => {
   const selectedIndicator = selectors.getSelectedItem('select-indicator-group');
@@ -50,13 +51,15 @@ const checkBlackAndWhite = () => {
   const blackAndWhiteCheck = $("#dataset_black_and_white");
   const overTimeCheckbox = $("#dataset_overtime")[0];
 
-  if((countryRounds.length >= 1 && countryRounds.length < 3) &&
+  if((countryRounds.length >= 1 && countryRounds.length < 4) &&
       overTimeCheckbox.checked == false) {
-    blackAndWhiteCheck.prop('disabled', '');
+      blackAndWhiteCheck.prop('disabled', '');
+      tooltips.disableBlackAndWhite();
   }
   else {
-    blackAndWhiteCheck.prop('disabled', 'disabled');
-    blackAndWhiteCheck.prop('checked', false);
+      blackAndWhiteCheck.prop('disabled', 'disabled');
+      blackAndWhiteCheck.prop('checked', false);
+      tooltips.enableBlackAndWhite();
   }
 }
 
@@ -71,10 +74,12 @@ const checkCharting = () => {
          chartType.length > 0) {
     chart.setCSVDownloadUrl();
     $('.submit-chart').prop('disabled', '');
+    tooltips.disableBtnSubmitChart();
     $('.reset-chart').prop('disabled', '');
     $('#download-csv').removeClass('disabled');
   } else {
     $('.submit-chart').prop('disabled', 'disabled');
+    tooltips.enableBtnSubmitChart();
     $('.reset-chart').prop('disabled', '');
     $('#download-csv').addClass('disabled');
   }

@@ -12,8 +12,10 @@ import validation from './validation';
 import utility from './utility';
 import translate from './translate';
 import definitions from './definitions';
+import tooltips from './tooltip';
 
 $(function() {
+  tooltips.initialize();
   chart.initialize();
 
   $("#select-language").change((e) => (translate.translatePage()));
@@ -55,6 +57,7 @@ $(function() {
     definitions.setDefinitionText();
   });
   $('.colorpicker').colorpicker();
+  chart.setStyleEvents();
   $("#select-all").click(() => (interaction.selectAll()));
   $("#select-latest").click(() => (interaction.selectLatest()));
   $("#clear-all").click(() => (interaction.clear()));
@@ -63,5 +66,5 @@ $(function() {
   $("#chart-types input").click(() => (validation.checkCharting()));
   $(".submit-chart").click(() => (chart.loadData()));
   $(".reset-chart").click(() => (interaction.resetChart()));
-
+  $(".btn-save-style").click(() => (chart.saveChartStyle()))
 });

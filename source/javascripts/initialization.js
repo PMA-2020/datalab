@@ -161,6 +161,27 @@ const initializeSurveyCountries = (surveyCountries) => {
   });
 };
 
+const initializeStyles = () => {
+    if (!!localStorage.saved_style && localStorage.saved_style == 1) {
+        for (let i=0; i<localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.startsWith('styles.')){
+                document.getElementById(key.substr(7)).value = localStorage.getItem(key);
+            }
+        }
+    }
+
+    /* Set Default Value and Placeholder of Chart Title and Axis Label */
+    const chart_type = localStorage.getItem('chart-type');
+    const chart_title = localStorage.getItem('chart-title');
+    const chart_axis_label = localStorage.getItem('chart-axis-label');
+    $('.chart-style-wrapper #chart-title').val(chart_title);
+    $('.chart-style-wrapper #chart-title').attr('placeholder', chart_title);
+    const select_axis = '.chart-style-wrapper #'+(chart_type=='bar' ? 'x' : 'y')+'-axis-label';
+    $(select_axis).val(chart_axis_label);
+    $(select_axis).attr('placeholder', chart_axis_label);
+}
+
 const initialize = () => {
   network.get("datalab/init").then(res => {
     console.log("------------------------------------------------");
@@ -196,6 +217,7 @@ const initialize = () => {
 
 const initialization = {
   initialize,
+  initializeStyles,
 };
 
 export default initialization;

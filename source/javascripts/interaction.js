@@ -1,5 +1,6 @@
 import utility from './utility';
 import selectors from './selectors';
+import chart from './chart';
 
 const selectAll = () => {
   $('#countryRoundModal .collapse.in input[type=checkbox]').prop('checked', true);
@@ -34,10 +35,8 @@ const finishModal = () => {
 }
 
 const resetChart = () => {
-  if (confirm('Are you sure you want to reset the chart styles?')) {
-    $(".tab-pane#style").find("input[type=text], textarea").val("");
-    generateChart();
-  };
+    $(".chart-style-wrapper").find("input[type=text], textarea").val("");
+    chart.initialize();
 }
 
 const interaction = {

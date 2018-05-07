@@ -62,9 +62,12 @@ $light-purple: lighten($dark-purple, 25%);
             color: #4169E1;
           }
         }
-        &.submit-chart {
+        &.submit-chart, &.btn-save-style {
           border-color: $dark-purple;
           background-color: $dark-purple;
+        }
+        &.submit-chart:disabled {
+          pointer-events: none;
         }
       }
       .nav {
