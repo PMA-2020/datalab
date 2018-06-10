@@ -1,10 +1,10 @@
-import network from './network';
-import utility from './utility';
-import selectors from './selectors';
-import combo from './combo';
-import validation from './validation';
-import initialization from './initialization';
-import csv from './csv';
+import Network from './network';
+import Utility from './utility';
+import Selectors from './selectors';
+import Combo from './combo';
+import Validation from './validation';
+import Initialization from './initialization';
+import CSV from './csv';
 import Highcharts from 'highcharts';
 import Highchart_theme from './chart-theme';
 require('highcharts/modules/exporting')(Highcharts);
@@ -13,29 +13,29 @@ let chart_obj = {};
 let option_obj = {};
 
 const generateTitle = inputs => {
-  const characteristicGroupLabel = utility.getStringById(
+  const characteristicGroupLabel = Utility.getStringById(
     inputs.characteristicGroups[0]["label.id"]
   );
-  const indicatorLabel = utility.getStringById(
+  const indicatorLabel = Utility.getStringById(
     inputs.indicators[0]["label.id"]
   );
   const countries = Array.from(new Set(inputs.surveys.reduce((tot, country) => {
-    return [...tot, utility.getStringById(country["country.label.id"])];
+    return [...tot, Utility.getStringById(country["country.label.id"])];
   }, []))).join(", ");
 
-  const title = `${indicatorLabel} ${utility.getStringById('by')} ${characteristicGroupLabel} ${utility.getStringById('for')} ${countries}`;
+  const title = `${indicatorLabel} ${Utility.getStringById('by')} ${characteristicGroupLabel} ${Utility.getStringById('for')} ${countries}`;
   localStorage.setItem('chart-title', title);
 
   return {
-    style: { color: utility.getOverrideValue('title-color') },
-    text: utility.getOverrideValue('chart-title', title),
+    style: { color: Utility.getOverrideValue('title-color') },
+    text: Utility.getOverrideValue('chart-title', title),
   };
 };
 
 const generateSeriesName = (countryId, geographyId, surveyId) => {
-  const country = utility.getStringById(countryId);
-  const geography = utility.getStringById(geographyId);
-  const survey = utility.getStringById(surveyId);
+  const country = Utility.getStringById(countryId);
+  const geography = Utility.getStringById(geographyId);
+  const survey = Utility.getStringById(surveyId);
 
   return `${country} ${geography} ${survey}`
 };
@@ -44,12 +44,12 @@ const generatePlotOptions = (precision) => {
   return {
     series: {
       connectNulls: true,
-      marker: { radius: utility.getOverrideValue('marker-size')},
+      marker: { radius: Utility.getOverrideValue('marker-size')},
       dataLabels: {
         enabled: true,
         format: `{y:.${precision}f}`,
-        x: utility.getOverrideValue('data-label-x-position'),
-        y: utility.getOverrideValue('data-label-y-position'),
+        x: Utility.getOverrideValue('data-label-x-position'),
+        y: Utility.getOverrideValue('data-label-y-position'),
       }
     },
     bar: { dataLabels: { enabled: true } },
@@ -68,7 +68,7 @@ const generatePlotOptions = (precision) => {
 
 const generateSubtitle = () => {
   return {
-    style: { color: utility.getOverrideValue('title-color') },
+    style: { color: Utility.getOverrideValue('title-color') },
     text: "PMA2020"
   }
 };
@@ -83,7 +83,7 @@ const generateCitation = partners => {
 
 const generateCredits = (inputs) => {
   const partners = Array.from(new Set(inputs.surveys.reduce((tot, country) => {
-    return [...tot, utility.getStringById(country["partner.label.id"])];
+    return [...tot, Utility.getStringById(country["partner.label.id"])];
   }, [])));
 
   return {
@@ -91,7 +91,7 @@ const generateCredits = (inputs) => {
     href: '',
     position: {
       align: 'center',
-      y: utility.getOverrideValue('credits-y-position')
+      y: Utility.getOverrideValue('credits-y-position')
     }
   }
 };
@@ -117,7 +117,7 @@ const generateOverTimeXAxis = () => {
 
 const getCharacteristicGroupNames = (groups) => {
   return groups.reduce((tot, charGroup) => {
-    const charGroupName = utility.getStringById(charGroup["characteristic.label.id"]);
+    const charGroupName = Utility.getStringById(charGroup["characteristic.label.id"]);
     return [...tot, charGroupName];
   }, []);
 };
@@ -126,13 +126,13 @@ const generateXaxis = characteristicGroups => {
   return {
     categories: getCharacteristicGroupNames(characteristicGroups),
     title: {
-      text: utility.getOverrideValue("x-axis-label", ""),
-      x: utility.getOverrideValue('x-axis-x-position'),
-      y: utility.getOverrideValue('x-axis-y-position')
+      text: Utility.getOverrideValue("x-axis-label", ""),
+      x: Utility.getOverrideValue('x-axis-x-position'),
+      y: Utility.getOverrideValue('x-axis-y-position')
     },
-    lineColor: utility.getOverrideValue('x-axis-color'),
-    tickColor: utility.getOverrideValue('tick-color'),
-    minorTickColor: utility.getOverrideValue('minor-tick-color'),
+    lineColor: Utility.getOverrideValue('x-axis-color'),
+    tickColor: Utility.getOverrideValue('tick-color'),
+    minorTickColor: Utility.getOverrideValue('minor-tick-color'),
   }
 };
 
@@ -141,15 +141,15 @@ const generateYaxis = indicator => {
 
     return {
       title: {
-        text: utility.getOverrideValue("y-axis-label", indicator),
-        style: { color: utility.getOverrideValue("label-color") },
-        x: utility.getOverrideValue('y-axis-x-position'),
-        y: utility.getOverrideValue('y-axis-y-position')
+        text: Utility.getOverrideValue("y-axis-label", indicator),
+        style: { color: Utility.getOverrideValue("label-color") },
+        x: Utility.getOverrideValue('y-axis-x-position'),
+        y: Utility.getOverrideValue('y-axis-y-position')
       },
-      lineColor: utility.getOverrideValue('y-axis-color'),
-      labels: { style: { color: utility.getOverrideValue('label-color') } },
-      tickColor: utility.getOverrideValue('tick-color'),
-      minorTickColor: utility.getOverrideValue('minor-tick-color'),
+      lineColor: Utility.getOverrideValue('y-axis-color'),
+      labels: { style: { color: Utility.getOverrideValue('label-color') } },
+      tickColor: Utility.getOverrideValue('tick-color'),
+      minorTickColor: Utility.getOverrideValue('minor-tick-color'),
       minorTickInterval: 'auto'
     }
 };
@@ -171,13 +171,13 @@ const generateExporting = () => {
 };
 
 const generateLegend = () => {
-  const countryRounds = selectors.getSelectedCountryRounds();
+  const countryRounds = Selectors.getSelectedCountryRounds();
 
   let legendContent = {
     layout: 'vertical',
     align: 'center',
     verticalAlign: 'bottom',
-    itemStyle: { color: utility.getOverrideValue('label-color'), }
+    itemStyle: { color: Utility.getOverrideValue('label-color'), }
   }
 
   if (countryRounds.length > 5) {
@@ -189,15 +189,15 @@ const generateLegend = () => {
 };
 
 const generateChartSettings = () => {
-    const chartType = selectors.getSelectedChartType();
+    const chartType = Selectors.getSelectedChartType();
     localStorage.setItem('chart-type', chartType);
 
     return {
       type: chartType,
-      marginBottom: utility.getOverrideValue('bottom-margin-offset'),
-      backgroundColor: utility.getOverrideValue('chart-background-color'),
-      style: { 
-          color: utility.getOverrideValue('label-color')
+      marginBottom: Utility.getOverrideValue('bottom-margin-offset'),
+      backgroundColor: Utility.getOverrideValue('chart-background-color'),
+      style: {
+          color: Utility.getOverrideValue('label-color')
       }
     }
 };
@@ -221,9 +221,9 @@ const generateOverTimeSeriesData = dataPoints => (
     return [
       ...res,
       {
-        name: utility.getStringById(characteristicGroupId),
+        name: Utility.getStringById(characteristicGroupId),
         data: dataPoint.values.reduce((tot, item) => {
-          const utcDate = utility.parseDate(item["survey.date"]);
+          const utcDate = Utility.parseDate(item["survey.date"]);
 
           return [...tot, [utcDate, item.value]];
         }, [])
@@ -253,7 +253,7 @@ const generateSeriesData = dataPoints => (
 const generatePieChart = res => {
   const inputs = res.queryInput;
   const characteristicGroups = res.results[0].values;
-  const indicator = utility.getStringById(inputs.indicators[0]["label.id"]);
+  const indicator = Utility.getStringById(inputs.indicators[0]["label.id"]);
   const dataPoints = res.results;
   const precision = res.chartOptions.precision;
 
@@ -262,7 +262,7 @@ const generatePieChart = res => {
     title: generateTitle(inputs),
     subtitle: generateSubtitle(),
     series: generatePieData(
-      selectors.getSelectedValue('select-characteristic-group'),
+      Selectors.getSelectedValue('select-characteristic-group'),
       characteristicGroups,
       dataPoints
     ),
@@ -277,7 +277,7 @@ const generatePieChart = res => {
 const generateOverTimeChart = res => {
   const inputs = res.queryInput;
   const characteristicGroups = res.results[0].values;
-  const indicator = utility.getStringById(inputs.indicators[0]["label.id"]);
+  const indicator = Utility.getStringById(inputs.indicators[0]["label.id"]);
   const dataPoints = res.results;
   const precision = res.chartOptions.precision;
 
@@ -299,7 +299,7 @@ const generateOverTimeChart = res => {
 const generateChart = res => {
   const inputs = res.queryInput;
   const characteristicGroups = res.results[0].values;
-  const indicator = utility.getStringById(inputs.indicators[0]["label.id"]);
+  const indicator = Utility.getStringById(inputs.indicators[0]["label.id"]);
   const dataPoints = res.results;
   const precision = res.chartOptions.precision;
 
@@ -333,7 +333,7 @@ const data = (query) => {
       "overTime": overTime,
     }
 
-    network.get("datalab/data", opts).then(res => {
+    Network.get("datalab/data", opts).then(res => {
 
         if (overTime) { // Overtime series option selected
           option_obj = generateOverTimeChart(res);
@@ -344,22 +344,22 @@ const data = (query) => {
         }
 
         chart_obj = Highcharts.chart('chart-container', option_obj);
-        
-        combo.filter();
-        validation.checkOverTime();
-        validation.checkBlackAndWhite();
-        validation.checkPie();
-        validation.checkCharting();
-        initialization.initializeStyles();
+
+        Combo.filter();
+        Validation.checkOverTime();
+        Validation.checkBlackAndWhite();
+        Validation.checkPie();
+        Validation.checkCharting();
+        Initialization.initializeStyles();
     });
 };
 
 const loadData = () => {
-  const selectedSurveys = selectors.getSelectedCountryRounds();
-  const selectedIndicator = selectors.getSelectedValue('select-indicator-group');
-  const selectedCharacteristicGroup = selectors.getSelectedValue('select-characteristic-group');
+  const selectedSurveys = Selectors.getSelectedCountryRounds();
+  const selectedIndicator = Selectors.getSelectedValue('select-indicator-group');
+  const selectedCharacteristicGroup = Selectors.getSelectedValue('select-characteristic-group');
   const overTime = $('#dataset_overtime')[0].checked;
-  const chartType = selectors.getSelectedChartType();
+  const chartType = Selectors.getSelectedChartType();
   const url_root = window.location.href.split('?')[0];
   const url = url_root + '?surveyCountries=' + selectedSurveys.join(',') + '&indicators=' + selectedIndicator + '&characteristicGroups=' + selectedCharacteristicGroup + '&chartType=' + chartType + '&overTime=' + overTime.toString();
   window.location.href = url;
@@ -404,44 +404,44 @@ const setStyleEvents = () => {
       const input_value = e.target.value;
       let num = 0;
       switch (e.target.id) {
-          case 'chart-title': 
+          case 'chart-title':
               option_obj.title.text = input_value;
               break;
-          case 'y-axis-label': 
+          case 'y-axis-label':
               is_bar ? option_obj.xAxis.title.text = input_value : option_obj.yAxis.title.text = input_value;
               break;
-          case 'x-axis-label': 
+          case 'x-axis-label':
               is_bar ? option_obj.yAxis.title.text = input_value : option_obj.xAxis.title.text = input_value;
               break;
-          case 'y-axis-x-position': 
+          case 'y-axis-x-position':
               num = !!input_value ? parseInt(input_value) : 0;
               is_bar ? option_obj.xAxis.title.x = num : option_obj.yAxis.title.x = num;
               break;
-          case 'y-axis-y-position': 
+          case 'y-axis-y-position':
               num = !!input_value ? parseInt(input_value) : 0;
               is_bar ? option_obj.xAxis.title.y = num : option_obj.yAxis.title.y = num;
               break;
-          case 'x-axis-x-position': 
+          case 'x-axis-x-position':
               num = !!input_value ? parseInt(input_value) : 0;
               is_bar ? option_obj.yAxis.title.x = num : option_obj.xAxis.title.x = num;
               break;
-          case 'x-axis-y-position': 
+          case 'x-axis-y-position':
               num = !!input_value ? parseInt(input_value) : 0;
               is_bar ? option_obj.yAxis.title.y = num : option_obj.xAxis.title.y = num;
               break;
-          case 'marker-size': 
+          case 'marker-size':
               option_obj.plotOptions.series.marker.radius = !!input_value ? parseInt(input_value) : 4;
               break;
-          case 'data-label-x-position': 
+          case 'data-label-x-position':
               option_obj.plotOptions.series.dataLabels.x = !!input_value ? parseInt(input_value) : 0;
               break;
-          case 'data-label-y-position': 
+          case 'data-label-y-position':
               option_obj.plotOptions.series.dataLabels.y = !!input_value ? parseInt(input_value) : -6;
               break;
-          case 'credits-y-position': 
+          case 'credits-y-position':
               option_obj.credits.position.y = !!input_value ? parseInt(input_value) : 0;
               break;
-          case 'bottom-margin-offset': 
+          case 'bottom-margin-offset':
               option_obj.chart.marginBottom = !!input_value ? parseInt(input_value) : 115;
               break;
       }
@@ -452,14 +452,14 @@ const setStyleEvents = () => {
       if (Object.keys(chart_obj).length == 0) return;
 
       if ($(this).prop('checked'))
-        chart_obj.update(Highchart_theme.gray);
-      else 
-        chart_obj.update(Highchart_theme.sunset);
+        chart_obj.update(Highchart_theme.gray());
+      else
+        chart_obj.update(Highchart_theme.sunset());
   });
 }
 
-const initialize = () => initialization.initialize();
-const setCSVDownloadUrl = () => csv.setDownloadUrl();
+const initialize = () => Initialization.initialize();
+const setCSVDownloadUrl = () => CSV.setDownloadUrl();
 
 const saveChartStyle = () => {
     const chart_style_wrapper = document.getElementsByClassName('chart-style-wrapper')[0];

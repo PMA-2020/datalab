@@ -1,36 +1,47 @@
 import utility from './utility';
 
-const runTranslate = (items, type) => {
-  items.each(i => {
-    const item = items[i];
-    const key = item.dataset.key;
-    const translatedValue = utility.getStringById(key);
+/**
+ * Handle i18n translation of items on the page designated
+ * with the class `i18nable`
+ */
+export default class Translate {
+  /**
+   * Translate the items passed in
+   * @private
+   */
+  static runTranslate(items, type) {
+    items.each(i => {
+      const item = items[i];
+      const key = item.dataset.key;
+      const translatedValue = utility.getStringById(key);
 
-    if (translatedValue) {
-      if (type === 'optgroup') {
-        item.label = translatedValue;
-      } else {
-        item.innerHTML = translatedValue;
+      if (translatedValue) {
+        if (type === 'optgroup') {
+          item.label = translatedValue;
+        } else {
+          item.innerHTML = translatedValue;
+        }
       }
-    }
-  });
-};
+    });
+  }
 
-const translateOptGroup = () => {
-  const items = $(".i18nable-optgroup").not($("a.opt.i18nable"));
-  runTranslate(items, 'optgroup');
-};
+  /**
+   * Translate the option group content
+   * @private
+   */
+  static translateOptGroup() {
+    const items = $(".i18nable-optgroup").not($("a.opt.i18nable"));
+    this.runTranslate(items, 'optgroup');
+  }
 
-const translatePage = () => {
-  const items = $(".i18nable").not($("a.opt.i18nable"));
-  runTranslate(items);
-  translateOptGroup();
+  /**
+   * Run the translation across all i18nable items
+   */
+  static translatePage() {
+    const items = $(".i18nable").not($("a.opt.i18nable"));
+    this.runTranslate(items);
+    this.translateOptGroup();
 
-  $('.selectpicker').selectpicker('refresh');
-};
-
-const translate = {
-  translatePage,
-};
-
-export default translate;
+    $('.selectpicker').selectpicker('refresh');
+  }
+}
