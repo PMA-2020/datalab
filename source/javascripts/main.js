@@ -13,7 +13,7 @@ import 'bootstrap-select/dist/css/bootstrap-select.css';
 import 'bootstrap-colorpicker';
 import 'font-awesome/css/font-awesome.css';
 
-import chart from './chart';
+import Chart from './chart';
 import Combo from './combo';
 import Interaction from './interaction';
 import Validation from './validation';
@@ -24,6 +24,7 @@ import Tooltips from './tooltip';
 // Bind on the document ready
 $(function() {
   // Initialize the Tooltips and Chart
+  const chart = new Chart();
   Tooltips.initialize();
   chart.initialize();
 
@@ -83,6 +84,6 @@ $(function() {
   $("#closeCountryRoundModal").click(() => (Interaction.closeModal()));
   $("#chart-types input").click(() => (Validation.checkCharting()));
   $(".submit-chart").click(() => (chart.loadData()));
-  $(".reset-chart").click(() => (Interaction.resetChart()));
-  $(".btn-save-style").click(() => (chart.saveChartStyle()))
+  $(".reset-chart").click(() => (Interaction.resetChart(chart)));
+  $(".btn-save-style").click(() => (chart.saveChartStyle()));
 });

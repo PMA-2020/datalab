@@ -35,15 +35,17 @@ export default class Network {
 
   /**
    * Send network request for data
+   * @param {Request} request - Standard request object for `fetch`
+   * @return {object} the JSON response as an object
    * @private
    */
   static sendRequest(request) {
-    Network.displayLoading();
-    return fetch(request).then(function(response) {
-      Network.removeAlerts();
+    this.displayLoading();
+    return fetch(request).then((response) => {
+      this.removeAlerts();
       return response.json();
     }).catch(function(err) {
-      Network.displayError();
+      this.displayError();
       console.log("Error while attempting to request resource. Please contact site administrator.");
       console.log(err);
     });
@@ -51,6 +53,8 @@ export default class Network {
 
   /**
    * Build a URL to the API v1
+   * @param {string} path - The URL path within the API
+   * @param {object} opts - Map of options for the query
    */
   static buildUrl(path, opts) {
     const baseUrl = env.api_url || 'http://api.pma2020.org';
@@ -64,6 +68,9 @@ export default class Network {
 
   /**
    * Send a GET request to the API at path, with options (opts)
+   * @param {string} path - The URL path within the API
+   * @param {object} opts - Map of options for the query
+   * @return {object} the json object from the API
    */
   static get(path, opts) {
     const request = new Request(this.buildUrl(path, opts));

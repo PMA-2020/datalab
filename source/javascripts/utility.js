@@ -23,7 +23,10 @@ export default class Utility {
   }
 
   /**
-   * Get override values
+   * Get override values from inputs on the style tab, or returns the fallback
+   * @param {string} id - DOM ID to get the value from
+   * @param {string} fallback - Fallback value to use if the id doesn't have a value
+   * @return {string} override value or the fallback provided
    */
   static getOverrideValue(id, fallback) {
     let overRideValue = document.getElementById(id).value;
@@ -42,6 +45,7 @@ export default class Utility {
 
   /**
    * Get label for a specific item by id
+   * Uses the strings loaded into local storage, provided by the API
    */
   static getStringById(labelId) {
     const strings = this.loadStringsFromLocalStorage();

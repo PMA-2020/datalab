@@ -1,5 +1,4 @@
 import Selectors from './selectors';
-import chart from './chart';
 
 /**
  * Encapsulate interactions within the app
@@ -53,7 +52,7 @@ export default class Interaction {
   /**
    * Clear the chart and re-initialize
    */
-  static resetChart() {
+  static resetChart(chart) {
     $(".chart-style-wrapper").find("input[type=text], textarea").val("");
     chart.initialize();
   }

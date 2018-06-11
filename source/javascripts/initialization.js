@@ -2,7 +2,6 @@ import Network from './network';
 import Utility from './utility';
 import Selectors from './selectors';
 import URLParse from './url-parse';
-import chart from './chart';
 
 import env from '../../env';
 
@@ -219,9 +218,10 @@ export default class Initialization {
   /**
    * Main entry point for initialization,
    * does the actual first api call to get data
+   * @param {Chart} chart - The one and only chart object
    * @public
    */
-  static initialize() {
+  static initialize(chart) {
     Network.get("datalab/init").then(res => {
       console.log("------------------------------------------------");
       console.log(`PMA2020 Datalab API Version: ${res.metadata.version}`);
