@@ -1,29 +1,36 @@
-import utility from './utility';
-import selectors from './selectors';
+import Utility from './utility';
+import Selectors from './selectors';
 
-const getDefinition = item => {
-  const definitionId = item.dataset.definitionId;
-  const itemNameId = item.dataset.labelId;
+/**
+ * Method to set help definition text based on selections
+ */
+export default class Definitions {
 
-  if (definitionId && itemNameId) {
-    const definition = utility.getStringById(definitionId);
-    const itemName = utility.getStringById(itemNameId);
-    return `${itemName}: ${definition}`;
-  } else {
-    return '';
+  /**
+   * Updates help definition text based on indicator
+   * and characteristic group
+   */
+  static setDefinitionText() {
+    const selectedIndicator = Selectors.getSelectedItem('select-indicator-group');
+    const selectedCharacteristicGroup = Selectors.getSelectedItem('select-characteristic-group');
+
+    $(".help-definition.indicator-group").html(this.getDefinition(selectedIndicator));
+    $(".help-definition.characteristic-group").html(this.getDefinition(selectedCharacteristicGroup));
   }
-};
 
-const setDefinitionText = () => {
-  const selectedIndicator = selectors.getSelectedItem('select-indicator-group');
-  const selectedCharacteristicGroup = selectors.getSelectedItem('select-characteristic-group');
+  /**
+   * @private
+   */
+  static getDefinition(item) {
+    const definitionId = item.dataset.definitionId;
+    const itemNameId = item.dataset.labelId;
 
-  $(".help-definition.indicator-group").html(getDefinition(selectedIndicator));
-  $(".help-definition.characteristic-group").html(getDefinition(selectedCharacteristicGroup));
-};
-
-const definitions = {
-  setDefinitionText,
-};
-
-export default definitions;
+    if (definitionId && itemNameId) {
+      const definition = Utility.getStringById(definitionId);
+      const itemName = Utility.getStringById(itemNameId);
+      return `${itemName}: ${definition}`;
+    } else {
+      return '';
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "source": "./source/javascripts",
+  "destination": "./javascript_docs",
+  "plugins": [
+    {
+      "name": "esdoc-standard-plugin",
+      "option" : {
+        "undocumentIdentifier": {"enable": false},
+        "unexportedIdentifier": {"enable": true}
+      }
+    },
+    {
+      "name": "esdoc-importpath-plugin",
+      "option": {
+        "stripPackageName": true,
+        "replaces": [
+          {
+            "from": "^javascripts",
+            "to": "."
+          },
+          {
+            "from": ".js",
+            "to": ""
+          }
+        ]
+      }
+    }
+  ]
+}

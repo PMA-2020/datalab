@@ -9,3 +9,4 @@ ignored/
 .cache
 .DS_Store
 env.js
+javascript_docs/

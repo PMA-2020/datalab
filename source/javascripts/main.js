@@ -1,3 +1,11 @@
+/**
+ * The main JavaScript entrypoint.
+ *
+ * This file loads the top level dependencies,
+ * initializes the chart
+ * and other components via jQuery.
+ */
+
 import 'bootstrap';
 import 'bootstrap-select';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -5,21 +13,25 @@ import 'bootstrap-select/dist/css/bootstrap-select.css';
 import 'bootstrap-colorpicker';
 import 'font-awesome/css/font-awesome.css';
 
-import chart from './chart';
-import combo from './combo';
-import interaction from './interaction';
-import validation from './validation';
-import utility from './utility';
-import translate from './translate';
-import definitions from './definitions';
-import tooltips from './tooltip';
+import Chart from './chart';
+import Combo from './combo';
+import Interaction from './interaction';
+import Validation from './validation';
+import Translate from './translate';
+import Definitions from './definitions';
+import Tooltips from './tooltip';
 
+// Bind on the document ready
 $(function() {
-  tooltips.initialize();
+  // Initialize the Tooltips and Chart
+  const chart = new Chart();
+  Tooltips.initialize();
   chart.initialize();
 
-  $("#select-language").change((e) => (translate.translatePage()));
+  // Bind to run translations when the language select is changed
+  $("#select-language").change((e) => (Translate.translatePage()));
 
+  // Bind the clear button to reset everything
   $(".clear-input").click((e) => {
     const clearId = e.target.dataset.type;
 
@@ -29,42 +41,49 @@ $(function() {
     $(`#select-${clearId}`).selectpicker('deselectAll');
     $(`#select-${clearId}`).selectpicker('refresh');
 
-    combo.filter();
-    validation.checkCharting();
-    validation.checkPie();
+    Combo.filter();
+    Validation.checkCharting();
+    Validation.checkPie();
   });
 
+  // bind for when the country round modal closes
   $("#finishCountryRoundModal").click(() => {
-    interaction.finishModal();
-    validation.checkOverTime();
-    validation.checkBlackAndWhite();
-    validation.checkCharting();
-    validation.checkPie();
-    combo.filter();
+    Interaction.finishModal();
+    Validation.checkOverTime();
+    Validation.checkBlackAndWhite();
+    Validation.checkCharting();
+    Validation.checkPie();
+    Combo.filter();
   });
 
+  // bind for the indicator group selection
   $("#select-indicator-group").change(() => {
-    combo.filter();
-    validation.checkPie();
-    validation.checkCharting();
-    definitions.setDefinitionText();
+    Combo.filter();
+    Validation.checkPie();
+    Validation.checkCharting();
+    Definitions.setDefinitionText();
   });
 
+  // bind for the characteristic group selection
   $("#select-characteristic-group").change(() => {
-    combo.filter();
-    validation.checkPie();
-    validation.checkCharting();
-    definitions.setDefinitionText();
+    Combo.filter();
+    Validation.checkPie();
+    Validation.checkCharting();
+    Definitions.setDefinitionText();
   });
+
+  // setup color picker and styling
   $('.colorpicker').colorpicker();
   chart.setStyleEvents();
-  $("#select-all").click(() => (interaction.selectAll()));
-  $("#select-latest").click(() => (interaction.selectLatest()));
-  $("#clear-all").click(() => (interaction.clear()));
-  $("#dataset_overtime").click(() => (validation.checkBlackAndWhite()));
-  $("#closeCountryRoundModal").click(() => (interaction.closeModal()));
-  $("#chart-types input").click(() => (validation.checkCharting()));
+
+  // Additional link bindings
+  $("#select-all").click(() => (Interaction.selectAll()));
+  $("#select-latest").click(() => (Interaction.selectLatest()));
+  $("#clear-all").click(() => (Interaction.clear()));
+  $("#dataset_overtime").click(() => (Validation.checkBlackAndWhite()));
+  $("#closeCountryRoundModal").click(() => (Interaction.closeModal()));
+  $("#chart-types input").click(() => (Validation.checkCharting()));
   $(".submit-chart").click(() => (chart.loadData()));
-  $(".reset-chart").click(() => (interaction.resetChart()));
-  $(".btn-save-style").click(() => (chart.saveChartStyle()))
+  $(".reset-chart").click(() => (Interaction.resetChart(chart)));
+  $(".btn-save-style").click(() => (chart.saveChartStyle()));
 });
