@@ -24,6 +24,8 @@ $light-purple: lighten($dark-purple, 25%);
     &.top-row {
       @media (min-width: 992px) {
         display: table;
+        max-width: 1250px;
+        margin: 0px auto;
         & .match-height {
           float: none;
           display: table-cell;
@@ -90,10 +92,7 @@ $light-purple: lighten($dark-purple, 25%);
           border-bottom-left-radius: 5px;
           padding: 10px;
           .row {
-            margin-bottom: 5%;
-            &:last-child {
-              margin-bottom: 0;
-            }
+            margin-bottom: 5px;
           }
           .form-group {
             margin-bottom: 0;
@@ -135,6 +134,12 @@ $light-purple: lighten($dark-purple, 25%);
                 }
               }
             }
+          }
+          .chart-style-wrapper .form-group .row {
+              max-width: 260px;
+              .col-md-6:nth-child(2) {
+                padding: 0px;
+              }
           }
         }
       }

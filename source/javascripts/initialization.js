@@ -204,7 +204,7 @@ const initialize = () => {
         $('#chart-types #option-'+query['chartType']).click();
         const selectedCountries = query['surveyCountries'].split(',');
         selectedCountries.forEach(country_id => {
-          $('#'+country_id).click();
+          $('#'+country_id).prop('checked', true);
         });
         if (query['overTime']=='true'){
           $('#dataset_overtime').prop('checked', true);
