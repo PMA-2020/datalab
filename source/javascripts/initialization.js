@@ -213,7 +213,45 @@ export default class Initialization {
     const select_axis = '.chart-style-wrapper #'+(chart_type=='bar' ? 'x' : 'y')+'-axis-label';
     $(select_axis).val(chart_axis_label);
     $(select_axis).attr('placeholder', chart_axis_label);
-  }
+}
+
+const initialize = () => {
+  network.get("datalab/init").then(res => {
+    console.log("------------------------------------------------");
+    console.log(`PMA2020 Datalab API Version: ${res.metadata.version}`);
+    console.log(`PMA2020 Datalab Client:      ${env.version}`);
+    console.log(`Environment Used:            ${env.environment}`);
+    console.log("------------------------------------------------");
+    initializeStrings(res.strings);
+    initializeLanguage(res.languages);
+    initializeCharacteristicGroups(res.characteristicGroupCategories);
+    initializeIndicators(res.indicatorCategories);
+    initializeSurveyCountries(res.surveyCountries);
+
+    $('.selectpicker').selectpicker('refresh');
+    if (urlparse.getQuery() !== false)
+    {
+        const query = urlparse.parseQuery();
+        $('#select-indicator-group').selectpicker('val', query['indicators']);
+        $('#select-characteristic-group').selectpicker('val', query['characteristicGroups']);
+        $('#chart-types #option-'+query['chartType']).click();
+        const selectedCountries = query['surveyCountries'].split(',');
+        selectedCountries.forEach(country_id => {
+          $('#'+country_id).prop('checked', true);
+        });
+        if (query['overTime']=='true'){
+          $('#dataset_overtime').prop('checked', true);
+          $('#dataset_overtime').prop('disabled', false);
+        }
+        chart.data(query);
+    }
+  });
+};
+
+const initialization = {
+  initialize,
+  initializeStyles,
+};
 
   /**
    * Main entry point for initialization,
