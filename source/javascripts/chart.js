@@ -47,7 +47,7 @@ export default class Chart {
     }, []))).join(", ");
 
     const title = `${indicatorLabel} ${Utility.getStringById('by')} ${characteristicGroupLabel} ${Utility.getStringById('for')} ${countries}`;
-    localStorage.setItem('chart-title', title);
+    sessionStorage.setItem('chart-title', title);
 
     return {
       style: { color: Utility.getOverrideValue('title-color') },
@@ -200,7 +200,7 @@ export default class Chart {
    * @private
    */
   generateYaxis(indicator) {
-    localStorage.setItem('chart-axis-label', indicator);
+    sessionStorage.setItem('chart-axis-label', indicator);
 
     return {
       title: {
@@ -262,7 +262,7 @@ export default class Chart {
    */
   generateChartSettings() {
     const chartType = Selectors.getSelectedChartType();
-    localStorage.setItem('chart-type', chartType);
+    sessionStorage.setItem('chart-type', chartType);
 
     return {
       type: chartType,
@@ -451,7 +451,6 @@ export default class Chart {
       Validation.checkBlackAndWhite();
       Validation.checkPie();
       Validation.checkCharting();
-      Initialization.initializeStyles();
     });
   }
 
@@ -476,7 +475,7 @@ export default class Chart {
   setStyleEvents() {
     $('.colorpicker').on('change', (e) => {
       if (Object.keys(this.chart_obj).length == 0) return;
-      const is_bar = localStorage.getItem('chart-type')==="bar";
+      const is_bar = sessionStorage.getItem('chart-type')==="bar";
       const color_value = e.target.value;
       switch (e.target.id) {
         case 'chart-background-color':
@@ -504,11 +503,12 @@ export default class Chart {
           break;
       }
       this.chart_obj.update(this.option_obj);
+      this.saveChartStyle();
     });
 
     $('.form-control').on('blur', (e) => {
       if (Object.keys(this.chart_obj).length == 0) return;
-      const is_bar = localStorage.getItem('chart-type')==="bar";
+      const is_bar = sessionStorage.getItem('chart-type')==="bar";
       const input_value = e.target.value;
       let num = 0;
       switch (e.target.id) {
@@ -554,6 +554,7 @@ export default class Chart {
           break;
       }
       this.chart_obj.update(this.option_obj);
+      this.saveChartStyle();
     });
 
     $("#dataset_black_and_white").on('change', (e) => {
@@ -563,6 +564,7 @@ export default class Chart {
         this.chart_obj.update(Highchart_theme.gray());
       else
         this.chart_obj.update(Highchart_theme.sunset());
+      this.saveChartStyle();
     });
   }
 
@@ -580,11 +582,11 @@ export default class Chart {
   saveChartStyle() {
     const chart_style_wrapper = document.getElementsByClassName('chart-style-wrapper')[0];
     const style_DOMs = chart_style_wrapper.getElementsByClassName('form-control');
-    localStorage.saved_style = 1;
+    sessionStorage.saved_style = 1;
     for (let i = 0; i < style_DOMs.length; i++ )
     {
-      localStorage.setItem('styles.'+style_DOMs[i].id, style_DOMs[i].value);
+      sessionStorage.setItem('styles.'+style_DOMs[i].id, style_DOMs[i].value);
     }
-    this.loadData();
+    //this.loadData();
   }
 }

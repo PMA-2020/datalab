@@ -18,8 +18,8 @@ export default class Initialization {
    */
   static initializeStrings(strings) {
     if (typeof(Storage) !== "undefined") {
-      localStorage.removeItem('pma2020Strings', strings);
-      localStorage.pma2020Strings = JSON.stringify(strings);
+      sessionStorage.removeItem('pma2020Strings', strings);
+      sessionStorage.pma2020Strings = JSON.stringify(strings);
     } else {
       console.log('Warning: Local Storage is unavailable.');
     }
@@ -195,63 +195,25 @@ export default class Initialization {
    * @public
    */
   static initializeStyles() {
-    if (!!localStorage.saved_style && localStorage.saved_style == 1) {
-      for (let i=0; i<localStorage.length; i++) {
-        const key = localStorage.key(i);
+    if (!!sessionStorage.saved_style && sessionStorage.saved_style == 1) {
+      for (let i=0; i<sessionStorage.length; i++) {
+        const key = sessionStorage.key(i);
         if (key.startsWith('styles.')){
-          document.getElementById(key.substr(7)).value = localStorage.getItem(key);
+          document.getElementById(key.substr(7)).value = sessionStorage.getItem(key);
         }
       }
     }
 
     /* Set Default Value and Placeholder of Chart Title and Axis Label */
-    const chart_type = localStorage.getItem('chart-type');
-    const chart_title = localStorage.getItem('chart-title');
-    const chart_axis_label = localStorage.getItem('chart-axis-label');
+    const chart_type = sessionStorage.getItem('chart-type');
+    const chart_title = sessionStorage.getItem('chart-title');
+    const chart_axis_label = sessionStorage.getItem('chart-axis-label');
     $('.chart-style-wrapper #chart-title').val(chart_title);
     $('.chart-style-wrapper #chart-title').attr('placeholder', chart_title);
     const select_axis = '.chart-style-wrapper #'+(chart_type=='bar' ? 'x' : 'y')+'-axis-label';
     $(select_axis).val(chart_axis_label);
     $(select_axis).attr('placeholder', chart_axis_label);
-}
-
-const initialize = () => {
-  network.get("datalab/init").then(res => {
-    console.log("------------------------------------------------");
-    console.log(`PMA2020 Datalab API Version: ${res.metadata.version}`);
-    console.log(`PMA2020 Datalab Client:      ${env.version}`);
-    console.log(`Environment Used:            ${env.environment}`);
-    console.log("------------------------------------------------");
-    initializeStrings(res.strings);
-    initializeLanguage(res.languages);
-    initializeCharacteristicGroups(res.characteristicGroupCategories);
-    initializeIndicators(res.indicatorCategories);
-    initializeSurveyCountries(res.surveyCountries);
-
-    $('.selectpicker').selectpicker('refresh');
-    if (urlparse.getQuery() !== false)
-    {
-        const query = urlparse.parseQuery();
-        $('#select-indicator-group').selectpicker('val', query['indicators']);
-        $('#select-characteristic-group').selectpicker('val', query['characteristicGroups']);
-        $('#chart-types #option-'+query['chartType']).click();
-        const selectedCountries = query['surveyCountries'].split(',');
-        selectedCountries.forEach(country_id => {
-          $('#'+country_id).prop('checked', true);
-        });
-        if (query['overTime']=='true'){
-          $('#dataset_overtime').prop('checked', true);
-          $('#dataset_overtime').prop('disabled', false);
-        }
-        chart.data(query);
-    }
-  });
-};
-
-const initialization = {
-  initialize,
-  initializeStyles,
-};
+  }
 
   /**
    * Main entry point for initialization,
@@ -271,6 +233,7 @@ const initialization = {
       this.initializeCharacteristicGroups(res.characteristicGroupCategories);
       this.initializeIndicators(res.indicatorCategories);
       this.initializeSurveyCountries(res.surveyCountries);
+      this.initializeStyles();
 
       $('.selectpicker').selectpicker('refresh');
       if (URLParse.getQuery() !== false)

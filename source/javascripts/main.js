@@ -85,5 +85,4 @@ $(function() {
   $("#chart-types input").click(() => (Validation.checkCharting()));
   $(".submit-chart").click(() => (chart.loadData()));
   $(".reset-chart").click(() => (Interaction.resetChart(chart)));
-  $(".btn-save-style").click(() => (chart.saveChartStyle()));
 });
