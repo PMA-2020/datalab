@@ -477,36 +477,37 @@ export default class Chart {
       if (Object.keys(this.chart_obj).length == 0) return;
       const is_bar = sessionStorage.getItem('chart-type')==="bar";
       const color_value = e.target.value;
+      const color_default_black = !!color_value ? color_value : '#000';
       switch (e.target.id) {
         case 'chart-background-color':
-          this.option_obj.chart.backgroundColor = color_value;
+          this.option_obj.chart.backgroundColor = !!color_value ? color_value : '#fff';
           break;
         case 'title-color':
-          this.option_obj.title.style.color = color_value;
+          this.option_obj.title.style.color = color_default_black;
           break;
         case 'label-color':
-          this.option_obj.chart.style.color = color_value;
+          this.option_obj.chart.style.color = color_default_black;
           break;
         case 'y-axis-color':
-          is_bar ? this.option_obj.xAxis.lineColor = color_value : this.option_obj.yAxis.lineColor = color_value;
+          is_bar ? this.option_obj.xAxis.lineColor = color_default_black : this.option_obj.yAxis.lineColor = color_default_black;
           break;
         case 'x-axis-color':
-          is_bar ? this.option_obj.yAxis.lineColor = color_value : this.option_obj.xAxis.lineColor = color_value;
+          is_bar ? this.option_obj.yAxis.lineColor = color_default_black : this.option_obj.xAxis.lineColor = color_default_black;
           break;
         case 'tick-color':
-          this.option_obj.xAxis.tickColor = color_value;
-          this.option_obj.yAxis.tickColor = color_value;
+          this.option_obj.xAxis.tickColor = color_default_black;
+          this.option_obj.yAxis.tickColor = color_default_black;
           break;
         case 'minor-tick-color':
-          this.option_obj.xAxis.minorTickColor = color_value;
-          this.option_obj.yAxis.minorTickColor = color_value;
+          this.option_obj.xAxis.minorTickColor = color_default_black;
+          this.option_obj.yAxis.minorTickColor = color_default_black;
           break;
       }
       this.chart_obj.update(this.option_obj);
       this.saveChartStyle();
     });
 
-    $('.form-control').on('blur', (e) => {
+    $('.form-control.style-input').on('blur', (e) => {
       if (Object.keys(this.chart_obj).length == 0) return;
       const is_bar = sessionStorage.getItem('chart-type')==="bar";
       const input_value = e.target.value;
