@@ -51,7 +51,7 @@ export default class Chart {
 
     return {
       style: { color: Utility.getOverrideValue('title-color') },
-      text: Utility.getOverrideValue('chart-title', title),
+      text: title,
     };
   }
 
@@ -186,7 +186,7 @@ export default class Chart {
     return {
       categories: this.getCharacteristicGroupNames(characteristicGroups),
       title: {
-        text: Utility.getOverrideValue("x-axis-label", ""),
+        text: "",
         x: Utility.getOverrideValue('x-axis-x-position'),
         y: Utility.getOverrideValue('x-axis-y-position')
       },
@@ -204,7 +204,7 @@ export default class Chart {
 
     return {
       title: {
-        text: Utility.getOverrideValue("y-axis-label", indicator),
+        text: indicator,
         style: { color: Utility.getOverrideValue("label-color") },
         x: Utility.getOverrideValue('y-axis-x-position'),
         y: Utility.getOverrideValue('y-axis-y-position')
@@ -434,24 +434,29 @@ export default class Chart {
       "overTime": overTime,
     }
 
-    Network.get("datalab/data", opts).then(res => {
+    return new Promise((resolve, reject) => {
+        Network.get("datalab/data", opts).then(res => {
 
-      if (overTime) { // Overtime series option selected
-        this.option_obj = this.generateOverTimeChart(res);
-      } else if (chartType === 'pie') { // Pie chart type option selected
-        this.option_obj = this.generatePieChart(res);
-      } else { // Everything else
-        this.option_obj = this.generateChart(res);
-      }
+          if (overTime) { // Overtime series option selected
+            this.option_obj = this.generateOverTimeChart(res);
+          } else if (chartType === 'pie') { // Pie chart type option selected
+            this.option_obj = this.generatePieChart(res);
+          } else { // Everything else
+            this.option_obj = this.generateChart(res);
+          }
 
-      this.chart_obj = Highcharts.chart('chart-container', this.option_obj);
+          this.chart_obj = Highcharts.chart('chart-container', this.option_obj);
+          if (sessionStorage.getItem('switch.bw')==='true')
+            this.chart_obj.update(Highchart_theme.gray());
 
-      Combo.filter();
-      Validation.checkOverTime();
-      Validation.checkBlackAndWhite();
-      Validation.checkPie();
-      Validation.checkCharting();
-    });
+          Combo.filter();
+          Validation.checkOverTime();
+          Validation.checkBlackAndWhite();
+          Validation.checkPie();
+          Validation.checkCharting();
+          resolve();
+        });
+    })
   }
 
   /**
@@ -581,13 +586,15 @@ export default class Chart {
    * Record the custom chart styling to local storage
    */
   saveChartStyle() {
-    const chart_style_wrapper = document.getElementsByClassName('chart-style-wrapper')[0];
-    const style_DOMs = chart_style_wrapper.getElementsByClassName('form-control');
     sessionStorage.saved_style = 1;
-    for (let i = 0; i < style_DOMs.length; i++ )
-    {
-      sessionStorage.setItem('styles.'+style_DOMs[i].id, style_DOMs[i].value);
-    }
+    const styleElements = $('.chart-style-wrapper .form-control');
+    styleElements.each(function(){
+        const id = $(this).attr('id');
+        const key = `styles.${id}`;
+        const value = $(this).val();
+        sessionStorage.setItem(key, value);
+    });
+    sessionStorage.setItem('switch.bw', $('#dataset_black_and_white').prop('checked'));
     //this.loadData();
   }
 }

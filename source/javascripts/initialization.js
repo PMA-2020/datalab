@@ -199,20 +199,26 @@ export default class Initialization {
       for (let i=0; i<sessionStorage.length; i++) {
         const key = sessionStorage.key(i);
         if (key.startsWith('styles.')){
-          document.getElementById(key.substr(7)).value = sessionStorage.getItem(key);
+          $('#'+key.substr(7)).val(sessionStorage.getItem(key));
         }
       }
     }
 
     /* Set Default Value and Placeholder of Chart Title and Axis Label */
     const chart_type = sessionStorage.getItem('chart-type');
+
     const chart_title = sessionStorage.getItem('chart-title');
-    const chart_axis_label = sessionStorage.getItem('chart-axis-label');
     $('.chart-style-wrapper #chart-title').val(chart_title);
     $('.chart-style-wrapper #chart-title').attr('placeholder', chart_title);
-    const select_axis = '.chart-style-wrapper #'+(chart_type=='bar' ? 'x' : 'y')+'-axis-label';
-    $(select_axis).val(chart_axis_label);
-    $(select_axis).attr('placeholder', chart_axis_label);
+
+    const chart_axis_label = sessionStorage.getItem('chart-axis-label');
+    const selector_valid_axis = '.chart-style-wrapper #'+(chart_type=='bar' ? 'x' : 'y')+'-axis-label';
+    $(selector_valid_axis).val(chart_axis_label);
+    $(selector_valid_axis).attr('placeholder', chart_axis_label);
+    $('.chart-style-wrapper #'+(chart_type=='bar' ? 'y' : 'x')+'-axis-label').val('');
+
+    /* Set the switch of black and white */
+    $('#dataset_black_and_white').prop('checked', sessionStorage.getItem('switch.bw')==="true");
   }
 
   /**
@@ -233,7 +239,6 @@ export default class Initialization {
       this.initializeCharacteristicGroups(res.characteristicGroupCategories);
       this.initializeIndicators(res.indicatorCategories);
       this.initializeSurveyCountries(res.surveyCountries);
-      this.initializeStyles();
 
       $('.selectpicker').selectpicker('refresh');
       if (URLParse.getQuery() !== false)
@@ -250,7 +255,9 @@ export default class Initialization {
             $('#dataset_overtime').prop('checked', true);
             $('#dataset_overtime').prop('disabled', false);
           }
-          chart.data(query);
+          chart.data(query).then(()=>{
+            this.initializeStyles();
+          });
       }
     });
   }
