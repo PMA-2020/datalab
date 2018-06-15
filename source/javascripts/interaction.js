@@ -55,6 +55,6 @@ export default class Interaction {
   static resetChart(chart) {
     $(".chart-style-wrapper").find("input[type=text], textarea").val("");
     sessionStorage.clear();
-    chart.initialize();
+    chart.loadData();
   }
 }
