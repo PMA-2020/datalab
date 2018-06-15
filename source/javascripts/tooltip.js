@@ -60,4 +60,52 @@ export default class Tooltips {
     this.enableBtnSubmitChart();
     this.enableOverTime();
   }
+
+  static guideSteps() {
+    const steps = [
+      {
+        element: '.btn-guided-tour',
+        stageBackground: '#fff',   // This will override the one set in driver
+        popover: {                    // There will be no popover if empty or not given
+          title: 'DataLab Guide',             // Title on the popover
+          description: 'Welcome to Datalab! You are moments away from visualizing PMA2020 data. Click "next" to get started.',
+          position: 'right',
+          showButtons: true,         // Do not show control buttons in footer
+          doneBtnText: 'Done',        // Text on the last button
+          closeBtnText: 'Close',      // Text on the close button
+          nextBtnText: 'Next',        // Next button text
+          prevBtnText: 'Previous',    // Previous button text
+        }
+      },
+      {
+        element: '#btn-choose-country-rounds',
+        stageBackground: '#fff',
+        popover: {
+          title: 'Country Survey-Rounds',
+          description: 'PMA2020 datasets are categorized by country and survey round.',
+          position: 'right',
+          showButtons: true,
+          doneBtnText: 'Done',
+          closeBtnText: 'Close',
+          nextBtnText: 'Next',
+          prevBtnText: 'Previous',
+        },
+      },
+      {
+        element: '#select-indicator-group',
+        stageBackground: '#fff',
+        popover: {
+          title: 'Indicators',
+          description: 'Next, you probably want to select an indicator!',
+          position: 'right',
+          showButtons: true,
+          doneBtnText: 'Done',
+          closeBtnText: 'Close',
+          nextBtnText: 'Next',
+          prevBtnText: 'Previous',
+        },
+      }
+    ];
+    return steps;
+  }
 }

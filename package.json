@@ -54,6 +54,7 @@
   },
   "dependencies": {
     "babel-runtime": "^6.26.0",
+    "driver.js": "^0.5.2",
     "jquery": "^3.2.1"
   }
 }

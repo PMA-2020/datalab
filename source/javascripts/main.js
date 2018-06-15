@@ -12,6 +12,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-select/dist/css/bootstrap-select.css';
 import 'bootstrap-colorpicker';
 import 'font-awesome/css/font-awesome.css';
+import 'driver.js/dist/driver.min.css';
 
 import Chart from './chart';
 import Combo from './combo';
@@ -20,6 +21,7 @@ import Validation from './validation';
 import Translate from './translate';
 import Definitions from './definitions';
 import Tooltips from './tooltip';
+import Driver from 'driver.js/dist/driver.min.js';
 
 // Bind on the document ready
 $(function() {
@@ -86,4 +88,12 @@ $(function() {
   $(".submit-chart").click(() => (chart.loadData()));
   $(".reset-chart").click(() => (Interaction.resetChart(chart)));
   $(".chart-style-wrapper .form-group label").click(e => { e.preventDefault(); });
+
+  //Guided Tour
+  $(".btn-guided-tour").click(() => {
+      const driver = new Driver();
+      const guidedSteps = Tooltips.guideSteps();
+      driver.defineSteps(guidedSteps);
+      driver.start();
+    });
 });
