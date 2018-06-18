@@ -87,7 +87,7 @@ $(function() {
   $("#chart-types input").click(() => (Validation.checkCharting()));
   $(".submit-chart").click(() => (chart.loadData()));
   $(".reset-chart").click(() => (Interaction.resetChart(chart)));
-  $(".chart-style-wrapper .form-group label").click(e => { e.preventDefault(); });
+  $(".chart-style-wrapper .form-group .col-md-6 label").click(e => { e.preventDefault(); });
 
   //Guided Tour
   $(".btn-guided-tour").click(() => {
@@ -96,4 +96,18 @@ $(function() {
       driver.defineSteps(guidedSteps);
       driver.start();
     });
+  /*$('#countryRoundModal').on('shown.bs.modal', function () {
+      const driver = new Driver({
+            opacity: 0,
+            stageBackground: 'transparent',
+        });
+      driver.highlight({
+        element: '#countryRoundModal .modal-content #countryRoundModalLabel',
+        popover: {
+          title: 'Country Survey-Rounds 2',
+          description: "Here you see all of the countries where PMA2020 collects data. Select a country's name and select from an expanded list of survey rounds for that country.",
+          position: 'left',
+        }
+      });
+    });*/
 });

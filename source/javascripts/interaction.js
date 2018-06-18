@@ -30,7 +30,8 @@ export default class Interaction {
    * Closes the country round modal, storing what was selected
    */
   static closeModal() {
-    const previouslySelectedCountryRounds = sessionStorage.getItem('selectedCountryRounds').split(",");
+    const sessionCountryRounds = sessionStorage.getItem('selectedCountryRounds');
+    const previouslySelectedCountryRounds = sessionCountryRounds ? sessionCountryRounds.split(",") : [];
     this.clear();
     previouslySelectedCountryRounds.forEach(countryRound => {
       $(`#countryRoundModal .collapse.in input[value=${countryRound}]`).prop('checked', true);
