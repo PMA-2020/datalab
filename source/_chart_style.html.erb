@@ -9,84 +9,84 @@
   </div>
   <div class='form-group'>
     <div class='row'>
-      <div class='col-md-6'>
+      <div class='col-lg-6 col-md-12'>
         <label for='chart-background-color'>
           Background:
         </label>
       </div>
-      <div class='col-md-6'>
+      <div class='col-lg-6 col-md-12'>
         <input id="chart-background-color" type="text" class="form-control colorpicker" />
       </div>
     </div>
   </div>
   <div class='form-group'>
     <div class='row'>
-      <div class='col-md-6'>
+      <div class='col-lg-6 col-md-12'>
         <label for='title-color'>
           Title:
         </label>
       </div>
-      <div class='col-md-6'>
+      <div class='col-lg-6 col-md-12'>
         <input id="title-color" type="text" class="form-control colorpicker" />
       </div>
     </div>
   </div>
   <div class='form-group'>
     <div class='row'>
-      <div class='col-md-6'>
+      <div class='col-lg-6 col-md-12'>
         <label for='label-color'>
           Label:
         </label>
       </div>
-      <div class='col-md-6'>
+      <div class='col-lg-6 col-md-12'>
         <input id="label-color" type="text" class="form-control colorpicker" />
       </div>
     </div>
   </div>
   <div class='form-group'>
     <div class='row'>
-      <div class='col-md-6'>
+      <div class='col-lg-6 col-md-12'>
         <label for='y-axis-color'>
           Y-Axis:
         </label>
       </div>
-      <div class='col-md-6'>
+      <div class='col-lg-6 col-md-12'>
         <input id="y-axis-color" type="text" class="form-control colorpicker" />
       </div>
     </div>
   </div>
   <div class='form-group'>
     <div class='row'>
-      <div class='col-md-6'>
+      <div class='col-lg-6 col-md-12'>
         <label for='x-axis-color'>
           X-Axis:
         </label>
       </div>
-      <div class='col-md-6'>
+      <div class='col-lg-6 col-md-12'>
         <input id="x-axis-color" type="text" class="form-control colorpicker" />
       </div>
     </div>
   </div>
   <div class='form-group'>
     <div class='row'>
-      <div class='col-md-6'>
+      <div class='col-lg-6 col-md-12'>
         <label for='tick-color'>
           Tick:
         </label>
       </div>
-      <div class='col-md-6'>
+      <div class='col-lg-6 col-md-12'>
         <input id="tick-color" type="text" class="form-control colorpicker" />
       </div>
     </div>
   </div>
   <div class='form-group'>
     <div class='row'>
-      <div class='col-md-6'>
+      <div class='col-lg-6 col-md-12'>
         <label for='minor-tick-color'>
           Minor Tick:
         </label>
       </div>
-      <div class='col-md-6'>
+      <div class='col-lg-6 col-md-12'>
         <input id="minor-tick-color" type="text" class="form-control colorpicker" />
       </div>
     </div>
@@ -96,66 +96,72 @@
     <label for='chart-title'>
       Title:
     </label>
-    <%= text_field_tag('chart-title', class: 'form-control style-input', id: 'chart-title') %>
+    <div class='col-md-12 mobile-pl5'>
+      <%= text_field_tag('chart-title', class: 'form-control style-input', id: 'chart-title') %>
+    </div>
   </div>
   <h4 class='text-center'>Axis Labels</h4>
   <div class='form-group'>
     <label for='y-axis-label'>
       Y-Axis Label:
     </label>
-    <%= text_field_tag('y-axis-label', class: 'form-control style-input', id: 'y-axis-label') %>
+    <div class='col-md-12 mobile-pl5'>
+      <%= text_field_tag('y-axis-label', class: 'form-control style-input', id: 'y-axis-label') %>
+    </div>
   </div>
   <div class='form-group'>
     <label for='x-axis-label'>
       X-Axis Label:
     </label>
-    <%= text_field_tag('x-axis-label', class: 'form-control style-input', id: 'x-axis-label') %>
+    <div class='col-md-12 mobile-pl5'>
+      <%= text_field_tag('x-axis-label', class: 'form-control style-input', id: 'x-axis-label') %>
+    </div>
   </div>
   <h4 class='text-center'>Axis Title Position</h4>
   <div class='form-group'>
     <div class='row'>
-      <div class='col-md-6'>
+      <div class='col-lg-6'>
         <label for='y-axis-x-position'>
           Y-Axis X:
         </label>
       </div>
-      <div class='col-md-6'>
+      <div class='col-lg-6 col-md-12'>
         <%= text_field_tag('y-axis-x-position', class: 'form-control style-input', id: 'y-axis-x-position', placeholder: 'Default: 0', type: 'number') %>
       </div>
     </div>
   </div>
   <div class='form-group'>
     <div class='row'>
-      <div class='col-md-6'>
+      <div class='col-lg-6'>
         <label for='y-axis-y-position'>
           Y-Axis Y:
         </label>
       </div>
-      <div class='col-md-6'>
+      <div class='col-lg-6 col-md-12'>
         <%= text_field_tag('y-axis-y-position', class: 'form-control style-input', id: 'y-axis-y-position', placeholder: 'Default: 0', type: 'number') %>
       </div>
     </div>
   </div>
   <div class='form-group'>
     <div class='row'>
-      <div class='col-md-6'>
+      <div class='col-lg-6'>
         <label for='x-axis-x-position'>
           X-Axis X:
         </label>
       </div>
-      <div class='col-md-6'>
+      <div class='col-lg-6 col-md-12'>
         <%= text_field_tag('x-axis-x-position', class: 'form-control style-input', id: 'x-axis-x-position', placeholder: 'Default: 0', type: 'number') %>
       </div>
     </div>
   </div>
   <div class='form-group'>
     <div class='row'>
-      <div class='col-md-6'>
+      <div class='col-lg-6'>
         <label for='x-axis-y-position'>
           X-Axis Y:
         </label>
       </div>
-      <div class='col-md-6'>
+      <div class='col-lg-6 col-md-12'>
         <%= text_field_tag('x-axis-y-position', class: 'form-control style-input', id: 'x-axis-y-position', placeholder: 'Default: 0', type: 'number') %>
       </div>
     </div>
@@ -163,36 +169,36 @@
   <h4 class='text-center'>Marker and Labels</h4>
   <div class='form-group'>
     <div class='row'>
-      <div class='col-md-6'>
+      <div class='col-lg-6'>
         <label for='marker-size'>
           Marker Size:
         </label>
       </div>
-      <div class='col-md-6'>
+      <div class='col-lg-6 col-md-12'>
         <%= text_field_tag('marker-size', class: 'form-control style-input', id: 'marker-size', placeholder: 'Default: 4', type: 'number') %>
       </div>
     </div>
   </div>
   <div class='form-group'>
     <div class='row'>
-      <div class='col-md-6'>
+      <div class='col-lg-6'>
         <label for='data-label-x-position'>
           Data Label X:
         </label>
       </div>
-      <div class='col-md-6'>
+      <div class='col-lg-6 col-md-12'>
         <%= text_field_tag('data-label-x-position', class: 'form-control style-input', id: 'data-label-x-position', placeholder: 'Default: 0', type: 'number') %>
       </div>
     </div>
   </div>
   <div class='form-group'>
     <div class='row'>
-      <div class='col-md-6'>
+      <div class='col-lg-6'>
         <label for='data-label-y-position'>
           Data Label Y:
         </label>
       </div>
-      <div class='col-md-6'>
+      <div class='col-lg-6 col-md-12'>
         <%= text_field_tag('data-label-y-position', class: 'form-control style-input', id: 'data-label-y-position', placeholder: 'Default: -6', type: 'number') %>
       </div>
     </div>
@@ -200,12 +206,12 @@
   <h4 class='text-center'>Credits Position</h4>
   <div class='form-group'>
     <div class='row'>
-      <div class='col-md-6'>
+      <div class='col-lg-6'>
         <label for='credits-y-position'>
           Credits Y:
         </label>
       </div>
-      <div class='col-md-6'>
+      <div class='col-lg-6 col-md-12'>
         <%= text_field_tag(
           'credits-y-position',
           class: 'form-control style-input',
@@ -218,12 +224,12 @@
   <h4 class='text-center'>Chart Margins</h4>
   <div class='form-group'>
     <div class='row'>
-      <div class='col-md-6'>
+      <div class='col-lg-6'>
         <label for='bottom-margin-offset'>
           Bottom Margin:
         </label>
       </div>
-      <div class='col-md-6'>
+      <div class='col-lg-6 col-md-12'>
         <%= text_field_tag(
           'bottom-margin-offset',
           {
