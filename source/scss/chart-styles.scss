@@ -20,6 +20,7 @@ $light-purple: lighten($dark-purple, 25%);
   @media (min-width: 326px) {
     .chart-control-panel {
       max-width: 326px;
+      min-width: 326px;
     } 
   }
   @media (max-width: 1240px) {
