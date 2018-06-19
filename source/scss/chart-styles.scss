@@ -17,9 +17,14 @@ $light-purple: lighten($dark-purple, 25%);
   .fa-mirror {
     transform: rotate(270deg) scale(1, -1);
   }
-  @media (min-width: 992px) {
+  @media (min-width: 326px) {
     .chart-control-panel {
       max-width: 326px;
+    } 
+  }
+  @media (max-width: 1240px) {
+    .chart-control-panel {
+      min-width: 326px;
     } 
   }
   .row {
