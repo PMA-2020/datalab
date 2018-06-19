@@ -343,22 +343,32 @@ export default class Chart {
     const indicator = Utility.getStringById(inputs.indicators[0]["label.id"]);
     const dataPoints = res.results;
     const precision = res.chartOptions.precision;
-
     return {
-      chart: this.generateChartSettings(),
-      title: this.generateTitle(inputs),
-      subtitle: this.generateSubtitle(),
-      series: this.generatePieData(
-        Selectors.getSelectedValue('select-characteristic-group'),
-        characteristicGroups,
-        dataPoints
-      ),
-      credits: this.generateCredits(inputs),
-      legend: this.generateLegend(),
-      exporting: this.generateExporting(),
-      plotOptions: this.generatePlotOptions(precision),
-      tooltip: this.generateToolTip(precision),
-    }
+        chart: this.generateChartSettings(),
+        title: this.generateTitle(inputs),
+        subtitle: this.generateSubtitle(),
+        tooltip: this.generateToolTip(precision),
+        plotOptions: {
+          pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+              enabled: true,
+              format: '<b>{point.name}</b>: {point.percentage:.'+precision+'f} %',
+            },
+            //showInLegend: true
+          }
+        },
+        series: this.generatePieData(
+            Selectors.getSelectedValue('select-characteristic-group'),
+            characteristicGroups,
+            dataPoints
+          ),
+        credits: this.generateCredits(inputs),
+        legend: this.generateLegend(),
+        exporting: this.generateExporting(),
+    };
+    //plotOptions: this.generatePlotOptions(precision),
   }
 
   /**
