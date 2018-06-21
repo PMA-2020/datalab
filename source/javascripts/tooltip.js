@@ -35,7 +35,7 @@ export default class Tooltips {
   }
 
   /**
-   * @private
+   * Enable the tooltop on the pie chart button
    */
   static enablePieChart() {
     $('.tooltip-pie-chart').tooltip({
@@ -53,12 +53,29 @@ export default class Tooltips {
   }
 
   /**
+   * Enable the tooltop on the download button
+   */
+  static enableBtnDownload() {
+    $('#download-csv-wrapper').tooltip({
+      title: 'Use this button to download data. To use it, you must first select 1+ Country-Rounds, an indicator, and an option to break data the data down by.'
+    });
+  }
+
+  /**
+   * Disable the tooltop on the download button
+   */
+  static disableBtnDownload() {
+    $('#download-csv-wrapper').tooltip('destroy');
+  }
+
+  /**
    * Initialize all tooltips
    */
   static initialize() {
     this.enablePieChart();
     this.enableBtnSubmitChart();
     this.enableOverTime();
+    this.enableBtnDownload();
   }
 
   static guideSteps() {

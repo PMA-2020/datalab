@@ -490,7 +490,8 @@ export default class Chart {
   setStyleEvents() {
     $('.colorpicker').on('change', (e) => {
       if (Object.keys(this.chart_obj).length == 0) return;
-      const is_bar = sessionStorage.getItem('chart-type')==="bar";
+      const chart_type = sessionStorage.getItem('chart-type');
+      const is_bar = chart_type==="bar";
       const color_value = e.target.value;
       const color_default_black = !!color_value ? color_value : '#000';
       switch (e.target.id) {
@@ -523,8 +524,9 @@ export default class Chart {
     });
 
     $('.form-control.style-input').on('blur', (e) => {
-      if (Object.keys(this.chart_obj).length == 0) return;
-      const is_bar = sessionStorage.getItem('chart-type')==="bar";
+      if (Object.keys(this.chart_obj).length == 0) return;    
+      const chart_type = sessionStorage.getItem('chart-type');  
+      const is_bar = chart_type==="bar";
       const input_value = e.target.value;
       let num = 0;
       switch (e.target.id) {
