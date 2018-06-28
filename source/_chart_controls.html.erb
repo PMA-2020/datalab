@@ -8,25 +8,27 @@
 <%= partial 'data_series' %>
 <%= partial(:select_box_filter, locals: { type: 'indicator-group', label_value: 'Indicators' }) %>
 <%= partial(:select_box_filter, locals: { type: 'characteristic-group', label_value: 'Break down data by' }) %>
-<div class='row'>
-  <div class='col-md-12'>
-    <%= partial 'chart_type_buttons' %>
+<div id="chart-type-wrapper">
+  <div class='row'>
+    <div class='col-md-12'>
+      <%= partial 'chart_type_buttons' %>
+    </div>
   </div>
-</div>
-<div class='row'>
-  <div class='col-md-6 overtime-wrapper'>
-    <%= partial 'overtime_checkbox' %>
+  <div class='row'>
+    <div class='col-md-6 overtime-wrapper'>
+      <%= partial 'overtime_checkbox' %>
+    </div>
   </div>
 </div>
 <div class='row'>
   <div class='col-md-12'>
     <div class='row'>
-      <div class='col-md-4'>
+      <div class='col-md-4' id="download-csv-wrapper">
         <a id="download-csv" class='btn btn-success btn-block btn-lg disabled'>
           <i class='fa fa-download'></i>
         </a>
       </div>
-      <div class='col-md-8 tooltip-btn-chart'>
+      <div class='col-md-8 tooltip-btn-chart' id="submit-chart-wrapper">
         <button id="submit-chart" class='submit-chart btn btn-success btn-block btn-lg' disabled='disabled'>
           <i class='fa fa-bar-chart'></i>
           <span class='i18nable' data-key='chart'>

@@ -30,7 +30,8 @@ export default class Interaction {
    * Closes the country round modal, storing what was selected
    */
   static closeModal() {
-    const previouslySelectedCountryRounds = localStorage.getItem('selectedCountryRounds').split(",");
+    const sessionCountryRounds = sessionStorage.getItem('selectedCountryRounds');
+    const previouslySelectedCountryRounds = sessionCountryRounds ? sessionCountryRounds.split(",") : [];
     this.clear();
     previouslySelectedCountryRounds.forEach(countryRound => {
       $(`#countryRoundModal .collapse.in input[value=${countryRound}]`).prop('checked', true);
@@ -42,8 +43,8 @@ export default class Interaction {
    */
   static finishModal() {
     if (typeof(Storage) !== "undefined") {
-      localStorage.removeItem('selectedCountryRounds');
-      localStorage.selectedCountryRounds = Selectors.getSelectedCountryRounds();
+      sessionStorage.removeItem('selectedCountryRounds');
+      sessionStorage.selectedCountryRounds = Selectors.getSelectedCountryRounds();
     } else {
       console.log('Warning: Local Storage is unavailable.');
     }
@@ -54,6 +55,7 @@ export default class Interaction {
    */
   static resetChart(chart) {
     $(".chart-style-wrapper").find("input[type=text], textarea").val("");
-    chart.initialize();
+    sessionStorage.clear();
+    chart.loadData();
   }
 }

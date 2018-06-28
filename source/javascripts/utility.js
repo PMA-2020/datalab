@@ -30,8 +30,8 @@ export default class Utility {
    */
   static getOverrideValue(id, fallback) {
     let overRideValue = document.getElementById(id).value;
-    if (!!localStorage.saved_style && localStorage.saved_style==1)
-        overRideValue = localStorage.getItem('styles.'+id);
+    if (!!sessionStorage.saved_style && sessionStorage.saved_style==1)
+        overRideValue = sessionStorage.getItem('styles.'+id);
     return overRideValue || fallback;
   }
 
@@ -48,7 +48,7 @@ export default class Utility {
    * Uses the strings loaded into local storage, provided by the API
    */
   static getStringById(labelId) {
-    const strings = this.loadStringsFromLocalStorage();
+    const strings = this.loadStringsFromsessionStorage();
     const lang = Selectors.getSelectedLanguage();
     const string = strings[labelId];
     if (string) {
@@ -75,8 +75,8 @@ export default class Utility {
   /**
    * @private
    */
-  static loadStringsFromLocalStorage() {
-    return JSON.parse(localStorage.getItem('pma2020Strings'));
+  static loadStringsFromsessionStorage() {
+    return JSON.parse(sessionStorage.getItem('pma2020Strings'));
   }
 
   /**
