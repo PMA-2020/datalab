@@ -47,11 +47,11 @@ export default class Chart {
     }, []))).join(", ");
 
     const title = `${indicatorLabel} ${Utility.getStringById('by')} ${characteristicGroupLabel} ${Utility.getStringById('for')} ${countries}`;
-    localStorage.setItem('chart-title', title);
+    sessionStorage.setItem('chart-title', title);
 
     return {
       style: { color: Utility.getOverrideValue('title-color') },
-      text: Utility.getOverrideValue('chart-title', title),
+      text: title,
     };
   }
 
@@ -186,7 +186,7 @@ export default class Chart {
     return {
       categories: this.getCharacteristicGroupNames(characteristicGroups),
       title: {
-        text: Utility.getOverrideValue("x-axis-label", ""),
+        text: "",
         x: Utility.getOverrideValue('x-axis-x-position'),
         y: Utility.getOverrideValue('x-axis-y-position')
       },
@@ -200,11 +200,11 @@ export default class Chart {
    * @private
    */
   generateYaxis(indicator) {
-    localStorage.setItem('chart-axis-label', indicator);
+    sessionStorage.setItem('chart-axis-label', indicator);
 
     return {
       title: {
-        text: Utility.getOverrideValue("y-axis-label", indicator),
+        text: indicator,
         style: { color: Utility.getOverrideValue("label-color") },
         x: Utility.getOverrideValue('y-axis-x-position'),
         y: Utility.getOverrideValue('y-axis-y-position')
@@ -262,7 +262,7 @@ export default class Chart {
    */
   generateChartSettings() {
     const chartType = Selectors.getSelectedChartType();
-    localStorage.setItem('chart-type', chartType);
+    sessionStorage.setItem('chart-type', chartType);
 
     return {
       type: chartType,
@@ -343,22 +343,32 @@ export default class Chart {
     const indicator = Utility.getStringById(inputs.indicators[0]["label.id"]);
     const dataPoints = res.results;
     const precision = res.chartOptions.precision;
-
     return {
-      chart: this.generateChartSettings(),
-      title: this.generateTitle(inputs),
-      subtitle: this.generateSubtitle(),
-      series: this.generatePieData(
-        Selectors.getSelectedValue('select-characteristic-group'),
-        characteristicGroups,
-        dataPoints
-      ),
-      credits: this.generateCredits(inputs),
-      legend: this.generateLegend(),
-      exporting: this.generateExporting(),
-      plotOptions: this.generatePlotOptions(precision),
-      tooltip: this.generateToolTip(precision),
-    }
+        chart: this.generateChartSettings(),
+        title: this.generateTitle(inputs),
+        subtitle: this.generateSubtitle(),
+        tooltip: this.generateToolTip(precision),
+        plotOptions: {
+          pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+              enabled: true,
+              format: '<b>{point.name}</b>: {point.percentage:.'+precision+'f} %',
+            },
+            //showInLegend: true
+          }
+        },
+        series: this.generatePieData(
+            Selectors.getSelectedValue('select-characteristic-group'),
+            characteristicGroups,
+            dataPoints
+          ),
+        credits: this.generateCredits(inputs),
+        legend: this.generateLegend(),
+        exporting: this.generateExporting(),
+    };
+    //plotOptions: this.generatePlotOptions(precision),
   }
 
   /**
@@ -434,25 +444,29 @@ export default class Chart {
       "overTime": overTime,
     }
 
-    Network.get("datalab/data", opts).then(res => {
+    return new Promise((resolve, reject) => {
+        Network.get("datalab/data", opts).then(res => {
 
-      if (overTime) { // Overtime series option selected
-        this.option_obj = this.generateOverTimeChart(res);
-      } else if (chartType === 'pie') { // Pie chart type option selected
-        this.option_obj = this.generatePieChart(res);
-      } else { // Everything else
-        this.option_obj = this.generateChart(res);
-      }
+          if (overTime) { // Overtime series option selected
+            this.option_obj = this.generateOverTimeChart(res);
+          } else if (chartType === 'pie') { // Pie chart type option selected
+            this.option_obj = this.generatePieChart(res);
+          } else { // Everything else
+            this.option_obj = this.generateChart(res);
+          }
 
-      this.chart_obj = Highcharts.chart('chart-container', this.option_obj);
+          this.chart_obj = Highcharts.chart('chart-container', this.option_obj);
+          if (sessionStorage.getItem('switch.bw')==='true')
+            this.chart_obj.update(Highchart_theme.gray());
 
-      Combo.filter();
-      Validation.checkOverTime();
-      Validation.checkBlackAndWhite();
-      Validation.checkPie();
-      Validation.checkCharting();
-      Initialization.initializeStyles();
-    });
+          Combo.filter();
+          Validation.checkOverTime();
+          Validation.checkBlackAndWhite();
+          Validation.checkPie();
+          Validation.checkCharting();
+          resolve();
+        });
+    })
   }
 
   /**
@@ -476,39 +490,41 @@ export default class Chart {
   setStyleEvents() {
     $('.colorpicker').on('change', (e) => {
       if (Object.keys(this.chart_obj).length == 0) return;
-      const is_bar = localStorage.getItem('chart-type')==="bar";
+      const is_bar = sessionStorage.getItem('chart-type')==="bar";
       const color_value = e.target.value;
+      const color_default_black = !!color_value ? color_value : '#000';
       switch (e.target.id) {
         case 'chart-background-color':
-          this.option_obj.chart.backgroundColor = color_value;
+          this.option_obj.chart.backgroundColor = !!color_value ? color_value : '#fff';
           break;
         case 'title-color':
-          this.option_obj.title.style.color = color_value;
+          this.option_obj.title.style.color = color_default_black;
           break;
         case 'label-color':
-          this.option_obj.chart.style.color = color_value;
+          this.option_obj.chart.style.color = color_default_black;
           break;
         case 'y-axis-color':
-          is_bar ? this.option_obj.xAxis.lineColor = color_value : this.option_obj.yAxis.lineColor = color_value;
+          is_bar ? this.option_obj.xAxis.lineColor = color_default_black : this.option_obj.yAxis.lineColor = color_default_black;
           break;
         case 'x-axis-color':
-          is_bar ? this.option_obj.yAxis.lineColor = color_value : this.option_obj.xAxis.lineColor = color_value;
+          is_bar ? this.option_obj.yAxis.lineColor = color_default_black : this.option_obj.xAxis.lineColor = color_default_black;
           break;
         case 'tick-color':
-          this.option_obj.xAxis.tickColor = color_value;
-          this.option_obj.yAxis.tickColor = color_value;
+          this.option_obj.xAxis.tickColor = color_default_black;
+          this.option_obj.yAxis.tickColor = color_default_black;
           break;
         case 'minor-tick-color':
-          this.option_obj.xAxis.minorTickColor = color_value;
-          this.option_obj.yAxis.minorTickColor = color_value;
+          this.option_obj.xAxis.minorTickColor = color_default_black;
+          this.option_obj.yAxis.minorTickColor = color_default_black;
           break;
       }
       this.chart_obj.update(this.option_obj);
+      this.saveChartStyle();
     });
 
-    $('.form-control').on('blur', (e) => {
+    $('.form-control.style-input').on('blur', (e) => {
       if (Object.keys(this.chart_obj).length == 0) return;
-      const is_bar = localStorage.getItem('chart-type')==="bar";
+      const is_bar = sessionStorage.getItem('chart-type')==="bar";
       const input_value = e.target.value;
       let num = 0;
       switch (e.target.id) {
@@ -554,6 +570,7 @@ export default class Chart {
           break;
       }
       this.chart_obj.update(this.option_obj);
+      this.saveChartStyle();
     });
 
     $("#dataset_black_and_white").on('change', (e) => {
@@ -563,6 +580,7 @@ export default class Chart {
         this.chart_obj.update(Highchart_theme.gray());
       else
         this.chart_obj.update(Highchart_theme.sunset());
+      this.saveChartStyle();
     });
   }
 
@@ -578,13 +596,15 @@ export default class Chart {
    * Record the custom chart styling to local storage
    */
   saveChartStyle() {
-    const chart_style_wrapper = document.getElementsByClassName('chart-style-wrapper')[0];
-    const style_DOMs = chart_style_wrapper.getElementsByClassName('form-control');
-    localStorage.saved_style = 1;
-    for (let i = 0; i < style_DOMs.length; i++ )
-    {
-      localStorage.setItem('styles.'+style_DOMs[i].id, style_DOMs[i].value);
-    }
-    this.loadData();
+    sessionStorage.saved_style = 1;
+    const styleElements = $('.chart-style-wrapper .form-control');
+    styleElements.each(function(){
+        const id = $(this).attr('id');
+        const key = `styles.${id}`;
+        const value = $(this).val();
+        sessionStorage.setItem(key, value);
+    });
+    sessionStorage.setItem('switch.bw', $('#dataset_black_and_white').prop('checked'));
+    //this.loadData();
   }
 }
