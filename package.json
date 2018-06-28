@@ -1,6 +1,6 @@
 {
   "name": "datalab",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "PMA2020 Data Lab",
   "main": "index.js",
   "scripts": {
@@ -55,6 +55,7 @@
   "dependencies": {
     "babel-runtime": "^6.26.0",
     "driver.js": "^0.5.2",
+    "hoek": "^5.0.3",
     "jquery": "^3.2.1"
   }
 }
