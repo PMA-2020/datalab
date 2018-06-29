@@ -88,7 +88,7 @@ export default class Chart {
         }
       },
       bar: { dataLabels: { enabled: true } },
-      column: { dataLabels: { enabled: true } },
+      column: { dataLabels: { enabled: true, crop: false, overflow: "none" } },
       line: { dataLabels: { enabled: true } },
       pie: {
         allowPointSelect: true,
