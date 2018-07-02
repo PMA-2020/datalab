@@ -97,11 +97,13 @@ export default class Validation {
       Tooltips.disableBtnSubmitChart();
       $('.reset-chart').prop('disabled', '');
       $('#download-csv').removeClass('disabled');
+      Tooltips.disableBtnDownload();
     } else {
       $('.submit-chart').prop('disabled', 'disabled');
       Tooltips.enableBtnSubmitChart();
       $('.reset-chart').prop('disabled', '');
       $('#download-csv').addClass('disabled');
+      Tooltips.enableBtnDownload();
     }
   }
 }

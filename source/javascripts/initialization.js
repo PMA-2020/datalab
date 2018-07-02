@@ -219,6 +219,13 @@ export default class Initialization {
 
     /* Set the switch of black and white */
     $('#dataset_black_and_white').prop('checked', sessionStorage.getItem('switch.bw')==="true");
+
+    if (chart_type=="pie") {
+      $('.no-pie').hide();
+    }
+    else {
+      $('.no-pie').show();
+    }
   }
 
   /**
