@@ -4,7 +4,6 @@
  * hard browser refresh
  */
 export default class URLParse {
-
   /**
    * Returns the query from the window location
    * to help initialize a direct url with query params
@@ -12,9 +11,11 @@ export default class URLParse {
    */
   static getQuery() {
     let pieces = window.location.href.split('?');
-    if (pieces.length == 2)
+    if (pieces.length == 2) {
       return pieces[1];
-    else return false;
+    } else {
+      return false;
+    }
   }
 
   /**

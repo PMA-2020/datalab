@@ -5,7 +5,6 @@ import Selectors from './selectors';
  * Method to set help definition text based on selections
  */
 export default class Definitions {
-
   /**
    * Updates help definition text based on indicator
    * and characteristic group

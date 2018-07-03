@@ -82,16 +82,16 @@ export default class Tooltips {
     const steps = [
       {
         element: '.btn-guided-tour',
-        stageBackground: '#fff',   // This will override the one set in driver
-        popover: {                    // There will be no popover if empty or not given
-          title: 'DataLab Guide',             // Title on the popover
+        stageBackground: '#fff', // This will override the one set in driver
+        popover: {
+          title: 'DataLab Guide', // Title on the popover
           description: 'Welcome to DataLab!. Click "next" to get started.',
           position: 'top',
-          showButtons: true,         // Do not show control buttons in footer
-          doneBtnText: 'Done',        // Text on the last button
-          closeBtnText: 'Close',      // Text on the close button
-          nextBtnText: 'Next',        // Next button text
-          prevBtnText: 'Previous',    // Previous button text
+          showButtons: true, // Do not show control buttons in footer
+          doneBtnText: 'Done', // Text on the last button
+          closeBtnText: 'Close', // Text on the close button
+          nextBtnText: 'Next',
+          prevBtnText: 'Previous',
         }
       },
       {
