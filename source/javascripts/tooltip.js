@@ -168,7 +168,7 @@ export default class Tooltips {
         element: '#chart-container',
         stageBackground: '#fff',
         popover: {
-          title: 'About the graph',
+          title: 'About charts',
           description: "After charting, you can hover over bars or lines to see more information. You can select different country survey rounds to show or hide them from the chart by going back to the “Choose Country-Rounds” menu.",
           position: 'bottom',
           showButtons: true,
@@ -179,12 +179,12 @@ export default class Tooltips {
         },
       },
       {
-        element: 'section.chart-viewport',
-        stageBackground: '#fff',
+        element: '.highcharts-contextbutton', //'section.chart-viewport',
+        stageBackground: '#ffffff50',
         popover: {
           title: 'Download the graph',
           description: "You can also select the triple-line (also called 'hamburger' icon) to print or save the chart.",
-          position: 'bottom',
+          position: 'left',
           showButtons: true,
           doneBtnText: 'Done',
           closeBtnText: 'Close',
@@ -239,7 +239,7 @@ export default class Tooltips {
         stageBackground: '#fff',
         popover: {
           title: 'Finish',
-          description: "That's it! We hope you enjoy using DataLab. If you have a question, reach out to us here.",
+          description: "That's it! We hope you enjoy using Datalab. If you ever need anything, you can always reach out to us here.",
           position: 'right',
           showButtons: true,
           doneBtnText: 'Done',

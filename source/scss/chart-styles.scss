@@ -194,6 +194,7 @@ $light-purple: lighten($dark-purple, 25%);
       }
       .chart-container {
         height: 100%;
+        min-height: 500px;
         .chart-placeholder {
           height: 100%;
           margin: 0px auto 50px;

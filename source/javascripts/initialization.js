@@ -1,6 +1,7 @@
 import Network from './network';
 import Utility from './utility';
 import URLParse from './url-parse';
+import Definitions from './definitions';
 
 import env from '../../env';
 
@@ -247,6 +248,7 @@ export default class Initialization {
       this.initializeIndicators(res.indicatorCategories);
       this.initializeSurveyCountries(res.surveyCountries);
 
+      $('#select-characteristic-group').selectpicker('val', 'none');
       $('.selectpicker').selectpicker('refresh');
       if (URLParse.getQuery() !== false) {
           const query = URLParse.parseQuery();
@@ -261,6 +263,7 @@ export default class Initialization {
             $('#dataset_overtime').prop('checked', true);
             $('#dataset_overtime').prop('disabled', false);
           }
+          Definitions.setDefinitionText();
           chart.data(query).then(()=>{
             this.initializeStyles();
           });

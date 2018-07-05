@@ -265,13 +265,10 @@ export default class Chart {
       layout: 'vertical',
       align: 'center',
       verticalAlign: 'bottom',
-      itemStyle: { color: Utility.getOverrideValue('label-color'), }
+      itemStyle: {
+        color: Utility.getOverrideValue('label-color'),
+      }
     };
-
-    if (countryRounds.length > 5) {
-      legendContent['verticalAlign'] = 'top';
-      legendContent['layout'] = 'vertical';
-    }
 
     return legendContent;
   }
