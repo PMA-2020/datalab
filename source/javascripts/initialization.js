@@ -1,7 +1,7 @@
 import Network from './network';
 import Utility from './utility';
-import Selectors from './selectors';
 import URLParse from './url-parse';
+import Definitions from './definitions';
 
 import env from '../../env';
 
@@ -30,11 +30,13 @@ export default class Initialization {
    * @private
    */
   static initializeLanguage(languages) {
-    for(var k in languages) {
-      let opt = Utility.createNode('option');
-      opt.value = k;
-      opt.innerHTML = languages[k];
-      $('#select-language').append(opt);
+    for (let k in languages) {
+      if (languages[k]) {
+        let opt = Utility.createNode('option');
+        opt.value = k;
+        opt.innerHTML = languages[k];
+        $('#select-language').append(opt);
+      }
     }
   }
 
@@ -104,18 +106,18 @@ export default class Initialization {
    * @private
    */
   static initializeSurveyCountries(surveyCountries) {
-    const language = Selectors.getSelectedLanguage();
+    // const language = Selectors.getSelectedLanguage();
 
     surveyCountries.forEach(country => {
       const countryName = Utility.getString(country);
-      let panelContainer  = Utility.createNode('div');
+      let panelContainer = Utility.createNode('div');
 
-      let panelHeading  = Utility.createNode('div');
-      let panelTitle  = Utility.createNode('div');
-      let panelLink  = Utility.createNode('a');
+      let panelHeading = Utility.createNode('div');
+      let panelTitle = Utility.createNode('div');
+      let panelLink = Utility.createNode('a');
 
-      let panelBodyContainer  = Utility.createNode('div');
-      let panelBody  = Utility.createNode('div');
+      let panelBodyContainer = Utility.createNode('div');
+      let panelBody = Utility.createNode('div');
 
       panelContainer.className = 'panel panel-default';
 
@@ -125,7 +127,7 @@ export default class Initialization {
 
       panelTitle.className = 'panel-title';
 
-      panelLink.href = `#collapse${country["label.id"]}`
+      panelLink.href = `#collapse${country["label.id"]}`;
       panelLink.setAttribute('role', 'button');
       panelLink.setAttribute('data-toggle', 'collapse');
       panelLink.setAttribute('data-parent', '#accordion');
@@ -157,7 +159,7 @@ export default class Initialization {
           const surveyName = Utility.getString(survey);
           const surveyId = survey["id"];
 
-          let listItem  = Utility.createNode('div');
+          let listItem = Utility.createNode('div');
           let surveyInput = Utility.createNode('input');
 
           surveyInput.type = 'checkbox';
@@ -198,27 +200,33 @@ export default class Initialization {
     if (!!sessionStorage.saved_style && sessionStorage.saved_style == 1) {
       for (let i=0; i<sessionStorage.length; i++) {
         const key = sessionStorage.key(i);
-        if (key.startsWith('styles.')){
+        if (key.startsWith('styles.')) {
           $('#'+key.substr(7)).val(sessionStorage.getItem(key));
         }
       }
     }
 
     /* Set Default Value and Placeholder of Chart Title and Axis Label */
-    const chart_type = sessionStorage.getItem('chart-type');
+    const chartType = sessionStorage.getItem('chart-type');
 
-    const chart_title = sessionStorage.getItem('chart-title');
-    $('.chart-style-wrapper #chart-title').val(chart_title);
-    $('.chart-style-wrapper #chart-title').attr('placeholder', chart_title);
+    const chartTitle = sessionStorage.getItem('chart-title');
+    $('.chart-style-wrapper #chart-title').val(chartTitle);
+    $('.chart-style-wrapper #chart-title').attr('placeholder', chartTitle);
 
-    const chart_axis_label = sessionStorage.getItem('chart-axis-label');
-    const selector_valid_axis = '.chart-style-wrapper #'+(chart_type=='bar' ? 'x' : 'y')+'-axis-label';
-    $(selector_valid_axis).val(chart_axis_label);
-    $(selector_valid_axis).attr('placeholder', chart_axis_label);
-    $('.chart-style-wrapper #'+(chart_type=='bar' ? 'y' : 'x')+'-axis-label').val('');
+    const chartAxisLabel = sessionStorage.getItem('chart-axis-label');
+    const selectorValidAxis = '.chart-style-wrapper #'+(chartType=='bar' ? 'x' : 'y')+'-axis-label';
+    $(selectorValidAxis).val(chartAxisLabel);
+    $(selectorValidAxis).attr('placeholder', chartAxisLabel);
+    $('.chart-style-wrapper #'+(chartType=='bar' ? 'y' : 'x')+'-axis-label').val('');
 
     /* Set the switch of black and white */
     $('#dataset_black_and_white').prop('checked', sessionStorage.getItem('switch.bw')==="true");
+
+    if (chartType=="pie") {
+      $('.no-pie').hide();
+    } else {
+      $('.no-pie').show();
+    }
   }
 
   /**
@@ -240,21 +248,22 @@ export default class Initialization {
       this.initializeIndicators(res.indicatorCategories);
       this.initializeSurveyCountries(res.surveyCountries);
 
+      $('#select-characteristic-group').selectpicker('val', 'none');
       $('.selectpicker').selectpicker('refresh');
-      if (URLParse.getQuery() !== false)
-      {
+      if (URLParse.getQuery() !== false) {
           const query = URLParse.parseQuery();
           $('#select-indicator-group').selectpicker('val', query['indicators']);
           $('#select-characteristic-group').selectpicker('val', query['characteristicGroups']);
           $('#chart-types #option-'+query['chartType']).click();
           const selectedCountries = query['surveyCountries'].split(',');
-          selectedCountries.forEach(country_id => {
-            $('#'+country_id).click();
+          selectedCountries.forEach(countryId => {
+            $('#'+countryId).click();
           });
-          if (query['overTime']=='true'){
+          if (query['overTime']=='true') {
             $('#dataset_overtime').prop('checked', true);
             $('#dataset_overtime').prop('disabled', false);
           }
+          Definitions.setDefinitionText();
           chart.data(query).then(()=>{
             this.initializeStyles();
           });

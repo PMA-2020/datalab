@@ -35,7 +35,7 @@ export default class Tooltips {
   }
 
   /**
-   * @private
+   * Enable the tooltop on the pie chart button
    */
   static enablePieChart() {
     $('.tooltip-pie-chart').tooltip({
@@ -53,28 +53,45 @@ export default class Tooltips {
   }
 
   /**
+   * Enable the tooltop on the download button
+   */
+  static enableBtnDownload() {
+    $('#download-csv-wrapper').tooltip({
+      title: 'Use this button to download data. To use it, you must first select 1+ Country-Rounds, an indicator, and an option to break data the data down by.'
+    });
+  }
+
+  /**
+   * Disable the tooltop on the download button
+   */
+  static disableBtnDownload() {
+    $('#download-csv-wrapper').tooltip('destroy');
+  }
+
+  /**
    * Initialize all tooltips
    */
   static initialize() {
     this.enablePieChart();
     this.enableBtnSubmitChart();
     this.enableOverTime();
+    this.enableBtnDownload();
   }
 
   static guideSteps() {
     const steps = [
       {
         element: '.btn-guided-tour',
-        stageBackground: '#fff',   // This will override the one set in driver
-        popover: {                    // There will be no popover if empty or not given
-          title: 'DataLab Guide',             // Title on the popover
-          description: 'Welcome to Datalab! You are moments away from visualizing PMA2020 data. Click "next" to get started.',
-          position: 'right',
-          showButtons: true,         // Do not show control buttons in footer
-          doneBtnText: 'Done',        // Text on the last button
-          closeBtnText: 'Close',      // Text on the close button
-          nextBtnText: 'Next',        // Next button text
-          prevBtnText: 'Previous',    // Previous button text
+        stageBackground: '#fff', // This will override the one set in driver
+        popover: {
+          title: 'DataLab Guide', // Title on the popover
+          description: 'Welcome to DataLab!. Click "next" to get started.',
+          position: 'top',
+          showButtons: true, // Do not show control buttons in footer
+          doneBtnText: 'Done', // Text on the last button
+          closeBtnText: 'Close', // Text on the close button
+          nextBtnText: 'Next',
+          prevBtnText: 'Previous',
         }
       },
       {
@@ -82,7 +99,7 @@ export default class Tooltips {
         stageBackground: '#fff',
         popover: {
           title: 'Country Survey-Rounds',
-          description: 'PMA2020 datasets are categorized by country and survey round.',
+          description: 'PMA2020 data are categorized by country and survey round. Click to select.',
           position: 'right',
           showButtons: true,
           doneBtnText: 'Done',
@@ -96,7 +113,7 @@ export default class Tooltips {
         stageBackground: '#fff',
         popover: {
           title: 'Indicators',
-          description: 'Next, you probably want to select an indicator!',
+          description: 'Next, select an indicator using the drop down menu. You can select only one indicator at a time.',
           position: 'right',
           showButtons: true,
           doneBtnText: 'Done',
@@ -110,7 +127,7 @@ export default class Tooltips {
         stageBackground: '#fff',
         popover: {
           title: 'Characteristics',
-          description: 'You may also want to disaggregate the data. To do this, select and open the "break data down by" menu. If options are greyed out, it means that the particular option is not valid for either the indicator or country(s) that you selected. If you do not wish to disaggregate, select "None".',
+          description: 'You may want to disaggregate an indicator by specific characteristics. To do this, select the "break data down by" menu. If options are greyed out, it means that the option is not valid for either the indicator or country(s) that you selected. If you do not wish to disaggregate the indicator, select "None"',
           position: 'right',
           showButtons: true,
           doneBtnText: 'Done',
@@ -124,7 +141,7 @@ export default class Tooltips {
         stageBackground: '#fff',
         popover: {
           title: 'Chart type & over time',
-          description: 'Select a chart type. If you have multiple survey rounds selected, you can also enable the "Over Time" option to see a different way of visualizing the data over time.',
+          description: 'Select a chart type. If you have multiple survey rounds selected, you can also enable the "Over Time" option to see trends over time.',
           position: 'right',
           showButtons: true,
           doneBtnText: 'Done',
@@ -151,8 +168,8 @@ export default class Tooltips {
         element: '#chart-container',
         stageBackground: '#fff',
         popover: {
-          title: 'About the graph 1',
-          description: "After charting, you can hover over bars or lines to see more information. You can also select different country survey rounds to show or hide them from the chart.",
+          title: 'About charts',
+          description: "After charting, you can hover over bars or lines to see more information. You can select different country survey rounds to show or hide them from the chart by going back to the “Choose Country-Rounds” menu.",
           position: 'bottom',
           showButtons: true,
           doneBtnText: 'Done',
@@ -162,12 +179,12 @@ export default class Tooltips {
         },
       },
       {
-        element: 'section.chart-viewport',
-        stageBackground: '#fff',
+        element: '.highcharts-contextbutton', //'section.chart-viewport',
+        stageBackground: '#ffffff50',
         popover: {
-          title: 'About the graph 2',
+          title: 'Download the graph',
           description: "You can also select the triple-line (also called 'hamburger' icon) to print or save the chart.",
-          position: 'right',
+          position: 'left',
           showButtons: true,
           doneBtnText: 'Done',
           closeBtnText: 'Close',
@@ -194,7 +211,7 @@ export default class Tooltips {
         stageBackground: '#fff',
         popover: {
           title: 'Styles',
-          description: 'Select the "Styles" tab for a wealth of options for styling your chart.',
+          description: 'Select the "Styles" tab for options to style your chart. (You can choose colors, labels, etc.)',
           position: 'right',
           showButtons: true,
           doneBtnText: 'Done',
@@ -207,8 +224,8 @@ export default class Tooltips {
         element: '#download-csv-wrapper',
         stageBackground: '#fff',
         popover: {
-          title: 'Dataset download',
-          description: 'If you want to download a whole dataset, you can do so using the button with the download icon.',
+          title: 'Download a table',
+          description: 'If you want to download a table of data from your chart, you can do so using the button with the download icon.',
           position: 'right',
           showButtons: true,
           doneBtnText: 'Done',
@@ -222,7 +239,7 @@ export default class Tooltips {
         stageBackground: '#fff',
         popover: {
           title: 'Finish',
-          description: "That's it! We hope you enjoy using datalab. If you ever need anything, you can always reach out to us here.",
+          description: "That's it! We hope you enjoy using Datalab. If you ever need anything, you can always reach out to us here.",
           position: 'right',
           showButtons: true,
           doneBtnText: 'Done',

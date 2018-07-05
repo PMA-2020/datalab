@@ -87,10 +87,12 @@ $(function() {
   $("#chart-types input").click(() => (Validation.checkCharting()));
   $(".submit-chart").click(() => (chart.loadData()));
   $(".reset-chart").click(() => (Interaction.resetChart(chart)));
-  $(".chart-style-wrapper .form-group .col-lg-6 label").click(e => { e.preventDefault(); });
+  $(".chart-style-wrapper .form-group .col-lg-6 label").click(e => {
+    e.preventDefault();
+  });
 
-  //Guided Tour
-  $(".btn-guided-tour").click(function(){
+  // Guided Tour
+  $(".btn-guided-tour").click(function() {
       $('#tab-controls a').click();
       const driver = new Driver();
       const guidedSteps = Tooltips.guideSteps();
