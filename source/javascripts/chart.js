@@ -45,7 +45,10 @@ export default class Chart {
       return [...tot, Utility.getStringById(country["country.label.id"])];
     }, []))).join(", ");
 
-    const title = `${indicatorLabel} ${Utility.getStringById('by')} ${characteristicGroupLabel} ${Utility.getStringById('for')} ${countries}`;
+    let title = `${indicatorLabel} ${Utility.getStringById('by')} ${characteristicGroupLabel} ${Utility.getStringById('for')} ${countries}`;
+    if (characteristicGroupLabel=="None") {
+      title = `${indicatorLabel} ${Utility.getStringById('for')} ${countries}`;
+    }
     sessionStorage.setItem('chart-title', title);
 
     return {
@@ -269,7 +272,6 @@ export default class Chart {
         color: Utility.getOverrideValue('label-color'),
       }
     };
-
     return legendContent;
   }
 
@@ -315,7 +317,7 @@ export default class Chart {
       return [
         ...res,
         {
-          name: Utility.getStringById(characteristicGroupId),
+          name: Utility.getStringById(dataPoint["country.label.id"]),
           data: dataPoint.values.reduce((tot, item) => {
             const utcDate = Utility.parseDate(item["survey.date"]);
 
