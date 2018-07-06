@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "doc:gen": "esdoc",
-    "lint": "./node_modules/.bin/eslint ./source/javascripts/*.js"
+    "lint": "./node_modules/.bin/eslint ./source/javascripts/*.js; exit 0"
   },
   "repository": {
     "type": "git",
