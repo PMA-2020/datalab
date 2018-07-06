@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "doc:gen": "esdoc"
+    "doc:gen": "esdoc",
+    "lint": "./node_modules/.bin/eslint ./source/javascripts/*.js"
   },
   "repository": {
     "type": "git",
