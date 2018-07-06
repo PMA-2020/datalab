@@ -3,7 +3,7 @@
  */
 export default class ChartTheme {
   /**
-   * returns colors and styling for grayscale display
+   * @returns The colors and styling for grayscale display
    */
   static gray() {
     return {
@@ -38,7 +38,7 @@ export default class ChartTheme {
               color: '#000'
           }
       }
-    }
+    };
   }
 
   /**
@@ -77,6 +77,6 @@ export default class ChartTheme {
               color: '#000'
           }
       }
-    }
+    };
   }
 }

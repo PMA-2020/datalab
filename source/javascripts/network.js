@@ -58,10 +58,14 @@ export default class Network {
    */
   static buildUrl(path, opts) {
     const baseUrl = env.api_url || 'http://api.pma2020.org';
-    let url =  `${baseUrl}/v1/${path}`;
+    let url = `${baseUrl}/v1/${path}`;
     if (opts) {
       url = `${url}?`;
-      for (var k in opts) { url = `${url}${k}=${opts[k]}&`; }
+      for (let k in opts) {
+        if (opts[k]) {
+          url = `${url}${k}=${opts[k]}&`;
+        }
+      }
     }
     return url;
   }
