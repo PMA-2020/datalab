@@ -1,3 +1,5 @@
+import Selectors from './selectors';
+
 /**
  * Tooltip support throughout the app
  */
@@ -79,13 +81,75 @@ export default class Tooltips {
   }
 
   static guideSteps() {
+    const lang = Selectors.getSelectedLanguage();
+    let array_description = [];
+    let array_title = [];
+    if (lang == 'en') {
+      array_title = [
+        'DataLab Guide',
+        'Country Survey-Rounds',
+        'Indicators',
+        'Characteristics',
+        'Chart type & over time',
+        'Chart button',
+        'About charts',
+        'Download the graph',
+        'Definitions',
+        'Styles',
+        'Download a table',
+        'Finish',
+      ];
+      array_description = [
+        'Welcome to DataLab!. Click "next" to get started.',
+        'PMA2020 data are categorized by country and survey round. Click to select.',
+        'Next, select an indicator using the drop down menu. You can select only one indicator at a time.',
+        'You may want to disaggregate an indicator by specific characteristics. To do this, select the "break data down by" menu. If options are greyed out, it means that the option is not valid for either the indicator or country(s) that you selected. If you do not wish to disaggregate the indicator, select "None"',
+        'Select a chart type. If you have multiple survey rounds selected, you can also enable the "Over Time" option to see trends over time.',
+        "Now you're ready to chart!",
+        "After charting, you can hover over bars or lines to see more information. You can select different country survey rounds to show or hide them from the chart by going back to the “Choose Country-Rounds” menu.",
+        "You can also select the triple-line (also called 'hamburger' icon) to print or save the chart.",
+        'Select the "Definitions" tab to see technical definitions for indicators or disaggregation options.',
+        'Select the "Styles" tab for options to style your chart. (You can choose colors, labels, etc.)',
+        'If you want to download a table of data from your chart, you can do so using the button with the download icon.',
+        "That's it! We hope you enjoy using Datalab. If you ever need anything, you can always reach out to us here.",
+      ];
+    } else {
+      array_title = [
+        'Guide du DataLab',
+        'Vagues d’enquête des pays',
+        'Indicateurs',
+        'Caractéristiques',
+        'Type de diagramme & dans le temps',
+        'Diagramme',
+        'À propos des diagrammes',
+        'Télécharger le graphique',
+        'Définitions',
+        'Styles',
+        'Télécharger l’ensemble des données',
+        'Fin',
+      ];
+      array_description = [
+        'Bienvenue au Datalab! Vous êtes sur le point de visualiser les données de PMA2020. Cliquez sur « suivant » pour démarrer.',
+        'Les ensembles de données de PMA2020 sont catégorisés par pays et par vague d’enquête.',
+        'Ensuite, vous aurez probablement envie de sélectionner un indicateur!',
+        'Vous aurez peut-être aussi besoin de désagréger les données. Sélectionnez et ouvrez « Désagréger les données par » dans le menu. Si des options sont en gris, cela signifie que cette option en particulier n’est pas valable pour l’indicateur ou le pays que vous avez sélectionné. Si vous ne souhaitez pas désagréger les données, sélectionnez « Aucune ».',
+        'Sélectionnez le type de diagramme. Si vous avez sélectionné plusieurs vagues d’enquête, vous pouvez aussi activer l’option « Dans le temps » pour voir différentes manières de visualiser les données dans le temps.',
+        "Vous n’avez plus qu’à créer votre diagramme!",
+        "Après avoir créé votre diagramme, vous pouvez faire passer votre souris au-dessus des barres ou des lignes pour voir plus d’informations. Vous pouvez aussi sélectionner différentes vagues d’enquête de pays pour les afficher ou les retirer du diagramme.",
+        "Vous pouvez aussi sélectionner la triple ligne (appelée icône 'hamburger') pour imprimer ou sauvegarder le diagramme.",
+        'Sélectionnez l’onglet « Définitions » pour lire les définitions techniques des indicateurs ou les options de désagrégation.',
+        'Sélectionnez l’onglet « Styles » pour avoir une gamme d’options et styliser votre diagramme.',
+        'Si vous souhaitez télécharger un ensemble de données complet, cliquez sur l’icône de téléchargement.',
+        "Et voilà ! Nous espérons que vous apprécierez votre utilisation du Datalab. Si vous avez besoin de quoique ce soit, vous pouvez toujours nous joindre ici.",
+      ];
+    }
     const steps = [
       {
         element: '.btn-guided-tour',
         stageBackground: '#fff', // This will override the one set in driver
         popover: {
-          title: 'DataLab Guide', // Title on the popover
-          description: 'Welcome to DataLab!. Click "next" to get started.',
+          title: array_title[0], // Title on the popover
+          description: array_description[0],
           position: 'top',
           showButtons: true, // Do not show control buttons in footer
           doneBtnText: 'Done', // Text on the last button
@@ -98,8 +162,8 @@ export default class Tooltips {
         element: '#btn-choose-country-rounds',
         stageBackground: '#fff',
         popover: {
-          title: 'Country Survey-Rounds',
-          description: 'PMA2020 data are categorized by country and survey round. Click to select.',
+          title: array_title[1],
+          description: array_description[1],
           position: 'right',
           showButtons: true,
           doneBtnText: 'Done',
@@ -112,8 +176,8 @@ export default class Tooltips {
         element: '#select-indicator-group-wrapper',
         stageBackground: '#fff',
         popover: {
-          title: 'Indicators',
-          description: 'Next, select an indicator using the drop down menu. You can select only one indicator at a time.',
+          title: array_title[2],
+          description: array_description[2],
           position: 'right',
           showButtons: true,
           doneBtnText: 'Done',
@@ -126,8 +190,8 @@ export default class Tooltips {
         element: '#select-characteristic-group-wrapper',
         stageBackground: '#fff',
         popover: {
-          title: 'Characteristics',
-          description: 'You may want to disaggregate an indicator by specific characteristics. To do this, select the "break data down by" menu. If options are greyed out, it means that the option is not valid for either the indicator or country(s) that you selected. If you do not wish to disaggregate the indicator, select "None"',
+          title: array_title[3],
+          description: array_description[3],
           position: 'right',
           showButtons: true,
           doneBtnText: 'Done',
@@ -140,8 +204,8 @@ export default class Tooltips {
         element: '#chart-type-wrapper',
         stageBackground: '#fff',
         popover: {
-          title: 'Chart type & over time',
-          description: 'Select a chart type. If you have multiple survey rounds selected, you can also enable the "Over Time" option to see trends over time.',
+          title: array_title[4],
+          description: array_description[4],
           position: 'right',
           showButtons: true,
           doneBtnText: 'Done',
@@ -154,8 +218,8 @@ export default class Tooltips {
         element: '#submit-chart-wrapper',
         stageBackground: '#fff',
         popover: {
-          title: 'Chart button',
-          description: "Now you're ready to chart!",
+          title: array_title[5],
+          description: array_description[5],
           position: 'right',
           showButtons: true,
           doneBtnText: 'Done',
@@ -168,8 +232,8 @@ export default class Tooltips {
         element: '#chart-container',
         stageBackground: '#fff',
         popover: {
-          title: 'About charts',
-          description: "After charting, you can hover over bars or lines to see more information. You can select different country survey rounds to show or hide them from the chart by going back to the “Choose Country-Rounds” menu.",
+          title: array_title[6],
+          description: array_description[6],
           position: 'bottom',
           showButtons: true,
           doneBtnText: 'Done',
@@ -182,8 +246,8 @@ export default class Tooltips {
         element: '.highcharts-contextbutton', //'section.chart-viewport',
         stageBackground: '#ffffff50',
         popover: {
-          title: 'Download the graph',
-          description: "You can also select the triple-line (also called 'hamburger' icon) to print or save the chart.",
+          title: array_title[7],
+          description: array_description[7],
           position: 'left',
           showButtons: true,
           doneBtnText: 'Done',
@@ -196,8 +260,8 @@ export default class Tooltips {
         element: '#tab-definitions',
         stageBackground: '#fff',
         popover: {
-          title: 'Definitions',
-          description: 'Select the "Definitions" tab to see technical definitions for indicators or disaggregation options.',
+          title: array_title[8],
+          description: array_description[8],
           position: 'right',
           showButtons: true,
           doneBtnText: 'Done',
@@ -210,8 +274,8 @@ export default class Tooltips {
         element: '#tab-style',
         stageBackground: '#fff',
         popover: {
-          title: 'Styles',
-          description: 'Select the "Styles" tab for options to style your chart. (You can choose colors, labels, etc.)',
+          title: array_title[9],
+          description: array_description[9],
           position: 'right',
           showButtons: true,
           doneBtnText: 'Done',
@@ -224,8 +288,8 @@ export default class Tooltips {
         element: '#download-csv-wrapper',
         stageBackground: '#fff',
         popover: {
-          title: 'Download a table',
-          description: 'If you want to download a table of data from your chart, you can do so using the button with the download icon.',
+          title: array_title[10],
+          description: array_description[10],
           position: 'right',
           showButtons: true,
           doneBtnText: 'Done',
@@ -238,8 +302,8 @@ export default class Tooltips {
         element: '#header-link-contact-us',
         stageBackground: '#fff',
         popover: {
-          title: 'Finish',
-          description: "That's it! We hope you enjoy using Datalab. If you ever need anything, you can always reach out to us here.",
+          title: array_title[11],
+          description: array_description[11],
           position: 'right',
           showButtons: true,
           doneBtnText: 'Done',

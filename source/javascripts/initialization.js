@@ -269,5 +269,8 @@ export default class Initialization {
           });
       }
     });
+    // Replace the footer year with the current year
+    const dt = new Date();
+    $('#footer-year').html(dt.getFullYear());
   }
 }
