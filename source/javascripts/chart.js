@@ -262,7 +262,7 @@ export default class Chart {
    * @private
    */
   generateLegend() {
-    const countryRounds = Selectors.getSelectedCountryRounds();
+    // const countryRounds = Selectors.getSelectedCountryRounds();
 
     let legendContent = {
       layout: 'vertical',
@@ -312,7 +312,7 @@ export default class Chart {
    */
   generateOverTimeSeriesData(dataPoints) {
     return dataPoints.reduce((res, dataPoint) => {
-      const characteristicGroupId = dataPoint["characteristic.label.id"];
+      // const characteristicGroupId = dataPoint["characteristic.label.id"];
 
       return [
         ...res,

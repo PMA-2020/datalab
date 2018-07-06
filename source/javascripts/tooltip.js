@@ -82,10 +82,10 @@ export default class Tooltips {
 
   static guideSteps() {
     const lang = Selectors.getSelectedLanguage();
-    let array_description = [];
-    let array_title = [];
+    let arrayDescription = [];
+    let arrayTitle = [];
     if (lang == 'en') {
-      array_title = [
+      arrayTitle = [
         'DataLab Guide',
         'Country Survey-Rounds',
         'Indicators',
@@ -99,7 +99,7 @@ export default class Tooltips {
         'Download a table',
         'Finish',
       ];
-      array_description = [
+      arrayDescription = [
         'Welcome to DataLab!. Click "next" to get started.',
         'PMA2020 data are categorized by country and survey round. Click to select.',
         'Next, select an indicator using the drop down menu. You can select only one indicator at a time.',
@@ -114,7 +114,7 @@ export default class Tooltips {
         "That's it! We hope you enjoy using Datalab. If you ever need anything, you can always reach out to us here.",
       ];
     } else {
-      array_title = [
+      arrayTitle = [
         'Guide du DataLab',
         'Vagues d’enquête des pays',
         'Indicateurs',
@@ -128,7 +128,7 @@ export default class Tooltips {
         'Télécharger l’ensemble des données',
         'Fin',
       ];
-      array_description = [
+      arrayDescription = [
         'Bienvenue au Datalab! Vous êtes sur le point de visualiser les données de PMA2020. Cliquez sur « suivant » pour démarrer.',
         'Les ensembles de données de PMA2020 sont catégorisés par pays et par vague d’enquête.',
         'Ensuite, vous aurez probablement envie de sélectionner un indicateur!',
@@ -148,8 +148,8 @@ export default class Tooltips {
         element: '.btn-guided-tour',
         stageBackground: '#fff', // This will override the one set in driver
         popover: {
-          title: array_title[0], // Title on the popover
-          description: array_description[0],
+          title: arrayTitle[0], // Title on the popover
+          description: arrayDescription[0],
           position: 'top',
           showButtons: true, // Do not show control buttons in footer
           doneBtnText: 'Done', // Text on the last button
@@ -162,8 +162,8 @@ export default class Tooltips {
         element: '#btn-choose-country-rounds',
         stageBackground: '#fff',
         popover: {
-          title: array_title[1],
-          description: array_description[1],
+          title: arrayTitle[1],
+          description: arrayDescription[1],
           position: 'right',
           showButtons: true,
           doneBtnText: 'Done',
@@ -176,8 +176,8 @@ export default class Tooltips {
         element: '#select-indicator-group-wrapper',
         stageBackground: '#fff',
         popover: {
-          title: array_title[2],
-          description: array_description[2],
+          title: arrayTitle[2],
+          description: arrayDescription[2],
           position: 'right',
           showButtons: true,
           doneBtnText: 'Done',
@@ -190,8 +190,8 @@ export default class Tooltips {
         element: '#select-characteristic-group-wrapper',
         stageBackground: '#fff',
         popover: {
-          title: array_title[3],
-          description: array_description[3],
+          title: arrayTitle[3],
+          description: arrayDescription[3],
           position: 'right',
           showButtons: true,
           doneBtnText: 'Done',
@@ -204,8 +204,8 @@ export default class Tooltips {
         element: '#chart-type-wrapper',
         stageBackground: '#fff',
         popover: {
-          title: array_title[4],
-          description: array_description[4],
+          title: arrayTitle[4],
+          description: arrayDescription[4],
           position: 'right',
           showButtons: true,
           doneBtnText: 'Done',
@@ -218,8 +218,8 @@ export default class Tooltips {
         element: '#submit-chart-wrapper',
         stageBackground: '#fff',
         popover: {
-          title: array_title[5],
-          description: array_description[5],
+          title: arrayTitle[5],
+          description: arrayDescription[5],
           position: 'right',
           showButtons: true,
           doneBtnText: 'Done',
@@ -232,8 +232,8 @@ export default class Tooltips {
         element: '#chart-container',
         stageBackground: '#fff',
         popover: {
-          title: array_title[6],
-          description: array_description[6],
+          title: arrayTitle[6],
+          description: arrayDescription[6],
           position: 'bottom',
           showButtons: true,
           doneBtnText: 'Done',
@@ -243,11 +243,11 @@ export default class Tooltips {
         },
       },
       {
-        element: '.highcharts-contextbutton', //'section.chart-viewport',
+        element: '.highcharts-contextbutton', // 'section.chart-viewport',
         stageBackground: '#ffffff50',
         popover: {
-          title: array_title[7],
-          description: array_description[7],
+          title: arrayTitle[7],
+          description: arrayDescription[7],
           position: 'left',
           showButtons: true,
           doneBtnText: 'Done',
@@ -260,8 +260,8 @@ export default class Tooltips {
         element: '#tab-definitions',
         stageBackground: '#fff',
         popover: {
-          title: array_title[8],
-          description: array_description[8],
+          title: arrayTitle[8],
+          description: arrayDescription[8],
           position: 'right',
           showButtons: true,
           doneBtnText: 'Done',
@@ -274,8 +274,8 @@ export default class Tooltips {
         element: '#tab-style',
         stageBackground: '#fff',
         popover: {
-          title: array_title[9],
-          description: array_description[9],
+          title: arrayTitle[9],
+          description: arrayDescription[9],
           position: 'right',
           showButtons: true,
           doneBtnText: 'Done',
@@ -288,8 +288,8 @@ export default class Tooltips {
         element: '#download-csv-wrapper',
         stageBackground: '#fff',
         popover: {
-          title: array_title[10],
-          description: array_description[10],
+          title: arrayTitle[10],
+          description: arrayDescription[10],
           position: 'right',
           showButtons: true,
           doneBtnText: 'Done',
@@ -302,8 +302,8 @@ export default class Tooltips {
         element: '#header-link-contact-us',
         stageBackground: '#fff',
         popover: {
-          title: array_title[11],
-          description: array_description[11],
+          title: arrayTitle[11],
+          description: arrayDescription[11],
           position: 'right',
           showButtons: true,
           doneBtnText: 'Done',
