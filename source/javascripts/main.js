@@ -31,7 +31,14 @@ $(function() {
   chart.initialize();
 
   // Bind to run translations when the language select is changed
-  $("#select-language").change((e) => (Translate.translatePage()));
+  $("#select-language").change((e) => {
+    if (e.target.value==="en") {
+      $('#submit-chart span').css('font-size', '18px');
+    } else {
+      $('#submit-chart span').css('font-size', '16px');
+    }
+    Translate.translatePage();
+  });
 
   // Bind the clear button to reset everything
   $(".clear-input").click((e) => {
