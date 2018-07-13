@@ -4,7 +4,7 @@
 build:
 	middleman build
 serve:
-	middleman serve
+	npm install && middleman serve
 
 # Server Management
 dev:
