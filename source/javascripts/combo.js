@@ -98,7 +98,10 @@ export default class Combo {
   static handleCombos(opts) {
     Network.get("datalab/combos", opts).then(res => {
       const fExistWealthComment = this.setOptionsDisabled('characteristic', res['characteristicGroup.id']);
-      this.setOptionsDisabled('indicator', res['indicator.id']);
+      const selectedCharacteristicGroup = Selectors.getSelectedValue('select-characteristic-group');
+      if (selectedCharacteristicGroup !== "none") {
+        this.setOptionsDisabled('indicator', res['indicator.id']); 
+      }
       this.setCountryRoundsDisabled(res['survey.id']);
 
       $('.selectpicker').selectpicker('refresh');
