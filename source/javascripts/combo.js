@@ -100,7 +100,7 @@ export default class Combo {
       const fExistWealthComment = this.setOptionsDisabled('characteristic', res['characteristicGroup.id']);
       const selectedCharacteristicGroup = Selectors.getSelectedValue('select-characteristic-group');
       if (selectedCharacteristicGroup !== "none") {
-        this.setOptionsDisabled('indicator', res['indicator.id']); 
+        this.setOptionsDisabled('indicator', res['indicator.id']);
       }
       this.setCountryRoundsDisabled(res['survey.id']);
 
@@ -109,8 +109,28 @@ export default class Combo {
         this.removeComments();
       }
 
-      if (opts["indicator"] === undefined) {
-        $("#select-indicator-group").selectpicker('val', '');
+      switch (opts["indicator"]) {
+        case undefined:
+          $("#select-indicator-group").selectpicker('val', '');
+          break;
+        case "methodmix_allw_anym":
+          $("#select-characteristic-group").selectpicker('val', 'method_mix_all');
+          break;
+        case "methodmix_marw_anym":
+          $("#select-characteristic-group").selectpicker('val', 'method_mix_all');
+          break;
+        case "methodmix_allw_modernm":
+          $("#select-characteristic-group").selectpicker('val', 'method_mix_modern');
+          break;
+        case "methodmix_marw_modernm":
+          $("#select-characteristic-group").selectpicker('val', 'method_mix_modern');
+          break;
+        case "methodmix_allw_plusnon":
+          $("#select-characteristic-group").selectpicker('val', 'method_mix_non');
+          break;
+        case "methodmix_marw_plusnon":
+          $("#select-characteristic-group").selectpicker('val', 'method_mix_non');
+          break;
       }
       if (opts["characteristicGroup"] === undefined) {
         $("#select-characteristic-group").selectpicker('val', '');
