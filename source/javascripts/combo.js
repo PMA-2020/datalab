@@ -28,6 +28,30 @@ export default class Combo {
     this.handleCombos(opts);
   }
 
+  static checkRestriction() {
+    const selectedIndicator = Selectors.getSelectedValue('select-indicator-group');
+    switch (selectedIndicator) {
+      case "methodmix_allw_anym":
+        $("#select-characteristic-group").selectpicker('val', 'method_mix_all');
+        break;
+      case "methodmix_marw_anym":
+        $("#select-characteristic-group").selectpicker('val', 'method_mix_all');
+        break;
+      case "methodmix_allw_modernm":
+        $("#select-characteristic-group").selectpicker('val', 'method_mix_modern');
+        break;
+      case "methodmix_marw_modernm":
+        $("#select-characteristic-group").selectpicker('val', 'method_mix_modern');
+        break;
+      case "methodmix_allw_plusnon":
+        $("#select-characteristic-group").selectpicker('val', 'method_mix_non');
+        break;
+      case "methodmix_marw_plusnon":
+        $("#select-characteristic-group").selectpicker('val', 'method_mix_non');
+        break;
+    }
+  }
+
   /**
    * @private
    */
@@ -109,28 +133,8 @@ export default class Combo {
         this.removeComments();
       }
 
-      switch (opts["indicator"]) {
-        case undefined:
-          $("#select-indicator-group").selectpicker('val', '');
-          break;
-        case "methodmix_allw_anym":
-          $("#select-characteristic-group").selectpicker('val', 'method_mix_all');
-          break;
-        case "methodmix_marw_anym":
-          $("#select-characteristic-group").selectpicker('val', 'method_mix_all');
-          break;
-        case "methodmix_allw_modernm":
-          $("#select-characteristic-group").selectpicker('val', 'method_mix_modern');
-          break;
-        case "methodmix_marw_modernm":
-          $("#select-characteristic-group").selectpicker('val', 'method_mix_modern');
-          break;
-        case "methodmix_allw_plusnon":
-          $("#select-characteristic-group").selectpicker('val', 'method_mix_non');
-          break;
-        case "methodmix_marw_plusnon":
-          $("#select-characteristic-group").selectpicker('val', 'method_mix_non');
-          break;
+      if (opts["indicator"] === undefined) {
+        $("#select-indicator-group").selectpicker('val', '');
       }
       if (opts["characteristicGroup"] === undefined) {
         $("#select-characteristic-group").selectpicker('val', '');
