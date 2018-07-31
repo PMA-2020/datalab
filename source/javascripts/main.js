@@ -67,6 +67,7 @@ $(function() {
 
   // bind for the indicator group selection
   $("#select-indicator-group").change(() => {
+    Combo.checkRestriction();
     Combo.filter();
     Validation.checkPie();
     Validation.checkCharting();
