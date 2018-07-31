@@ -31,14 +31,11 @@ const searchTest = (driver, url) => {
   });
 };
 
-const testChartImageMatches = () => {
-  /* Tests multiple URLs in multiple browsers and checks if images downloaded match what is expected. */
-  const urlHostName = 'http://datalab-staging.pma2020.org/?';  // TODO @Bciar: Run tests on localhost.
+const testChartImageMatches2 = () => {
+    const urlHostName = 'http://datalab-staging.pma2020.org/?';  // TODO @Bciar: Run tests on localhost.
     const urlQueryParamStrings = [
       'surveyCountries=PMA2014_BFR1&indicators=cp_all&characteristicGroups=none&chartType=bar&overTime=false'
     ];
-
-  try {
     const seleniumBrowserDrivers = [
       new webdriver.Builder().forBrowser('chrome').build(),
       // new webdriver.Builder().forBrowser('firefox').build()  // TODO @Bciar: Low priority.
@@ -50,12 +47,44 @@ const testChartImageMatches = () => {
       }
       driver.quit();
     }
+};
+
+const testChartImageMatches = () => {
+  /* Tests multiple URLs in multiple browsers and checks if images downloaded match what is expected. */
+  try {
+    testChartImageMatches2()
   }
   
   catch (err) {
     // TODO @Joe: Syncronously install binary and call testChartImageMatches() again.
     // https://stackoverflow.com/questions/20643470/execute-a-command-line-binary-with-node-js
-    console.log('You need to download a selenium web driver as explained below. Some are provided in the "test/bin/" directory.\n\n' + err)
+    const os = process.platform;
+    const msg = 'You need to download a selenium web driver as explained below. Some are provided in the "test/bin/" directory.\n\n' + err;
+
+    if (os === 'darwin') {
+      'use strict';
+      const { spawnSync } = require('child_process'),
+          addToPath = spawnSync('export', ['PATH=$PATH:'+__dirname+'/bin/seleniumDriver_chrome_mac64']);
+      if (addToPath['stderr']) {
+        console.log(`stderr: ${addToPath.stderr.toString()}`);
+        console.log(addToPath);
+      }
+      else if (addToPath['error']) {
+        console.log(`error: ${addToPath.error.toString()}`);
+        console.log(addToPath);
+      }
+      if (addToPath['stdout']) {
+        console.log(`stdout: ${addToPath.stdout.toString()}`);
+        testChartImageMatches2()
+      }
+      // console.log(addToPath);
+    } else if (os === 'win32'){
+      console.log(msg)
+    } else {
+      console.log(msg)
+    }
+    
+    testChartImageMatches2()
   }
 };
 
