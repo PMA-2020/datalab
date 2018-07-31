@@ -4,7 +4,6 @@
   "description": "PMA2020 Data Lab",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "doc:gen": "esdoc",
     "lint": "./node_modules/.bin/eslint ./source/javascripts/*.js; exit 0",
     "test": "node ./test/index.js"
