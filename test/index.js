@@ -20,12 +20,12 @@ function searchTest(driver) {
     driver.wait(webdriver.until.elementLocated(webdriver.By.css(".highcharts-contextmenu .highcharts-menu .highcharts-menu-item:last-of-type")), 100000);
     driver.findElement(webdriver.By.css(".highcharts-contextmenu .highcharts-menu .highcharts-menu-item:last-of-type")).click();
 
-    const file1 = 'C:\\Users\\asharp\\Downloads\\chart.svg';
-    const file2 = 'C:\\Users\\asharp\\Downloads\\chart2.svg';// 'input\\chart2.svg';
+    //const file1 = 'C:\\Users\\asharp\\Downloads\\chart.svg';
+    //const file2 = 'C:\\Users\\asharp\\Downloads\\chart2.svg';// 'input\\chart2.svg';
+    const file1 = '/home/abc/Downloads/chart.svg';
+    const file2 = '/home/abc/Downloads/chart.svg';
     const files = [file1, file2];
     driver.sleep(2000).then(function() {
-        // const hash1 = md5File.sync('C:\\Users\\asharp\\Downloads\\chart.svg');
-        // const hash2 = md5File.sync('hash2.png');
         const result = checkHighchartsSvgMatch(files);
         console.log(result); 
     });
