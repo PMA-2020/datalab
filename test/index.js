@@ -1,4 +1,5 @@
 const webdriver = require('selenium-webdriver');
+chromedriver = require('chromedriver');
 const checkHighchartsSvgMatch = require('./checkHighchartsSvgMatch');
 
 
@@ -12,23 +13,29 @@ const searchTest = (driver, url) => {
   Returns:
       bool: True if images match, else false.
   */
-  driver.get(url);
-  
-  driver.wait(webdriver.until.elementLocated(webdriver.By.className("highcharts-contextbutton")), 200000);
-  driver.findElement(webdriver.By.className("highcharts-contextbutton")).click();
-  driver.wait(webdriver.until.elementLocated(webdriver.By.css(".highcharts-contextmenu .highcharts-menu .highcharts-menu-item:last-of-type")), 100000);
-  driver.findElement(webdriver.By.css(".highcharts-contextmenu .highcharts-menu .highcharts-menu-item:last-of-type")).click();
+  try {
+      driver.get(url);
+      
+      driver.wait(webdriver.until.elementLocated(webdriver.By.className("highcharts-contextbutton")), 200000);
+      driver.findElement(webdriver.By.className("highcharts-contextbutton")).click();
+      driver.wait(webdriver.until.elementLocated(webdriver.By.css(".highcharts-contextmenu .highcharts-menu .highcharts-menu-item:last-of-type")), 100000);
+      driver.findElement(webdriver.By.css(".highcharts-contextmenu .highcharts-menu .highcharts-menu-item:last-of-type")).click();
+  } catch(error) {
+      console.log(error);
+  }
 
   // TODO @Bciar: Change so that this can work on any computer.
   // Detect operating system: https://stackoverflow.com/questions/8683895/how-do-i-determine-the-current-operating-system-with-node-js
-  const file1 = 'C:\\Users\\asharp\\Downloads\\chart.svg';
-  const file2 = 'C:\\Users\\asharp\\Downloads\\chart2.svg';// 'input\\chart2.svg';
+  // const file1 = 'C:\\Users\\asharp\\Downloads\\chart.svg';
+  // const file2 = 'C:\\Users\\asharp\\Downloads\\chart2.svg';// 'input\\chart2.svg';
+  /*const file1 = '/home/abc/datalab/chart.svg';
+  const file2 = '/home/abc/datalab/chart.svg';
   const files = [file1, file2];
   
   driver.sleep(2000).then(function() {
       const result = checkHighchartsSvgMatch(files);
       console.log(result);
-  });
+  });*/
 };
 
 const testChartImageMatches2 = () => {
