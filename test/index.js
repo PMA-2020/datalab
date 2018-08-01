@@ -1,10 +1,17 @@
-const webdriver = require('selenium-webdriver');
-chromedriver = require('chromedriver');
-const checkHighchartsSvgMatch = require('./checkHighchartsSvgMatch');
+const webdriver = require('selenium-webdriver'),
+By = webdriver.By,
+until = webdriver.until;
 
+require('chromedriver');
+
+const checkHighchartsSvgMatch = require('./checkHighchartsSvgMatch');
+const downloadsFolder = require('downloads-folder');
+const path = require('path');
+ 
 
 const searchTest = (driver, url) => {
   /* Checks to see if an image downloaded at a given URL matches what is expected.
+  
   
   Args:
       driver (selenium-webdriver): Selenium web driver to allow for headless, automated browser testing.
@@ -13,29 +20,24 @@ const searchTest = (driver, url) => {
   Returns:
       bool: True if images match, else false.
   */
-  try {
-      driver.get(url);
-      
-      driver.wait(webdriver.until.elementLocated(webdriver.By.className("highcharts-contextbutton")), 200000);
-      driver.findElement(webdriver.By.className("highcharts-contextbutton")).click();
-      driver.wait(webdriver.until.elementLocated(webdriver.By.css(".highcharts-contextmenu .highcharts-menu .highcharts-menu-item:last-of-type")), 100000);
-      driver.findElement(webdriver.By.css(".highcharts-contextmenu .highcharts-menu .highcharts-menu-item:last-of-type")).click();
-  } catch(error) {
-      console.log(error);
-  }
-
-  // TODO @Bciar: Change so that this can work on any computer.
-  // Detect operating system: https://stackoverflow.com/questions/8683895/how-do-i-determine-the-current-operating-system-with-node-js
-  // const file1 = 'C:\\Users\\asharp\\Downloads\\chart.svg';
-  // const file2 = 'C:\\Users\\asharp\\Downloads\\chart2.svg';// 'input\\chart2.svg';
-  /*const file1 = '/home/abc/datalab/chart.svg';
-  const file2 = '/home/abc/datalab/chart.svg';
-  const files = [file1, file2];
+  driver.get(url);
   
-  driver.sleep(2000).then(function() {
-      const result = checkHighchartsSvgMatch(files);
-      console.log(result);
-  });*/
+  driver.wait(until.elementLocated(By.css(".highcharts-contextbutton")), 300000).then(function(){
+    driver.findElement(webdriver.By.css(".highcharts-contextbutton")).click();
+    driver.wait(webdriver.until.elementLocated(webdriver.By.css(".highcharts-contextmenu .highcharts-menu .highcharts-menu-item:last-of-type")), 100000).then(function() {
+      driver.findElement(webdriver.By.css(".highcharts-contextmenu .highcharts-menu .highcharts-menu-item:last-of-type")).click().then(function() {
+        driver.sleep(2000).then(function() {
+          const downloadPath = downloadsFolder();
+          const file1 = path.join(downloadPath, 'chart.svg');
+          const file2 = path.join(__dirname, 'bin/chart.svg');
+          const files = [file1, file2];
+          const result = checkHighchartsSvgMatch(files);
+          console.log(result);
+          driver.quit();
+        });
+      })
+    })
+  });
 };
 
 const testChartImageMatches2 = () => {
@@ -52,7 +54,6 @@ const testChartImageMatches2 = () => {
       for (let urlQueryParams of urlQueryParamStrings) {
         searchTest(driver, urlHostName+urlQueryParams);
       }
-      driver.quit();
     }
 };
 
