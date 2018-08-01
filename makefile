@@ -1,5 +1,5 @@
 .PHONY: build serve dev staging production set-default-development-env \
-set-full-development-env set-full-staging-env set-full-production-env
+set-full-development-env set-full-staging-env set-full-production-env test
 
 # Local Development
 build:
@@ -14,6 +14,12 @@ set-full-staging-env:
 	sed 's/const env = envSrc\..*;/const env = envSrc\.stagingAll;/g' env.js
 set-full-production-env:
 	sed 's/const env = envSrc\..*;/const env = envSrc\.productionAll;/g' env.js
+
+# Testing
+test:
+	driver=$(pwd)/test/bin/seleniumDriver_chrome_mac64 && \
+	export PATH=${PATH}:${driver} && \
+	npm run test
 
 # Server Management
 dev:
