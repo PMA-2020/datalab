@@ -1,18 +1,19 @@
+const fs = require('fs');
 const webdriver = require('selenium-webdriver'),
 By = webdriver.By,
 until = webdriver.until;
-
 require('chromedriver');
 
 const checkHighchartsSvgMatch = require('./checkHighchartsSvgMatch');
 const downloadsFolder = require('downloads-folder');
 const path = require('path');
+const assert = require('assert');
  
 
-const searchTest = (driver, url) => {
+const searchTest = (driver, urlQueryParams) => {
   /* Checks to see if an image downloaded at a given URL matches what is expected.
-  
-  
+
+
   Args:
       driver (selenium-webdriver): Selenium web driver to allow for headless, automated browser testing.
       url (string): URL to chart and download image.
@@ -20,30 +21,70 @@ const searchTest = (driver, url) => {
   Returns:
       bool: True if images match, else false.
   */
-  driver.get(url);
-  
-  driver.wait(until.elementLocated(By.css(".highcharts-contextbutton")), 300000).then(function(){
-    driver.findElement(webdriver.By.css(".highcharts-contextbutton")).click();
-    driver.wait(webdriver.until.elementLocated(webdriver.By.css(".highcharts-contextmenu .highcharts-menu .highcharts-menu-item:last-of-type")), 100000).then(function() {
-      driver.findElement(webdriver.By.css(".highcharts-contextmenu .highcharts-menu .highcharts-menu-item:last-of-type")).click().then(function() {
-        driver.sleep(2000).then(function() {
-          const downloadPath = downloadsFolder();
-          const file1 = path.join(downloadPath, 'chart.svg');
-          const file2 = path.join(__dirname, 'bin/chart.svg');
-          const files = [file1, file2];
-          const result = checkHighchartsSvgMatch(files);
-          console.log(result);
-          driver.quit();
-        });
+  return new Promise(resolve => {
+    const urlHostName = 'http://datalab-staging.pma2020.org/?';  // TODO @Bciar: Run tests on localhost.
+    const url = urlHostName + urlQueryParams;
+    driver.get(url);
+
+    driver.wait(until.elementLocated(By.css(".highcharts-contextbutton")), 300000).then(function(){
+      driver.findElement(webdriver.By.css(".highcharts-contextbutton")).click();
+      driver.wait(webdriver.until.elementLocated(webdriver.By.css(".highcharts-contextmenu .highcharts-menu .highcharts-menu-item:last-of-type")), 100000).then(function() {
+        driver.findElement(webdriver.By.css(".highcharts-contextmenu .highcharts-menu .highcharts-menu-item:last-of-type")).click().then(function() {
+          driver.sleep(3000).then(function() {
+            const downloadPath = downloadsFolder();
+            const file1 = path.join(downloadPath, 'chart.svg');
+            const file2 = path.join(__dirname, 'files/'+urlQueryParams+'.svg');
+            const files = [file1, file2];
+            const result = checkHighchartsSvgMatch(files);
+            resolve(result);
+            // console.log(result);
+          });
+        })
       })
-    })
+    });
   });
 };
 
-const testChartImageMatches2 = () => {
-    const urlHostName = 'http://datalab-staging.pma2020.org/?';  // TODO @Bciar: Run tests on localhost.
+async function testChartImageMatches2() {
     const urlQueryParamStrings = [
-      'surveyCountries=PMA2014_BFR1&indicators=cp_all&characteristicGroups=none&chartType=bar&overTime=false'
+      'surveyCountries=PMA2014_BFR1&indicators=cp_all&characteristicGroups=none&chartType=bar&overTime=false',
+      'surveyCountries=PMA2014_BFR1&indicators=cp_all&characteristicGroups=none&chartType=column&overTime=false',
+      'surveyCountries=PMA2014_BFR1&indicators=cp_all&characteristicGroups=none&chartType=line&overTime=false',
+      'surveyCountries=PMA2014_BFR1&indicators=cp_all&characteristicGroups=age_5yr_int&chartType=bar&overTime=false',
+      'surveyCountries=PMA2014_BFR1&indicators=cp_all&characteristicGroups=age_5yr_int&chartType=column&overTime=false',
+      'surveyCountries=PMA2014_BFR1&indicators=cp_all&characteristicGroups=age_5yr_int&chartType=line&overTime=false',
+      'surveyCountries=PMA2014_ETR1,PMA2014_ETR2,PMA2014_KER1,PMA2014_KER2&indicators=mcp_mar&characteristicGroups=none&chartType=bar&overTime=false',
+      'surveyCountries=PMA2014_ETR1,PMA2014_ETR2,PMA2014_KER1,PMA2014_KER2&indicators=mcp_mar&characteristicGroups=none&chartType=column&overTime=false',
+      'surveyCountries=PMA2014_ETR1,PMA2014_ETR2,PMA2014_KER1,PMA2014_KER2&indicators=mcp_mar&characteristicGroups=none&chartType=line&overTime=false',
+      'surveyCountries=PMA2014_ETR1,PMA2014_ETR2,PMA2014_KER1,PMA2014_KER2&indicators=mcp_mar&characteristicGroups=wealth_quintile&chartType=bar&overTime=false',
+      'surveyCountries=PMA2014_ETR1,PMA2014_ETR2,PMA2014_KER1,PMA2014_KER2&indicators=mcp_mar&characteristicGroups=wealth_quintile&chartType=column&overTime=false',
+      'surveyCountries=PMA2014_ETR1,PMA2014_ETR2,PMA2014_KER1,PMA2014_KER2&indicators=mcp_mar&characteristicGroups=wealth_quintile&chartType=line&overTime=false',
+      'surveyCountries=PMA2014_ETR1,PMA2014_ETR2&indicators=mcp_mar&characteristicGroups=none&chartType=bar&overTime=false',
+      'surveyCountries=PMA2014_ETR1,PMA2014_ETR2&indicators=mcp_mar&characteristicGroups=none&chartType=column&overTime=false',
+      'surveyCountries=PMA2014_ETR1,PMA2014_ETR2&indicators=mcp_mar&characteristicGroups=none&chartType=line&overTime=false',
+      'surveyCountries=PMA2014_ETR1,PMA2014_ETR2&indicators=mcp_mar&characteristicGroups=parity&chartType=bar&overTime=false',
+      'surveyCountries=PMA2014_ETR1,PMA2014_ETR2&indicators=mcp_mar&characteristicGroups=parity&chartType=column&overTime=false',
+      'surveyCountries=PMA2014_ETR1,PMA2014_ETR2&indicators=mcp_mar&characteristicGroups=parity&chartType=line&overTime=false',
+
+      'surveyCountries=PMA2014_BFR1&indicators=methodmix_allw_anym&characteristicGroups=method_mix_all&chartType=pie&overTime=false',
+      'surveyCountries=PMA2013_CDR1_Kinshasa&indicators=methodmix_marw_anym&characteristicGroups=method_mix_all&chartType=pie&overTime=false',
+      'surveyCountries=PMA2013_GHR1&indicators=methodmix_marw_modernm&characteristicGroups=method_mix_modern&chartType=pie&overTime=false',
+      'surveyCountries=PMA2014_ETR1&indicators=methodmix_allw_modernm&characteristicGroups=method_mix_modern&chartType=pie&overTime=false',
+      'surveyCountries=PMA2016_INR1_Rajasthan&indicators=methodmix_allw_plusnon&characteristicGroups=method_mix_non&chartType=pie&overTime=false',
+      'surveyCountries=PMA2016_NER2&indicators=methodmix_marw_plusnon&characteristicGroups=method_mix_non&chartType=pie&overTime=false',
+
+      'surveyCountries=PMA2014_ETR1,PMA2014_ETR2,PMA2014_KER1,PMA2014_KER2&indicators=mcp_mar&characteristicGroups=none&chartType=bar&overTime=true',
+      'surveyCountries=PMA2014_ETR1,PMA2014_ETR2,PMA2014_KER1,PMA2014_KER2&indicators=mcp_mar&characteristicGroups=none&chartType=column&overTime=true',
+      'surveyCountries=PMA2014_ETR1,PMA2014_ETR2,PMA2014_KER1,PMA2014_KER2&indicators=mcp_mar&characteristicGroups=none&chartType=line&overTime=true',
+      'surveyCountries=PMA2014_ETR1,PMA2014_ETR2,PMA2014_KER1,PMA2014_KER2&indicators=mcp_mar&characteristicGroups=wealth_quintile&chartType=bar&overTime=true',
+      'surveyCountries=PMA2014_ETR1,PMA2014_ETR2,PMA2014_KER1,PMA2014_KER2&indicators=mcp_mar&characteristicGroups=wealth_quintile&chartType=column&overTime=true',
+      'surveyCountries=PMA2014_ETR1,PMA2014_ETR2,PMA2014_KER1,PMA2014_KER2&indicators=mcp_mar&characteristicGroups=wealth_quintile&chartType=line&overTime=true',
+      'surveyCountries=PMA2014_ETR1,PMA2014_ETR2&indicators=mcp_mar&characteristicGroups=none&chartType=bar&overTime=true',
+      'surveyCountries=PMA2014_ETR1,PMA2014_ETR2&indicators=mcp_mar&characteristicGroups=none&chartType=column&overTime=true',
+      'surveyCountries=PMA2014_ETR1,PMA2014_ETR2&indicators=mcp_mar&characteristicGroups=none&chartType=line&overTime=true',
+      'surveyCountries=PMA2014_ETR1,PMA2014_ETR2&indicators=mcp_mar&characteristicGroups=parity&chartType=bar&overTime=true',
+      'surveyCountries=PMA2014_ETR1,PMA2014_ETR2&indicators=mcp_mar&characteristicGroups=parity&chartType=column&overTime=true',
+      'surveyCountries=PMA2014_ETR1,PMA2014_ETR2&indicators=mcp_mar&characteristicGroups=parity&chartType=line&overTime=true',
     ];
     const seleniumBrowserDrivers = [
       new webdriver.Builder().forBrowser('chrome').build(),
@@ -52,8 +93,16 @@ const testChartImageMatches2 = () => {
     ];
     for (let driver of seleniumBrowserDrivers) {
       for (let urlQueryParams of urlQueryParamStrings) {
-        searchTest(driver, urlHostName+urlQueryParams);
+        const downloadPath = downloadsFolder();
+        if (fs.existsSync(path.join(downloadPath, 'chart.svg'))) {
+          fs.unlinkSync(path.join(downloadPath, 'chart.svg'));
+        }
+        const result = await searchTest(driver, urlQueryParams);
+        assert( result, 'passed!');
+        // console.log(result);
       }
+      console.log('success!');
+      driver.quit();
     }
 };
 
