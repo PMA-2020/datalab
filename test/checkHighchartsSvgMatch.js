@@ -1,4 +1,5 @@
 const fs = require('fs');
+const  stringSimilarity = require('string-similarity');
 
 
 const readFile = (file) => {
@@ -65,4 +66,25 @@ const checkHighchartsSvgMatch = (files) => {
   return checkSvgMatch(files, removeHighChartsId);
 };
 
-module.exports = checkHighchartsSvgMatch;
+const checkHighchartsSvgSimilarity = (files) => {
+  /* Checks that two highchart SVG files match.
+  
+     Args:
+         files (array): An array of strings of the pattern '/absolute/path/to/file.svg'.
+  
+     Returns:
+         bool: Return result true if SVGs match, else false.
+  */
+  let filesToCheck = [];
+  for (let file of files) {
+    const fileText = readFile(file);
+    filesToCheck.push(fileText );
+  }
+  return stringSimilarity.compareTwoStrings(filesToCheck[0], filesToCheck[1]);
+};
+
+// noinspection JSUnusedGlobalSymbols
+module.exports = {
+  checkHighchartsSvgMatch: checkHighchartsSvgMatch,
+  checkHighchartsSvgSimilarity: checkHighchartsSvgSimilarity
+};
