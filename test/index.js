@@ -27,7 +27,7 @@ const searchTest = (driver, urlQueryParams, urlBase) => {
     driver.wait(until.elementLocated(By.css(".highcharts-contextbutton")), 300000).then(function(){
       // noinspection JSIgnoredPromiseFromCall
       driver.findElement(webdriver.By.css(".highcharts-contextbutton")).click();
-      driver.wait(webdriver.until.elementLocated(webdriver.By.css(".highcharts-contextmenu .highcharts-menu .highcharts-menu-item:last-of-type")), 150000).then(function() {  // default from bciar: 100000
+      driver.wait(webdriver.until.elementLocated(webdriver.By.css(".highcharts-contextmenu .highcharts-menu .highcharts-menu-item:last-of-type")), 300000).then(function() {
         driver.findElement(webdriver.By.css(".highcharts-contextmenu .highcharts-menu .highcharts-menu-item:last-of-type")).click().then(function() {
           driver.sleep(3000).then(function() {
             const downloadPath = downloadsFolder();
