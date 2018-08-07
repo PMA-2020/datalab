@@ -17,8 +17,6 @@ set-full-production-env:
 
 # Testing
 test:
-	driver=$(pwd)/test/bin/seleniumDriver_chrome_mac64 && \
-	export PATH=${PATH}:${driver} && \
 	npm run test
 
 # Server Management
