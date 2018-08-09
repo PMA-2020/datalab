@@ -4,13 +4,6 @@
 export default class Selectors {
 
   /**
-   * Gets the selected language
-   */
-  static getSelectedLanguage() {
-    return $('#select-language option:selected').val();
-  }
-
-  /**
    * Gets the value of the element with id
    */
   static getSelectedValue(id) {

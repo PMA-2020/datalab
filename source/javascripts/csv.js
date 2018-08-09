@@ -1,4 +1,3 @@
-import Network from './network';
 import Selectors from './selectors';
 
 /**
@@ -9,7 +8,7 @@ export default class CSV {
    * Sets the CSV download URL based
    * on the current selections
    */
-  static setDownloadUrl() {
+  static setDownloadUrl(network) {
     const selectedSurveys = Selectors.getSelectedCountryRounds();
     const selectedIndicator = Selectors.getSelectedValue('select-indicator-group');
     const selectedCharacteristicGroup = Selectors.getSelectedValue('select-characteristic-group');
@@ -23,7 +22,7 @@ export default class CSV {
       "format": "csv",
     }
 
-    const url = Network.buildUrl("datalab/data", opts);
+    const url = network.buildUrl("datalab/data", opts);
     const csvDownloadLink = $("#download-csv");
     csvDownloadLink.attr("href", url);
   }

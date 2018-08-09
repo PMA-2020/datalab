@@ -1,4 +1,3 @@
-import Network from './network';
 import Selectors from './selectors';
 
 /**
@@ -6,9 +5,19 @@ import Selectors from './selectors';
  */
 export default class Combo {
   /**
+   * Initialization object constructor
+   */
+  constructor(network) {
+    /**
+     * The network interface object
+     * @type {Network}
+     */
+    this.network = network;
+  }
+  /**
    * Apply the filter defined by the combination of selections
    */
-  static filter() {
+  filter() {
     const opts = {};
 
     const selectedSurvey = Selectors.getSelectedCountryRounds();
@@ -25,7 +34,7 @@ export default class Combo {
   /**
    * @private
    */
-  static setOptionsDisabled(type, availableValues) {
+  setOptionsDisabled(type, availableValues) {
     if (availableValues) {
       let fExistWealthComment = false;
       const availableItems = $(`#select-${type}-group option`);
@@ -57,7 +66,7 @@ export default class Combo {
   /**
    * @private
    */
-  static setCountryRoundsDisabled(availableValues) {
+  setCountryRoundsDisabled(availableValues) {
     if (availableValues) {
       const availableItems = $('.country-round');
 
@@ -75,7 +84,7 @@ export default class Combo {
   /**
    * @private
    */
-  static removeComments() {
+  removeComments() {
     const arr_commented = ['Wealth quintile', 'Wealth tertile'];
     arr_commented.forEach(element => {
       const jqObj = $("span:contains('" + element + "')");
@@ -87,8 +96,8 @@ export default class Combo {
   /**
    * @private
    */
-  static handleCombos(opts) {
-    Network.get("datalab/combos", opts).then(res => {
+  handleCombos(opts) {
+    this.network.getPath("datalab/combos", opts).then(res => {
       const fExistWealthComment = this.setOptionsDisabled('characteristic', res['characteristicGroup.id']);
       this.setOptionsDisabled('indicator', res['indicator.id']);
       this.setCountryRoundsDisabled(res['survey.id']);

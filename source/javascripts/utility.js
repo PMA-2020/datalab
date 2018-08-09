@@ -1,5 +1,3 @@
-import Selectors from './selectors';
-
 /**
  * Utility functions
  */
@@ -44,12 +42,19 @@ export default class Utility {
   }
 
   /**
+   * Gets the selected language
+   */
+  static getSelectedLanguage() {
+    return $('#select-language option:selected').val();
+  }
+
+  /**
    * Get label for a specific item by id
    * Uses the strings loaded into local storage, provided by the API
    */
   static getStringById(labelId) {
     const strings = this.loadStringsFromLocalStorage();
-    const lang = Selectors.getSelectedLanguage();
+    const lang = this.getSelectedLanguage();
     const string = strings[labelId];
     if (string) {
       const enString = string['en'];

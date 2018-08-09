@@ -1,6 +1,4 @@
-import Network from './network';
 import Utility from './utility';
-import Selectors from './selectors';
 import URLParse from './url-parse';
 
 import env from '../../env';
@@ -16,7 +14,7 @@ export default class Initialization {
    * Store the translation strings in local storage if able
    * @private
    */
-  static initializeStrings(strings) {
+  initializeStrings(strings) {
     if (typeof(Storage) !== "undefined") {
       localStorage.removeItem('pma2020Strings', strings);
       localStorage.pma2020Strings = JSON.stringify(strings);
@@ -29,7 +27,7 @@ export default class Initialization {
    * Build out the language select based on an array of languages
    * @private
    */
-  static initializeLanguage(languages) {
+  initializeLanguage(languages) {
     for(var k in languages) {
       let opt = Utility.createNode('option');
       opt.value = k;
@@ -43,7 +41,7 @@ export default class Initialization {
    * loaded from the API
    * @private
    */
-  static initializeCharacteristicGroups(characteristicGroups) {
+  initializeCharacteristicGroups(characteristicGroups) {
     characteristicGroups.forEach(group => {
       const optGroupName = Utility.getString(group);
       let optGroup = Utility.createNode('optgroup');
@@ -73,7 +71,7 @@ export default class Initialization {
    * loaded from the API
    * @private
    */
-  static initializeIndicators(indicators) {
+  initializeIndicators(indicators) {
     indicators.forEach(group => {
       const optGroupName = Utility.getString(group);
       let optGroup = Utility.createNode('optgroup');
@@ -103,8 +101,8 @@ export default class Initialization {
    * Builds the html for survey countries
    * @private
    */
-  static initializeSurveyCountries(surveyCountries) {
-    const language = Selectors.getSelectedLanguage();
+  initializeSurveyCountries(surveyCountries) {
+    const language = Utility.getSelectedLanguage();
 
     surveyCountries.forEach(country => {
       const countryName = Utility.getString(country);
@@ -194,7 +192,7 @@ export default class Initialization {
    * loads up the saved style data from local storage
    * @public
    */
-  static initializeStyles() {
+  initializeStyles() {
     if (!!localStorage.saved_style && localStorage.saved_style == 1) {
       for (let i=0; i<localStorage.length; i++) {
         const key = localStorage.key(i);
@@ -213,54 +211,15 @@ export default class Initialization {
     const select_axis = '.chart-style-wrapper #'+(chart_type=='bar' ? 'x' : 'y')+'-axis-label';
     $(select_axis).val(chart_axis_label);
     $(select_axis).attr('placeholder', chart_axis_label);
-}
-
-const initialize = () => {
-  network.get("datalab/init").then(res => {
-    console.log("------------------------------------------------");
-    console.log(`PMA2020 Datalab API Version: ${res.metadata.version}`);
-    console.log(`PMA2020 Datalab Client:      ${env.version}`);
-    console.log(`Environment Used:            ${env.environment}`);
-    console.log("------------------------------------------------");
-    initializeStrings(res.strings);
-    initializeLanguage(res.languages);
-    initializeCharacteristicGroups(res.characteristicGroupCategories);
-    initializeIndicators(res.indicatorCategories);
-    initializeSurveyCountries(res.surveyCountries);
-
-    $('.selectpicker').selectpicker('refresh');
-    if (urlparse.getQuery() !== false)
-    {
-        const query = urlparse.parseQuery();
-        $('#select-indicator-group').selectpicker('val', query['indicators']);
-        $('#select-characteristic-group').selectpicker('val', query['characteristicGroups']);
-        $('#chart-types #option-'+query['chartType']).click();
-        const selectedCountries = query['surveyCountries'].split(',');
-        selectedCountries.forEach(country_id => {
-          $('#'+country_id).prop('checked', true);
-        });
-        if (query['overTime']=='true'){
-          $('#dataset_overtime').prop('checked', true);
-          $('#dataset_overtime').prop('disabled', false);
-        }
-        chart.data(query);
-    }
-  });
-};
-
-const initialization = {
-  initialize,
-  initializeStyles,
-};
+  }
 
   /**
    * Main entry point for initialization,
    * does the actual first api call to get data
-   * @param {Chart} chart - The one and only chart object
    * @public
    */
-  static initialize(chart) {
-    Network.get("datalab/init").then(res => {
+  initialize(network, chart) {
+    network.getPath("datalab/init").then(res => {
       console.log("------------------------------------------------");
       console.log(`PMA2020 Datalab API Version: ${res.metadata.version}`);
       console.log(`PMA2020 Datalab Client:      ${env.version}`);

@@ -1,9 +1,6 @@
-import Network from './network';
 import Utility from './utility';
-import Selectors from './selectors';
-import Combo from './combo';
-import Validation from './validation';
 import Initialization from './initialization';
+import Selectors from './selectors';
 import CSV from './csv';
 import Highcharts from 'highcharts';
 import Highchart_theme from './chart-theme';
@@ -16,18 +13,44 @@ export default class Chart {
   /**
    * Chart Class Constructor
    */
-  constructor() {
+  constructor(network, combo, validation) {
+    /**
+     * The network object
+     * @type {Network}
+     */
+    this.network = network;
+
+    /**
+     * The combo object
+     * @type {Combo}
+     */
+    this.combo = combo;
+
+    /**
+     * The validation object
+     * @type {Validation}
+     */
+    this.validation = validation;
+
     /**
      * The currently rendered chart from Highcharts
      * @type {object}
      */
     this.chart_obj = {};
+
     /**
      * The currently rendered chart options
      * that were sent to Highcharts
      * @type {object}
      */
     this.option_obj = {};
+
+    /**
+     * The currently rendered chart options
+     * that were sent to Highcharts
+     * @type {Initialization}
+     */
+    this.initialization = new Initialization();
   }
 
   /**
@@ -434,7 +457,7 @@ export default class Chart {
       "overTime": overTime,
     }
 
-    Network.get("datalab/data", opts).then(res => {
+    this.network.getPath("datalab/data", opts).then(res => {
 
       if (overTime) { // Overtime series option selected
         this.option_obj = this.generateOverTimeChart(res);
@@ -446,12 +469,12 @@ export default class Chart {
 
       this.chart_obj = Highcharts.chart('chart-container', this.option_obj);
 
-      Combo.filter();
-      Validation.checkOverTime();
-      Validation.checkBlackAndWhite();
-      Validation.checkPie();
-      Validation.checkCharting();
-      Initialization.initializeStyles();
+      this.combo.filter();
+      this.validation.checkOverTime();
+      this.validation.checkBlackAndWhite();
+      this.validation.checkPie();
+      this.validation.checkCharting(this.network);
+      this.initialization.initializeStyles();
     });
   }
 
@@ -567,11 +590,11 @@ export default class Chart {
   }
 
   /**
-   * Initialize the chart by calling the Initialization with
+   * Initialize the chart by calling the initialization with
    * this chart object.
    */
   initialize() {
-    Initialization.initialize(this);
+    this.initialization.initialize(this.network, this);
   }
 
   /**

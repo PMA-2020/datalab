@@ -8,7 +8,7 @@ export default class Network {
    * Display that the network is loading data
    * @private
    */
-  static displayLoading() {
+  displayLoading() {
     $(".chart-control").prop('disabled', true);
     $(".row-error").hide();
     $(".row-loading").show();
@@ -18,7 +18,7 @@ export default class Network {
    * Display to the user that there was an error
    * @private
    */
-  static displayError() {
+  displayError() {
     $(".row-loading").hide();
     $(".row-error").show();
   }
@@ -27,7 +27,7 @@ export default class Network {
    * Remove all alerts and error info
    * @private
    */
-  static removeAlerts() {
+  removeAlerts() {
     $(".chart-control").prop('disabled', false);
     $(".row-loading").hide();
     $(".row-error").hide();
@@ -39,7 +39,7 @@ export default class Network {
    * @return {object} the JSON response as an object
    * @private
    */
-  static sendRequest(request) {
+  sendRequest(request) {
     this.displayLoading();
     return fetch(request).then((response) => {
       this.removeAlerts();
@@ -56,7 +56,7 @@ export default class Network {
    * @param {string} path - The URL path within the API
    * @param {object} opts - Map of options for the query
    */
-  static buildUrl(path, opts) {
+  buildUrl(path, opts) {
     const baseUrl = env.api_url || 'http://api.pma2020.org';
     let url =  `${baseUrl}/v1/${path}`;
     if (opts) {
@@ -72,7 +72,7 @@ export default class Network {
    * @param {object} opts - Map of options for the query
    * @return {object} the json object from the API
    */
-  static get(path, opts) {
+  getPath(path, opts) {
     const request = new Request(this.buildUrl(path, opts));
     return this.sendRequest(request);
   }

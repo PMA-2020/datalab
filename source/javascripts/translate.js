@@ -1,4 +1,4 @@
-import utility from './utility';
+import Utility from './utility';
 
 /**
  * Handle i18n translation of items on the page designated
@@ -13,7 +13,7 @@ export default class Translate {
     items.each(i => {
       const item = items[i];
       const key = item.dataset.key;
-      const translatedValue = utility.getStringById(key);
+      const translatedValue = Utility.getStringById(key);
 
       if (translatedValue) {
         if (type === 'optgroup') {

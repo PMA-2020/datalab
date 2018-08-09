@@ -9,9 +9,20 @@ import Tooltips from './tooltip';
  */
 export default class Validation {
   /**
+   * Validation Class Constructor
+   */
+  constructor(network) {
+    /**
+     * The network object
+     * @type {Network}
+     */
+    this.network = network;
+  }
+
+  /**
    * Check the pie options
    */
-  static checkPie() {
+  checkPie() {
     const selectedIndicator = Selectors.getSelectedItem('select-indicator-group');
     const countryRounds = Selectors.getSelectedCountryRounds();
     const pieChartType = $("#chart-types").find($("#option-pie")).parent();
@@ -46,7 +57,7 @@ export default class Validation {
   /**
    * Check to see if over time option is valid
    */
-  static checkOverTime() {
+  checkOverTime() {
     const countryRounds = Selectors.getSelectedCountryRounds();
     const overTimeCheckbox = $("#dataset_overtime");
 
@@ -60,7 +71,7 @@ export default class Validation {
   /**
    * Check to see if black and white is allowed
    */
-  static checkBlackAndWhite() {
+  checkBlackAndWhite() {
     const countryRounds = Selectors.getSelectedCountryRounds();
     const blackAndWhiteCheck = $("#dataset_black_and_white");
     const overTimeCheckbox = $("#dataset_overtime")[0];
@@ -83,7 +94,7 @@ export default class Validation {
    * and enabled or disable the tooltip indicating
    * why charting can't run when it can't.
    */
-  static checkCharting() {
+  checkCharting() {
     const countryRounds = Selectors.getSelectedCountryRounds().length;
     const selectedIndicator = Selectors.getSelectedValue('select-indicator-group').length;
     const selectedCharacteristicGroup = Selectors.getSelectedValue('select-characteristic-group').length;
@@ -92,7 +103,7 @@ export default class Validation {
     if(countryRounds > 0 && selectedIndicator > 0 && selectedCharacteristicGroup > 0 &&
       chartType != undefined &&
       chartType.length > 0) {
-      CSV.setDownloadUrl();
+      CSV.setDownloadUrl(this.network);
       $('.submit-chart').prop('disabled', '');
       Tooltips.disableBtnSubmitChart();
       $('.reset-chart').prop('disabled', '');
