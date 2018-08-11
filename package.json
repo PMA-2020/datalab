@@ -62,6 +62,7 @@
     "driver.js": "^0.5.2",
     "hoek": "^5.0.3",
     "jquery": "^3.2.1",
+    "ls": "^0.2.1",
     "promise-polyfill": "8.0.0",
     "selenium-webdriver": "^4.0.0-alpha.1",
     "string-similarity": "^1.2.0",
