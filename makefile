@@ -1,7 +1,8 @@
 .PHONY: build serve dev staging production set-default-development-env \
 set-full-development-env set-full-staging-env set-full-production-env test \
 push-dev push-dev2 push-staging push-production push-prod prod open-dev \
-open-staging open-production open-prod
+open-staging open-production open-prod test-dev test-staging test-production \
+test-prod
 
 # Local Development
 build:
@@ -25,8 +26,18 @@ set-full-production-env:
 	&& mv temp.js env.js
 
 # Testing
-test:
-	npm run test
+test-dev:
+#	npm run test
+	node ./test/index.js url=http://localhost:4567
+test-staging:
+#	npm run test
+	node ./test/index.js url=http://datalab-staging.pma2020.org
+test-production:
+#	npm run test
+	node ./test/index.js url=http://datalab.pma2020.org
+test-prod: test-production
+test: test-dev
+
 open-dev:
 	open http://joe.local:4567/
 open-staging:

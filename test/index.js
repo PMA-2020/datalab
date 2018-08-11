@@ -14,17 +14,22 @@ require('chromedriver');
 
 const checkHighchartsSvgMatch = require('./checkHighchartsSvgMatch');
 
-const testConfig = {
+let defaultUrls = {  // TODO #6a: Set these URLs as environmental variables.
+  dev: 'http://localhost:4567',
+  staging: 'http://datalab-staging.pma2020.org',
+  production: 'http://datalab.pma2020.org'
+};
+let testConfig = {
   acceptableErrorThreshold: 0.2,
   maxUnitTestCaseAttempts: 3,
   maxBrowserTestSuiteAttempts: 3,
   decimalPrecision: 3,
   thresholdValue: 0.950,
-  urlBase: 'http://localhost:4567/?',
+  urlBase: defaultUrls['dev'] + '/?',  // TODO #6b: Fetch from env.
   svgFileName: 'chart.svg'
 };
-let globals = {
-  failCount: 0,
+let globals = {  // There may be an existing bug in which some errors accidentally get counted as both passes and errors, and error number isn't accurate either.
+  failCount: 0,  // Redundant at the moment; in the event of any failures, the test suite process quits without printing a summary that would utilize this value.
   passCount: 0,
   errorCount: 0
 };
@@ -58,60 +63,87 @@ const assertFailureExplanation =
 'as shown above. After doing so, this test case should pass the next time around.\n';
 
 const handleSeleniumErr = (err, rejectionHandler, options) => {
-  /* Example errors
+  /*
+  # Example errors
   * NoSuchElementError
-    { NoSuchElementError: no such element: Unable to locate element: {"method":"css selector","selector":".highcharts-contextbutton"}
+    - Example error message
+      { NoSuchElementError: no such element: Unable to locate element: {"method":"css selector","selector":".highcharts-contextbutton"}
   * StaleElementReferenceError
-    { StaleElementReferenceError: stale element reference: element is not attached to the page document
+    - Example error message
+      { StaleElementReferenceError: stale element reference: element is not attached to the page document
   * TimeoutError
-    { TimeoutError: Waiting for element to be located By(css selector, .highcharts-contextmenu .highcharts-menu .highcharts-menu-item:last-of-type)
-    Wait timed out after 100000ms
+    - Example error message
+      { TimeoutError: Waiting for element to be located By(css selector, .highcharts-contextmenu .highcharts-menu .highcharts-menu-item:last-of-type)
+      Wait timed out after 100000ms
   * WebDriverError
-    WebDriverError: element not visible
+    - Example error message
+      WebDriverError: element not visible
   * Error
-    Error: ENOENT: no such file or directory, open '/path/to/Downloads/chart.svg'
-  * About Assertion Errors
+    - Example error message
+      Error: ENOENT: no such file or directory, open '/path/to/Downloads/chart.svg'
+    - About
+      This can sometimes be the result of selenium driver latency. Also, particularly in the case
+      of a non-development environment, this can be the result of throttling by the export.highcharts.com
+      API. If that is the case, the following message may appear in the browser:
+      {"message": "Too many requests, you have been rate limited. Please try again later."}
+  
+  # About Assertion Errors
     https://airbrake.io/blog/nodejs-error-handling/assertionerror-nodejs
   */
-  const problematicErrorMsg = 'We are not entirely sure at the moment if this type of issue could cause problems for the test suite. ' +
-    'However, as long as all assertions pass, this is probably fine.';
   const isAssertionError = err.name.toLowerCase().substring(0, 6) === 'assert' || err.name === 'AssertionError [ERR_ASSERTION]';
-  
-  if (options && !isAssertionError) {
-    const spacer = options.testCaseNum <= 1 ? '' : '\n';
-    console.log(`${spacer}Test case ${options.testCaseNum}/${options.totTestCases}: (error)`);
-    console.log(`  - Message: Encountered test error '${err.name}'`);
-  }
+  const possiblyCascadedError = `${err}`.match('ENOENT') !== null && `${err}`.match(testConfig.svgFileName) !== null;
+  const commonErrorMsgStartTxt = '  - Message: Encountered common test error';
+  const unanticipatedErrorMsgStartTxt = '  - Message: Encountered unanticipated error';
+  const commonErrorMessage = `${commonErrorMsgStartTxt}: '${err.name}'\n` +
+    '    This type of error is typically due to latency fluctuations in the selenium driver ' +
+    'and is not typically the cause of a failing test case, unless 100% of test cases are failing.';
   
   if (isAssertionError) {
       globals.failCount++;
       console.log('Throwing AssertionError and exiting now.\n');
-      throw(err);  // This doesnt actually exit with Error 1. Handle error elsewhere.
+      throw(err);
   } else {
-    globals.errorCount++;
-    if (
-        err.name === 'NoSuchElementError' ||
-        err.name === 'TimeoutError' ||
-        err.name === 'StaleElementReferenceError') {
+    const errAlreadyHandled = `${err}`.match(commonErrorMsgStartTxt) !== null ||
+      `${err}`.match(unanticipatedErrorMsgStartTxt) !== null;
+    if (!errAlreadyHandled) {
+      globals.errorCount++;
+      if (options) {
+        const spacer = options.testCaseNum <= 1 ? '' : '\n';
+        console.log(`${spacer}Test case ${options.testCaseNum}/${options.totTestCases}: (error)`);
+      }
       // TODO: Test re-running is not actually working. Instead, going with error threshold method instead.
-      // Don't actually need to print anything... this is printed elsewhere.
-      // console.log('Test case may be re-attempted. If not re-attempted or if ' +
-      //   're-attempts fail, this will increase the running error count.');
-    } else if (
-        err.name === 'NoSuchSessionError' ||
-        err.name === 'WebDriverError') {
-      console.log(`\nSelenium SVG test encountered error: ${err.name}.`);
-      console.log(problematicErrorMsg);  // console.log(`Error details: \n${err}`);
-    } else if (
-      `${err}`.substring(0, 13) === 'Error: ENOENT' &&
-      `${err}`.substring(err.length - testConfig.svgFileName.length) === testConfig.svgFileName) {
-      // Do nothing. This seems to immediately follow "WebDriverError: element not visible", so it is redundant.
-    } else {
-      console.log('Unanticipated error' + err.name ? ': ' + err.name : '');
-      console.log(problematicErrorMsg);
-      console.log(`Error details: \n${err}`);
+      if (err.name === 'NoSuchElementError' ||
+          err.name === 'TimeoutError' ||
+          err.name === 'StaleElementReferenceError') {
+        console.log(commonErrorMessage);
+        // Don't actually need to print anything... this is printed elsewhere.
+        // console.log('Test case may be re-attempted. If not re-attempted or if ' +
+        //   're-attempts fail, this will increase the running error count.');
+      } else if (
+          err.name === 'NoSuchSessionError' ||
+          err.name === 'WebDriverError') {
+        console.log(commonErrorMessage);
+      } else if (possiblyCascadedError) {
+        console.log(commonErrorMessage);
+        // This seems to usually immediately follow "WebDriverError: element not visible", so it could be redundant.
+        // Hence, I have called it "cascaded". However, given that I am not 100% sure if this error can't appear on its own,
+        // it is considered "possibly cascaded", and we are printing the error if it hasn't been handled before.
+      } else {
+        console.log(`${unanticipatedErrorMsgStartTxt}` + (err.name ? ': ' + err.name : '') + '\n' +
+          '  - Error details:\n' +
+          `    ${err}`);
+      }
+      // TODO: Does not returning work?
+      if (!rejectionHandler ||
+          rejectionHandler === null ||
+          typeof rejectionHandler === 'undefined') {
+        // Do nothing.
+        // return err;
+      } else {
+        // return rejectionHandler(err);
+        rejectionHandler(err);
+      }
     }
-    if (typeof rejectionHandler === 'undefined') { return err; } else { return rejectionHandler(err); }
   }
 };
 
@@ -151,6 +183,7 @@ const searchTest = (resolve, rejectionHandler, driver, urlQueryParams, slowdownM
   const menuIcon = '.highcharts-contextbutton';
   driver.get(url)
   .then().catch(err => { handleSeleniumErr(err, rejectionHandler); });
+  // driver.wait(until.elementLocated(By.css(menuIcon)), 1*slowdownMultiplier)  // TO-DO DE-BUGGING
   driver.wait(until.elementLocated(By.css(menuIcon)), 400000*slowdownMultiplier)  // originally 300000
   .then(() => {
     // noinspection JSIgnoredPromiseFromCall  // TODO: (1)
@@ -316,15 +349,56 @@ function testChartImageMatchesWithParams(urlQueryParamStrings) {
   }
 }
 
-const setUp = () => {
+const setUpErrorHandling = () => {
+  process.on('unhandledRejection', (reason) => {
+    // Recommended: send the information to sentry.io or crash reporting service.
+    console.log('Unhandled Rejection at:', reason.stack || reason);
+    throw('Exiting with error status 1.')
+  });
+};
+
+const arrayContains = (key, array) => {
+  return (array.indexOf(key) > -1);
+};
+
+const objContains = (key, obj) => {
+  return arrayContains(key, Object.keys(obj));
+};
+
+const setUpConfigFromArgs = (args) => {
+  const parsedArgs = args.slice(2)
+    .map(arg => arg.split('='))
+    .reduce((args, [value, key]) => {
+        args[value] = key;
+        return args;
+    }, {});
+  for (let key of Object.keys(testConfig)) {
+    if (objContains(key, parsedArgs)) {
+      testConfig[key] = parsedArgs[key];
+    }
+  }
+  if (parsedArgs.urlBase) {
+    testConfig.urlBase += '/?';
+  } else if (parsedArgs.url) {
+    testConfig.urlBase = parsedArgs.url + '/?';
+  }
+};
+
+const setUpInternalTestParams = () => {
+  let testParams = {};
   let urlQueryParamStrings = [];
   const filePathGlob = path.join(__dirname, 'files/*.svg');
   for (let file of ls(filePathGlob)) {
     urlQueryParamStrings.push(file.name);
   }
-  return {
-    urlQueryParamStrings: urlQueryParamStrings,
-  }
+  testParams.urlQueryParamStrings = urlQueryParamStrings;
+  return testParams;
+};
+
+const setUp = () => {
+  setUpErrorHandling();
+  setUpConfigFromArgs(process.argv);
+  return setUpInternalTestParams();
 };
 
 const testChartImageMatches = () => {
@@ -336,9 +410,3 @@ const testChartImageMatches = () => {
 };
 
 testChartImageMatches();
-
-process.on('unhandledRejection', (reason) => {
-  // Recommended: send the information to sentry.io or crash reporting service.
-  console.log('Unhandled Rejection at:', reason.stack || reason);
-  throw('Exiting with error status 1.')
-});
