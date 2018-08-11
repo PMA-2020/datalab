@@ -1,5 +1,5 @@
-.PHONY: build serve dev dev2 staging production set-default-development-env \
-set-full-development-env set-full-staging-env set-full-production-env
+.PHONY: build serve dev staging production set-default-development-env \
+set-full-development-env set-full-staging-env set-full-production-env test
 
 # Local Development
 build:
@@ -21,6 +21,10 @@ set-full-staging-env:
 set-full-production-env:
 	sed 's/const env = envSrc\..*;/const env = envSrc\.productionAll;/g' env.js \
 	&& mv temp.js env.js
+
+# Testing
+test:
+	npm run test
 
 # Server Management
 dev:
