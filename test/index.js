@@ -25,6 +25,7 @@ let testConfig = {
   maxBrowserTestSuiteAttempts: 3,
   decimalPrecision: 3,
   thresholdValue: 0.950,
+  slowdownMultiplier: 1.5,
   urlBase: defaultUrls['dev'] + '/?',  // TODO #6b: Fetch from env.
   svgFileName: 'chart.svg'
 };
@@ -94,18 +95,20 @@ const handleSeleniumErr = (err, rejectionHandler, options) => {
   const possiblyCascadedError = `${err}`.match('ENOENT') !== null && `${err}`.match(testConfig.svgFileName) !== null;
   const commonErrorMsgStartTxt = '  - Message: Encountered common test error';
   const unanticipatedErrorMsgStartTxt = '  - Message: Encountered unanticipated error';
-  const commonErrorMessage = `${commonErrorMsgStartTxt}: '${err.name}'\n` +
+  let commonErrorMessage = `${commonErrorMsgStartTxt}: '${err.name}'\n` +
     '    This type of error is typically due to latency fluctuations in the selenium driver ' +
     'and is not typically the cause of a failing test case, unless 100% of test cases are failing.';
+  commonErrorMessage += '\n' + err + '\n\n';
   
   if (isAssertionError) {
       globals.failCount++;
       console.log('Throwing AssertionError and exiting now.\n');
       throw(err);
   } else {
-    const errAlreadyHandled = `${err}`.match(commonErrorMsgStartTxt) !== null ||
-      `${err}`.match(unanticipatedErrorMsgStartTxt) !== null;
-    if (!errAlreadyHandled) {
+    // const errAlreadyHandled = `${err}`.match(commonErrorMsgStartTxt) !== null ||
+    //   `${err}`.match(unanticipatedErrorMsgStartTxt) !== null;
+    if (options) {
+    // if (!errAlreadyHandled) {
       globals.errorCount++;
       if (options) {
         const spacer = options.testCaseNum <= 1 ? '' : '\n';
@@ -133,29 +136,34 @@ const handleSeleniumErr = (err, rejectionHandler, options) => {
           '  - Error details:\n' +
           `    ${err}`);
       }
-      // TODO: Does not returning work?
       if (!rejectionHandler ||
           rejectionHandler === null ||
           typeof rejectionHandler === 'undefined') {
         // Do nothing.
-        // return err;
       } else {
-        // return rejectionHandler(err);
+        rejectionHandler(err);
+      }
+    } else {  // TODO: Is it better if this is above, below, or in both places?
+      if (!rejectionHandler ||
+          rejectionHandler === null ||
+          typeof rejectionHandler === 'undefined') {
+        // Do nothing.
+      } else {
         rejectionHandler(err);
       }
     }
   }
 };
 
-const getSvg = (i, resolve, rejectionHandler, driver, svgFileName, slowdownMultiplier) => {
+const getSvg = (i, resolve, rejectionHandler, driver, svgFileName, reattemptSlowdownMultiplier) => {
   const menuItemDescriptor = '.highcharts-contextmenu .highcharts-menu .highcharts-menu-item:last-of-type';
-  driver.wait(webdriver.until.elementLocated(webdriver.By.css(menuItemDescriptor)), 70000*slowdownMultiplier).then(() => {  // originally 50000
+  driver.wait(webdriver.until.elementLocated(webdriver.By.css(menuItemDescriptor)), 50000*testConfig.slowdownMultiplier*reattemptSlowdownMultiplier).then(() => {  // originally 50000
   // driver.wait(webdriver.until.elementLocated(webdriver.By.css(menuItemDescriptor)), 1*slowdownMultiplier).then(() => {  // TODO #2b: See #2a
     const element = driver.findElement(webdriver.By.css(menuItemDescriptor));
     element.then().catch(err => { handleSeleniumErr(err, rejectionHandler); });
     element.click()
     .then(() => {
-      driver.sleep(3000*slowdownMultiplier)
+      driver.sleep(3000*testConfig.slowdownMultiplier*reattemptSlowdownMultiplier)
       .then(() => {
         const downloadPath = downloadsFolder();
         const file1 = path.join(downloadPath, testConfig.svgFileName);
@@ -169,7 +177,7 @@ const getSvg = (i, resolve, rejectionHandler, driver, svgFileName, slowdownMulti
 };
 
 
-const searchTest = (resolve, rejectionHandler, driver, urlQueryParams, slowdownMultiplier) => {
+const searchTest = (resolve, rejectionHandler, driver, urlQueryParams, reattemptSlowdownMultiplier) => {
   /* Checks to see if an image downloaded at a given URL matches what is expected.
 
   Args:
@@ -184,12 +192,12 @@ const searchTest = (resolve, rejectionHandler, driver, urlQueryParams, slowdownM
   driver.get(url)
   .then().catch(err => { handleSeleniumErr(err, rejectionHandler); });
   // driver.wait(until.elementLocated(By.css(menuIcon)), 1*slowdownMultiplier)  // TO-DO DE-BUGGING
-  driver.wait(until.elementLocated(By.css(menuIcon)), 400000*slowdownMultiplier)  // originally 300000
+  driver.wait(until.elementLocated(By.css(menuIcon)), 400000*testConfig.slowdownMultiplier*reattemptSlowdownMultiplier)  // originally 300000
   .then(() => {
     // noinspection JSIgnoredPromiseFromCall  // TODO: (1)
     const element = driver.findElement(webdriver.By.css(menuIcon));
     element.click().then().catch(err => handleSeleniumErr(err, rejectionHandler));
-    getSvg(0, resolve, rejectionHandler, driver, urlQueryParams, slowdownMultiplier)
+    getSvg(0, resolve, rejectionHandler, driver, urlQueryParams, reattemptSlowdownMultiplier)
   }).catch(err => {
     handleSeleniumErr(err, rejectionHandler);
   });
@@ -299,7 +307,13 @@ async function testOnBrowser(driverName, driver, urlQueryParamStrings, attemptNu
   // - Pass count: ${globals.passCount}
   // - Fail count: ${globals.failCount}`);
   const attemptLab = attemptNumber === 1 ? '' : ` (${attemptNumber}/${testConfig.maxBrowserTestSuiteAttempts})`;
-  console.log(`\nSelenium SVG similarity (${driverName}) test complete.${attemptLab}
+  const errRatioLab = (errorRatio*100).toPrecision(testConfig.decimalPrecision).toString()+'%';
+  const errThresholdLab = (testConfig.acceptableErrorThreshold*100).toPrecision(testConfig.decimalPrecision).toString()+'%';
+  const errorSummaryLab = `\nSome runtime errors occurred, but error rate ${errRatioLab} did not ` +
+    `exceed threshold set in \`testConfig.acceptableErrorThreshold\` of ${errThresholdLab}. Please note ` +
+    `that while these runtime errors are not ideal, they are not caused as the result of test case failures.`;
+  console.log(`\nSelenium SVG similarity (${driverName}) test complete.${attemptLab}` +
+    `${globals.errorCount > 0 ? errorSummaryLab : ''}` + `
   - Success rate: ${successRateLab}
   - Time taken: ${totTestTimeLab}
   - Total tests run: ${totTestsRun}
@@ -308,8 +322,6 @@ async function testOnBrowser(driverName, driver, urlQueryParamStrings, attemptNu
   - Error count: ${globals.errorCount}\n`);
   
   if (errorRatio >= testConfig.acceptableErrorThreshold) {
-    const errRatioLab = (errorRatio*100).toPrecision(testConfig.decimalPrecision).toString()+'%';
-    const errThresholdLab = (testConfig.acceptableErrorThreshold*100).toPrecision(testConfig.decimalPrecision).toString()+'%';
     assert(false, `\nSelenium SVG similarity (${driverName}) critical test error: ErrorRatioExceeded\n` +
       'Too many test cases resulted in runtime errors. Error ratio ' + errRatioLab +
       ' exceeded `testConfig.acceptaableErrorThreshold` set at ' + errThresholdLab + '.')
