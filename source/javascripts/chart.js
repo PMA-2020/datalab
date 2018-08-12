@@ -4,9 +4,8 @@ import Selectors from './selectors';
 import Combo from './combo';
 import Validation from './validation';
 import Initialization from './initialization';
-import CSV from './csv';
 import Highcharts from 'highcharts';
-import Highchart_theme from './chart-theme';
+import highchartTheme from './chart-theme';
 require('highcharts/modules/exporting')(Highcharts);
 
 /**
@@ -21,7 +20,7 @@ export default class Chart {
      * The currently rendered chart from Highcharts
      * @type {object}
      */
-    this.chart_obj = {};
+    this.chartObj = {};
     /**
      * The currently rendered chart options
      * that were sent to Highcharts
@@ -46,11 +45,16 @@ export default class Chart {
       return [...tot, Utility.getStringById(country["country.label.id"])];
     }, []))).join(", ");
 
-    const title = `${indicatorLabel} ${Utility.getStringById('by')} ${characteristicGroupLabel} ${Utility.getStringById('for')} ${countries}`;
+    let title = `${indicatorLabel} ${Utility.getStringById('by')} ${characteristicGroupLabel} ${Utility.getStringById('for')} ${countries}`;
+    if (characteristicGroupLabel=="None") {
+      title = `${indicatorLabel} ${Utility.getStringById('for')} ${countries}`;
+    }
     sessionStorage.setItem('chart-title', title);
 
     return {
-      style: { color: Utility.getOverrideValue('title-color') },
+      style: {
+        color: Utility.getOverrideValue('title-color')
+      },
       text: title,
     };
   }
@@ -68,7 +72,7 @@ export default class Chart {
     const geography = Utility.getStringById(geographyId);
     const survey = Utility.getStringById(surveyId);
 
-    return `${country} ${geography} ${survey}`
+    return `${country} ${geography} ${survey}`;
   }
 
   /**
@@ -79,7 +83,9 @@ export default class Chart {
     return {
       series: {
         connectNulls: true,
-        marker: { radius: Utility.getOverrideValue('marker-size')},
+        marker: {
+          radius: Utility.getOverrideValue('marker-size')
+        },
         dataLabels: {
           enabled: true,
           format: `{y:.${precision}f}`,
@@ -87,9 +93,23 @@ export default class Chart {
           y: Utility.getOverrideValue('data-label-y-position'),
         }
       },
-      bar: { dataLabels: { enabled: true } },
-      column: { dataLabels: { enabled: true, crop: false, overflow: "none" } },
-      line: { dataLabels: { enabled: true } },
+      bar: {
+        dataLabels: {
+          enabled: true
+        }
+      },
+      column: {
+        dataLabels: {
+          enabled: true,
+          crop: false,
+          overflow: "none"
+        }
+      },
+      line: {
+        dataLabels: {
+          enabled: true
+        }
+      },
       pie: {
         allowPointSelect: true,
         cursor: 'pointer',
@@ -98,7 +118,7 @@ export default class Chart {
         },
         showInLegend: true
       }
-    }
+    };
   }
 
   /**
@@ -108,9 +128,11 @@ export default class Chart {
    */
   generateSubtitle() {
     return {
-      style: { color: Utility.getOverrideValue('title-color') },
+      style: {
+        color: Utility.getOverrideValue('title-color')
+      },
       text: "PMA2020"
-    }
+    };
   }
 
   /**
@@ -123,7 +145,7 @@ export default class Chart {
   generateCitation(partners) {
     let citation = "Performance Monitoring and Accountability 2020. Johns Hopkins University;";
     citation = [citation, ...partners];
-    return `${citation} ${new Date().toJSON().slice(0,10)}`;
+    return `${citation} ${new Date().toJSON().slice(0, 10)}`;
   }
 
   /**
@@ -141,7 +163,7 @@ export default class Chart {
         align: 'center',
         y: Utility.getOverrideValue('credits-y-position')
       }
-    }
+    };
   }
 
   /**
@@ -151,7 +173,7 @@ export default class Chart {
     return {
       xDateFormat: '%m-%Y',
       pointFormat: `{series.name}: {point.y:.${precision}f}`
-    }
+    };
   }
 
   /**
@@ -166,7 +188,7 @@ export default class Chart {
         year: '%m-%Y',
         day: '%m-%Y',
       },
-    }
+    };
   }
 
   /**
@@ -193,7 +215,7 @@ export default class Chart {
       lineColor: Utility.getOverrideValue('x-axis-color'),
       tickColor: Utility.getOverrideValue('tick-color'),
       minorTickColor: Utility.getOverrideValue('minor-tick-color'),
-    }
+    };
   }
 
   /**
@@ -214,7 +236,7 @@ export default class Chart {
       tickColor: Utility.getOverrideValue('tick-color'),
       minorTickColor: Utility.getOverrideValue('minor-tick-color'),
       minorTickInterval: 'auto'
-    }
+    };
   }
 
   /**
@@ -233,27 +255,23 @@ export default class Chart {
       },
       scale: 3,
       fallbackToExportServer: false
-    }
+    };
   }
 
   /**
    * @private
    */
   generateLegend() {
-    const countryRounds = Selectors.getSelectedCountryRounds();
+    // const countryRounds = Selectors.getSelectedCountryRounds();
 
     let legendContent = {
       layout: 'vertical',
       align: 'center',
       verticalAlign: 'bottom',
-      itemStyle: { color: Utility.getOverrideValue('label-color'), }
-    }
-
-    if (countryRounds.length > 5) {
-      legendContent['verticalAlign'] = 'top'
-      legendContent['layout'] = 'vertical'
-    }
-
+      itemStyle: {
+        color: Utility.getOverrideValue('label-color'),
+      }
+    };
     return legendContent;
   }
 
@@ -271,7 +289,7 @@ export default class Chart {
       style: {
         color: Utility.getOverrideValue('label-color')
       }
-    }
+    };
   }
 
   /**
@@ -294,20 +312,20 @@ export default class Chart {
    */
   generateOverTimeSeriesData(dataPoints) {
     return dataPoints.reduce((res, dataPoint) => {
-      const characteristicGroupId = dataPoint["characteristic.label.id"];
+      // const characteristicGroupId = dataPoint["characteristic.label.id"];
 
       return [
         ...res,
         {
-          name: Utility.getStringById(characteristicGroupId),
+          name: Utility.getStringById(dataPoint["country.label.id"]),
           data: dataPoint.values.reduce((tot, item) => {
             const utcDate = Utility.parseDate(item["survey.date"]);
 
             return [...tot, [utcDate, item.value]];
           }, [])
         }
-      ]
-    }, [])
+      ];
+    }, []);
   }
 
   /**
@@ -325,11 +343,11 @@ export default class Chart {
         {
           name: this.generateSeriesName(countryId, geographyId, surveyId),
           data: dataPoint.values.reduce((tot, item) => {
-            return [...tot, item.value]
+            return [...tot, item.value];
           }, [])
         }
-      ]
-    }, [])
+      ];
+    }, []);
   }
 
   /**
@@ -340,7 +358,7 @@ export default class Chart {
   generatePieChart(res) {
     const inputs = res.queryInput;
     const characteristicGroups = res.results[0].values;
-    const indicator = Utility.getStringById(inputs.indicators[0]["label.id"]);
+    // const indicator = Utility.getStringById(inputs.indicators[0]["label.id"]);
     const dataPoints = res.results;
     const precision = res.chartOptions.precision;
     return {
@@ -356,7 +374,7 @@ export default class Chart {
               enabled: true,
               format: '<b>{point.name}</b>: {point.percentage:.'+precision+'f} %',
             },
-            //showInLegend: true
+            // showInLegend: true
           }
         },
         series: this.generatePieData(
@@ -368,7 +386,7 @@ export default class Chart {
         legend: this.generateLegend(),
         exporting: this.generateExporting(),
     };
-    //plotOptions: this.generatePlotOptions(precision),
+    // plotOptions: this.generatePlotOptions(precision),
   }
 
   /**
@@ -378,7 +396,7 @@ export default class Chart {
    */
   generateOverTimeChart(res) {
     const inputs = res.queryInput;
-    const characteristicGroups = res.results[0].values;
+    // const characteristicGroups = res.results[0].values;
     const indicator = Utility.getStringById(inputs.indicators[0]["label.id"]);
     const dataPoints = res.results;
     const precision = res.chartOptions.precision;
@@ -395,7 +413,7 @@ export default class Chart {
       exporting: this.generateExporting(),
       plotOptions: this.generatePlotOptions(precision),
       tooltip: this.generateToolTip(precision),
-    }
+    };
   }
 
   /**
@@ -423,7 +441,7 @@ export default class Chart {
       exporting: this.generateExporting(),
       plotOptions: this.generatePlotOptions(precision),
       tooltip: this.generateToolTip(precision),
-    }
+    };
   }
 
   /**
@@ -442,11 +460,10 @@ export default class Chart {
       "indicator": selectedIndicator,
       "characteristicGroup": selectedCharacteristicGroup,
       "overTime": overTime,
-    }
+    };
 
     return new Promise((resolve, reject) => {
         Network.get("datalab/data", opts).then(res => {
-
           if (overTime) { // Overtime series option selected
             this.option_obj = this.generateOverTimeChart(res);
           } else if (chartType === 'pie') { // Pie chart type option selected
@@ -455,9 +472,10 @@ export default class Chart {
             this.option_obj = this.generateChart(res);
           }
 
-          this.chart_obj = Highcharts.chart('chart-container', this.option_obj);
-          if (sessionStorage.getItem('switch.bw')==='true')
-            this.chart_obj.update(Highchart_theme.gray());
+          this.chartObj = Highcharts.chart('chart-container', this.option_obj);
+          if (sessionStorage.getItem('switch.bw')==='true') {
+            this.chartObj.update(highchartTheme.gray());
+          }
 
           Combo.filter();
           Validation.checkOverTime();
@@ -466,7 +484,7 @@ export default class Chart {
           Validation.checkCharting();
           resolve();
         });
-    })
+    });
   }
 
   /**
@@ -478,8 +496,8 @@ export default class Chart {
     const selectedCharacteristicGroup = Selectors.getSelectedValue('select-characteristic-group');
     const overTime = $('#dataset_overtime')[0].checked;
     const chartType = Selectors.getSelectedChartType();
-    const url_root = window.location.href.split('?')[0];
-    const url = url_root + '?surveyCountries=' + selectedSurveys.join(',') + '&indicators=' + selectedIndicator + '&characteristicGroups=' + selectedCharacteristicGroup + '&chartType=' + chartType + '&overTime=' + overTime.toString();
+    const urlRoot = window.location.href.split('?')[0];
+    const url = urlRoot + '?surveyCountries=' + selectedSurveys.join(',') + '&indicators=' + selectedIndicator + '&characteristicGroups=' + selectedCharacteristicGroup + '&chartType=' + chartType + '&overTime=' + overTime.toString();
     window.location.href = url;
   }
 
@@ -489,99 +507,100 @@ export default class Chart {
    */
   setStyleEvents() {
     $('.colorpicker').on('change', (e) => {
-      if (Object.keys(this.chart_obj).length == 0) return;
-      const chart_type = sessionStorage.getItem('chart-type');
-      const is_bar = chart_type==="bar";
-      const color_value = e.target.value;
-      const color_default_black = !!color_value ? color_value : '#000';
+      if (Object.keys(this.chartObj).length == 0) return;
+      const chartType = sessionStorage.getItem('chart-type');
+      const isBar = chartType==="bar";
+      const colorValue = e.target.value;
+      const colorDefaultBlack = !!colorValue ? colorValue : '#000';
       switch (e.target.id) {
         case 'chart-background-color':
-          this.option_obj.chart.backgroundColor = !!color_value ? color_value : '#fff';
+          this.option_obj.chart.backgroundColor = !!colorValue ? colorValue : '#fff';
           break;
         case 'title-color':
-          this.option_obj.title.style.color = color_default_black;
+          this.option_obj.title.style.color = colorDefaultBlack;
           break;
         case 'label-color':
-          this.option_obj.chart.style.color = color_default_black;
+          this.option_obj.chart.style.color = colorDefaultBlack;
           break;
         case 'y-axis-color':
-          is_bar ? this.option_obj.xAxis.lineColor = color_default_black : this.option_obj.yAxis.lineColor = color_default_black;
+          isBar ? this.option_obj.xAxis.lineColor = colorDefaultBlack : this.option_obj.yAxis.lineColor = colorDefaultBlack;
           break;
         case 'x-axis-color':
-          is_bar ? this.option_obj.yAxis.lineColor = color_default_black : this.option_obj.xAxis.lineColor = color_default_black;
+          isBar ? this.option_obj.yAxis.lineColor = colorDefaultBlack : this.option_obj.xAxis.lineColor = colorDefaultBlack;
           break;
         case 'tick-color':
-          this.option_obj.xAxis.tickColor = color_default_black;
-          this.option_obj.yAxis.tickColor = color_default_black;
+          this.option_obj.xAxis.tickColor = colorDefaultBlack;
+          this.option_obj.yAxis.tickColor = colorDefaultBlack;
           break;
         case 'minor-tick-color':
-          this.option_obj.xAxis.minorTickColor = color_default_black;
-          this.option_obj.yAxis.minorTickColor = color_default_black;
+          this.option_obj.xAxis.minorTickColor = colorDefaultBlack;
+          this.option_obj.yAxis.minorTickColor = colorDefaultBlack;
           break;
       }
-      this.chart_obj.update(this.option_obj);
+      this.chartObj.update(this.option_obj);
       this.saveChartStyle();
     });
 
     $('.form-control.style-input').on('blur', (e) => {
-      if (Object.keys(this.chart_obj).length == 0) return;    
-      const chart_type = sessionStorage.getItem('chart-type');  
-      const is_bar = chart_type==="bar";
-      const input_value = e.target.value;
+      if (Object.keys(this.chartObj).length == 0) return;
+      const chartType = sessionStorage.getItem('chart-type');
+      const isBar = chartType==="bar";
+      const inputValue = e.target.value;
       let num = 0;
       switch (e.target.id) {
         case 'chart-title':
-          this.option_obj.title.text = input_value;
+          this.option_obj.title.text = inputValue;
           break;
         case 'y-axis-label':
-          is_bar ? this.option_obj.xAxis.title.text = input_value : this.option_obj.yAxis.title.text = input_value;
+          isBar ? this.option_obj.xAxis.title.text = inputValue : this.option_obj.yAxis.title.text = inputValue;
           break;
         case 'x-axis-label':
-          is_bar ? this.option_obj.yAxis.title.text = input_value : this.option_obj.xAxis.title.text = input_value;
+          isBar ? this.option_obj.yAxis.title.text = inputValue : this.option_obj.xAxis.title.text = inputValue;
           break;
         case 'y-axis-x-position':
-          num = !!input_value ? parseInt(input_value) : 0;
-          is_bar ? this.option_obj.xAxis.title.x = num : this.option_obj.yAxis.title.x = num;
+          num = !!inputValue ? parseInt(inputValue) : 0;
+          isBar ? this.option_obj.xAxis.title.x = num : this.option_obj.yAxis.title.x = num;
           break;
         case 'y-axis-y-position':
-          num = !!input_value ? parseInt(input_value) : 0;
-          is_bar ? this.option_obj.xAxis.title.y = num : this.option_obj.yAxis.title.y = num;
+          num = !!inputValue ? parseInt(inputValue) : 0;
+          isBar ? this.option_obj.xAxis.title.y = num : this.option_obj.yAxis.title.y = num;
           break;
         case 'x-axis-x-position':
-          num = !!input_value ? parseInt(input_value) : 0;
-          is_bar ? this.option_obj.yAxis.title.x = num : this.option_obj.xAxis.title.x = num;
+          num = !!inputValue ? parseInt(inputValue) : 0;
+          isBar ? this.option_obj.yAxis.title.x = num : this.option_obj.xAxis.title.x = num;
           break;
         case 'x-axis-y-position':
-          num = !!input_value ? parseInt(input_value) : 0;
-          is_bar ? this.option_obj.yAxis.title.y = num : this.option_obj.xAxis.title.y = num;
+          num = !!inputValue ? parseInt(inputValue) : 0;
+          isBar ? this.option_obj.yAxis.title.y = num : this.option_obj.xAxis.title.y = num;
           break;
         case 'marker-size':
-          this.option_obj.plotOptions.series.marker.radius = !!input_value ? parseInt(input_value) : 4;
+          this.option_obj.plotOptions.series.marker.radius = !!inputValue ? parseInt(inputValue) : 4;
           break;
         case 'data-label-x-position':
-          this.option_obj.plotOptions.series.dataLabels.x = !!input_value ? parseInt(input_value) : 0;
+          this.option_obj.plotOptions.series.dataLabels.x = !!inputValue ? parseInt(inputValue) : 0;
           break;
         case 'data-label-y-position':
-          this.option_obj.plotOptions.series.dataLabels.y = !!input_value ? parseInt(input_value) : -6;
+          this.option_obj.plotOptions.series.dataLabels.y = !!inputValue ? parseInt(inputValue) : -6;
           break;
         case 'credits-y-position':
-          this.option_obj.credits.position.y = !!input_value ? parseInt(input_value) : 0;
+          this.option_obj.credits.position.y = !!inputValue ? parseInt(inputValue) : 0;
           break;
         case 'bottom-margin-offset':
-          this.option_obj.chart.marginBottom = !!input_value ? parseInt(input_value) : 115;
+          this.option_obj.chart.marginBottom = !!inputValue ? parseInt(inputValue) : 115;
           break;
       }
-      this.chart_obj.update(this.option_obj);
+      this.chartObj.update(this.option_obj);
       this.saveChartStyle();
     });
 
     $("#dataset_black_and_white").on('change', (e) => {
-      if (Object.keys(this.chart_obj).length == 0) return;
+      if (Object.keys(this.chartObj).length == 0) return;
 
-      if ($(e.target).prop('checked'))
-        this.chart_obj.update(Highchart_theme.gray());
-      else
-        this.chart_obj.update(Highchart_theme.sunset());
+      if ($(e.target).prop('checked')) {
+        this.chartObj.update(highchartTheme.gray());
+      } else {
+        this.chartObj.update(highchartTheme.sunset());
+      }
       this.saveChartStyle();
     });
   }
@@ -600,13 +619,13 @@ export default class Chart {
   saveChartStyle() {
     sessionStorage.saved_style = 1;
     const styleElements = $('.chart-style-wrapper .form-control');
-    styleElements.each(function(){
+    styleElements.each(function() {
         const id = $(this).attr('id');
         const key = `styles.${id}`;
         const value = $(this).val();
         sessionStorage.setItem(key, value);
     });
     sessionStorage.setItem('switch.bw', $('#dataset_black_and_white').prop('checked'));
-    //this.loadData();
+    // this.loadData();
   }
 }

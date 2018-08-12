@@ -2,7 +2,6 @@
  * Helpers to select common items, usually by ID
  */
 export default class Selectors {
-
   /**
    * Gets the selected language
    */

@@ -7,6 +7,7 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 module.exports = {
   entry: [
     'babel-polyfill',
+    'whatwg-fetch',
     './source/javascripts/main.js',
     './source/scss/main.scss',
   ],

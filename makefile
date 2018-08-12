@@ -1,15 +1,75 @@
-.PHONY: build serve staging production
+.PHONY: build serve dev staging production set-default-development-env \
+set-full-development-env set-full-staging-env set-full-production-env test \
+push-dev push-dev2 push-staging push-production push-prod prod open-dev \
+open-staging open-production open-prod test-dev test-staging test-production \
+test-prod
 
 # Local Development
 build:
 	middleman build
 serve:
-	middleman serve
+	npm install && middleman serve
+set-default-development-env:
+	sed 's/const env = envSrc\..*;/const env = envSrc\.developmentWithProductionApi;/g' env.js > temp.js \
+	&& mv temp.js env.js
+set-default-staging-env:
+	sed 's/const env = envSrc\..*;/const env = envSrc\.stagingWithProductionApi;/g' env.js > temp.js && \
+	mv temp.js env.js
+set-full-development-env:
+	sed 's/const env = envSrc\..*;/const env = envSrc\.developmentAll;/g' env.js > temp.js \
+	&& mv temp.js env.js
+set-full-staging-env:
+	sed 's/const env = envSrc\..*;/const env = envSrc\.stagingAll;/g' env.js \
+	&& mv temp.js env.js
+set-full-production-env:
+	sed 's/const env = envSrc\..*;/const env = envSrc\.productionAll;/g' env.js \
+	&& mv temp.js env.js
+
+# Testing
+test-dev:
+#	npm run test
+	node ./test/index.js url=http://localhost:4567
+test-staging:
+#	npm run test
+	node ./test/index.js url=http://datalab-staging.pma2020.org
+test-production:
+#	npm run test
+	node ./test/index.js url=http://datalab.pma2020.org
+test-prod: test-production
+test: test-dev
+
+open-dev:
+	open http://joe.local:4567/
+open-staging:
+	open http://datalab-staging.pma2020.org
+open-production:
+	open http://datalab.pma2020.org
+open-prod: open-production
 
 # Server Management
-dev:
-	make build && cp env.js build/env.js && sed 's/const env = env_src\..*;/const env = env_src\.staging;/g' build/env.js && cd build/ && aws s3 sync . s3://datalab-dev.pma2020.org --profile work
-staging:
-	make build && cp env.js build/env.js && sed 's/const env = env_src\..*;/const env = env_src\.staging3;/g' build/env.js && cd build/ && aws s3 sync . s3://datalab-staging.pma2020.org --region eu-central-1 --profile work
-production:
-	make build && cp env.js build/env.js && sed 's/const env = env_src\..*;/const env = env_src\.production;/g' build/env.js && cd build/ && aws s3 sync . s3://datalab.pma2020.org --region eu-central-1 --profile work
+push-dev:
+	make set-full-staging-env && \
+	cp env.js build/env.js && \
+	make build && \
+	aws s3 sync build/ s3://datalab-dev.pma2020.org --profile work
+push-dev2:
+	make set-full-staging-env && \
+	cp env.js build/env.js && \
+	make build && \
+	aws s3 sync build/ s3://datalab-dev2.pma2020.org --profile work
+push-staging:
+	make set-default-staging-env && \
+	cp env.js build/env.js && \
+	make build && \
+	aws s3 sync build/ s3://datalab-staging.pma2020.org --region eu-central-1 --profile work
+push-production:
+	make set-full-production-env && \
+	cp env.js build/env.js && \
+	make build && \
+	aws s3 sync build/ s3://datalab.pma2020.org --region eu-central-1 --profile work
+push-prod: push-production
+dev: push-dev
+dev2: push-dev2
+staging: push-staging
+prod: push-production
+production: push-production

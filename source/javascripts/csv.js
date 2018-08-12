@@ -21,7 +21,7 @@ export default class CSV {
       "characteristicGroup": selectedCharacteristicGroup,
       "overTime": overTime,
       "format": "csv",
-    }
+    };
 
     const url = Network.buildUrl("datalab/data", opts);
     const csvDownloadLink = $("#download-csv");

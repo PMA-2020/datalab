@@ -1,7 +1,8 @@
 import Network from './network';
 import Utility from './utility';
-import Selectors from './selectors';
 import URLParse from './url-parse';
+import Definitions from './definitions';
+import Promise from 'promise-polyfill';
 
 import env from '../../env';
 
@@ -30,11 +31,13 @@ export default class Initialization {
    * @private
    */
   static initializeLanguage(languages) {
-    for(var k in languages) {
-      let opt = Utility.createNode('option');
-      opt.value = k;
-      opt.innerHTML = languages[k];
-      $('#select-language').append(opt);
+    for (let k in languages) {
+      if (languages[k]) {
+        let opt = Utility.createNode('option');
+        opt.value = k;
+        opt.innerHTML = languages[k];
+        $('#select-language').append(opt);
+      }
     }
   }
 
@@ -46,11 +49,11 @@ export default class Initialization {
   static initializeCharacteristicGroups(characteristicGroups) {
     characteristicGroups.forEach(group => {
       const optGroupName = Utility.getString(group);
-      let optGroup = Utility.createNode('optgroup');
-
-      optGroup.label = optGroupName;
-      optGroup.className = 'i18nable-optgroup';
-      optGroup.setAttribute('data-key', group["label.id"]);
+      let optGroup = $('<optgroup></optgroup>').attr({
+          'class': 'i18nable-optgroup',
+          'data-key': group["label.id"],
+          'label': optGroupName
+      });
 
       group.characteristicGroups.forEach(characteristic => {
         let opt = Utility.createNode('option');
@@ -63,7 +66,6 @@ export default class Initialization {
         opt.innerHTML = Utility.getString(characteristic);
         optGroup.append(opt);
       });
-
       $('#select-characteristic-group').append(optGroup);
     });
   }
@@ -76,11 +78,11 @@ export default class Initialization {
   static initializeIndicators(indicators) {
     indicators.forEach(group => {
       const optGroupName = Utility.getString(group);
-      let optGroup = Utility.createNode('optgroup');
-
-      optGroup.label = optGroupName;
-      optGroup.className = 'i18nable-optgroup';
-      optGroup.setAttribute('data-key', group["label.id"]);
+      let optGroup = $('<optgroup></optgroup>').attr({
+          'class': 'i18nable-optgroup',
+          'data-key': group["label.id"],
+          'label': optGroupName
+      });
 
       group.indicators.forEach(indicator => {
         let opt = Utility.createNode('option');
@@ -94,7 +96,6 @@ export default class Initialization {
         opt.innerHTML = Utility.getString(indicator);
         optGroup.append(opt);
       });
-
       $('#select-indicator-group').append(optGroup);
     });
   }
@@ -104,52 +105,54 @@ export default class Initialization {
    * @private
    */
   static initializeSurveyCountries(surveyCountries) {
-    const language = Selectors.getSelectedLanguage();
+    // const language = Selectors.getSelectedLanguage();
 
     surveyCountries.forEach(country => {
       const countryName = Utility.getString(country);
-      let panelContainer  = Utility.createNode('div');
 
-      let panelHeading  = Utility.createNode('div');
-      let panelTitle  = Utility.createNode('div');
-      let panelLink  = Utility.createNode('a');
+      let panelContainer = $('<div></div>').attr({
+        'class': 'panel panel-default'
+      });
 
-      let panelBodyContainer  = Utility.createNode('div');
-      let panelBody  = Utility.createNode('div');
+      let panelBodyContainer = $('<div></div>').attr({
+        'id': `collapse${country["label.id"]}`,
+        'class': 'panel-collapse collapse'
+      });
 
-      panelContainer.className = 'panel panel-default';
+      let panelBody = $('<div></div>').attr({
+        'class': 'panel-body'
+      });
 
-      panelHeading.className = 'panel-heading';
-      panelHeading.setAttribute('role', 'tab');
-      panelHeading.id = countryName;
+      let panelHeading = $('<div></div>').attr({
+        'class': 'panel-heading',
+        'role': 'tab',
+        'id': countryName
+      });
 
-      panelTitle.className = 'panel-title';
+      let panelTitle = $('<div></div>').attr({
+        'class': 'panel-title'
+      });
 
-      panelLink.href = `#collapse${country["label.id"]}`
-      panelLink.setAttribute('role', 'button');
-      panelLink.setAttribute('data-toggle', 'collapse');
-      panelLink.setAttribute('data-parent', '#accordion');
-      panelLink.setAttribute('data-key', country["label.id"]);
-      panelLink.className = 'i18nable';
-      panelLink.innerHTML = countryName;
+      let panelLink = $('<a></a>').attr({
+        'href': `#collapse${country["label.id"]}`,
+        'role': 'button',
+        'data-toggle': 'collapse',
+        'data-parent': '#accordion',
+        'data-key': country["label.id"],
+        'class': 'i18nable',
+      }).html(countryName);
 
       panelTitle.append(panelLink);
       panelHeading.append(panelTitle);
       panelContainer.append(panelHeading);
 
-      panelBodyContainer.id = `collapse${country["label.id"]}`;
-      panelBodyContainer.className = 'panel-collapse collapse';
-
-      panelBody.className = 'panel-body';
-
       country.geographies.forEach(geography => {
         const geographyName = Utility.getString(geography);
 
-        let listHeader = Utility.createNode('h4');
-
-        listHeader.setAttribute('data-key', geography["label.id"]);
-        listHeader.className = 'i18nable';
-        listHeader.innerHTML = geographyName;
+        let listHeader = $('<h4></h4>').attr({
+          'data-key': geography["label.id"],
+          'class': 'i18nable',
+        }).html(geographyName);
 
         panelBody.append(listHeader);
 
@@ -157,25 +160,25 @@ export default class Initialization {
           const surveyName = Utility.getString(survey);
           const surveyId = survey["id"];
 
-          let listItem  = Utility.createNode('div');
-          let surveyInput = Utility.createNode('input');
+          let listItem = $('<div></div>');
 
-          surveyInput.type = 'checkbox';
-          surveyInput.name = surveyId;
-          surveyInput.value = surveyId;
-          surveyInput.id = surveyId;
+          let surveyInputClassName = 'country-round';
           if (i === geography.surveys.length - 1) {
-            surveyInput.className = 'country-round latest';
-          } else {
-            surveyInput.className = 'country-round';
+            surveyInputClassName = 'country-round latest';
           }
+          let surveyInput = $('<input/>').attr({
+            'type': 'checkbox',
+            'name': surveyId,
+            'value': surveyId,
+            'id': surveyId,
+            'class': surveyInputClassName
+          });
 
-          let surveyInputLabel = Utility.createNode('label');
-
-          surveyInputLabel.setAttribute('data-key', survey["label.id"]);
-          surveyInputLabel.className = 'i18nable';
-          surveyInputLabel.htmlFor = surveyId;
-          surveyInputLabel.innerHTML = surveyName;
+          let surveyInputLabel = $('<label></label>').attr({
+            'data-key': survey["label.id"],
+            'class': 'i18nable',
+            'for': surveyId,
+          }).html(surveyName);
 
           listItem.append(surveyInput);
           listItem.append(surveyInputLabel);
@@ -198,32 +201,31 @@ export default class Initialization {
     if (!!sessionStorage.saved_style && sessionStorage.saved_style == 1) {
       for (let i=0; i<sessionStorage.length; i++) {
         const key = sessionStorage.key(i);
-        if (key.startsWith('styles.')){
+        if (key.startsWith('styles.')) {
           $('#'+key.substr(7)).val(sessionStorage.getItem(key));
         }
       }
     }
 
     /* Set Default Value and Placeholder of Chart Title and Axis Label */
-    const chart_type = sessionStorage.getItem('chart-type');
+    const chartType = sessionStorage.getItem('chart-type');
 
-    const chart_title = sessionStorage.getItem('chart-title');
-    $('.chart-style-wrapper #chart-title').val(chart_title);
-    $('.chart-style-wrapper #chart-title').attr('placeholder', chart_title);
+    const chartTitle = sessionStorage.getItem('chart-title');
+    $('.chart-style-wrapper #chart-title').val(chartTitle);
+    $('.chart-style-wrapper #chart-title').attr('placeholder', chartTitle);
 
-    const chart_axis_label = sessionStorage.getItem('chart-axis-label');
-    const selector_valid_axis = '.chart-style-wrapper #'+(chart_type=='bar' ? 'x' : 'y')+'-axis-label';
-    $(selector_valid_axis).val(chart_axis_label);
-    $(selector_valid_axis).attr('placeholder', chart_axis_label);
-    $('.chart-style-wrapper #'+(chart_type=='bar' ? 'y' : 'x')+'-axis-label').val('');
+    const chartAxisLabel = sessionStorage.getItem('chart-axis-label');
+    const selectorValidAxis = '.chart-style-wrapper #'+(chartType=='bar' ? 'x' : 'y')+'-axis-label';
+    $(selectorValidAxis).val(chartAxisLabel);
+    $(selectorValidAxis).attr('placeholder', chartAxisLabel);
+    $('.chart-style-wrapper #'+(chartType=='bar' ? 'y' : 'x')+'-axis-label').val('');
 
     /* Set the switch of black and white */
     $('#dataset_black_and_white').prop('checked', sessionStorage.getItem('switch.bw')==="true");
 
-    if (chart_type=="pie") {
+    if (chartType=="pie") {
       $('.no-pie').hide();
-    }
-    else {
+    } else {
       $('.no-pie').show();
     }
   }
@@ -247,25 +249,29 @@ export default class Initialization {
       this.initializeIndicators(res.indicatorCategories);
       this.initializeSurveyCountries(res.surveyCountries);
 
+      $('#select-characteristic-group').selectpicker('val', 'none');
       $('.selectpicker').selectpicker('refresh');
-      if (URLParse.getQuery() !== false)
-      {
+      if (URLParse.getQuery() !== false) {
           const query = URLParse.parseQuery();
           $('#select-indicator-group').selectpicker('val', query['indicators']);
           $('#select-characteristic-group').selectpicker('val', query['characteristicGroups']);
           $('#chart-types #option-'+query['chartType']).click();
           const selectedCountries = query['surveyCountries'].split(',');
-          selectedCountries.forEach(country_id => {
-            $('#'+country_id).click();
+          selectedCountries.forEach(countryId => {
+            $('#'+countryId).click();
           });
-          if (query['overTime']=='true'){
+          if (query['overTime']=='true') {
             $('#dataset_overtime').prop('checked', true);
             $('#dataset_overtime').prop('disabled', false);
           }
+          Definitions.setDefinitionText();
           chart.data(query).then(()=>{
             this.initializeStyles();
           });
       }
     });
+    // Replace the footer year with the current year
+    const dt = new Date();
+    $('#footer-year').html(dt.getFullYear());
   }
 }

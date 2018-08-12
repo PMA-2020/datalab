@@ -30,8 +30,9 @@ export default class Utility {
    */
   static getOverrideValue(id, fallback) {
     let overRideValue = document.getElementById(id).value;
-    if (!!sessionStorage.saved_style && sessionStorage.saved_style==1)
+    if (!!sessionStorage.saved_style && sessionStorage.saved_style==1) {
         overRideValue = sessionStorage.getItem('styles.'+id);
+    }
     return overRideValue || fallback;
   }
 
@@ -55,7 +56,9 @@ export default class Utility {
       const enString = string['en'];
       return string[lang] || enString;
     } else {
-      if (labelId !== undefined) { console.log(`No String for "${labelId}"`) }
+      if (labelId !== undefined) {
+        console.log(`No String for "${labelId}"`);
+      }
       return false;
     }
   }
@@ -93,5 +96,16 @@ export default class Utility {
     } else {
       return '';
     }
+  }
+
+  static isIE() {
+    const ua = window.navigator.userAgent;
+    const msie = ua.indexOf("MSIE ");
+
+    if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) {
+        return true;
+    }
+
+    return false;
   }
 }

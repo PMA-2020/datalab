@@ -31,7 +31,14 @@ $(function() {
   chart.initialize();
 
   // Bind to run translations when the language select is changed
-  $("#select-language").change((e) => (Translate.translatePage()));
+  $("#select-language").change((e) => {
+    if (e.target.value==="en") {
+      $('#submit-chart span').css('font-size', '18px');
+    } else {
+      $('#submit-chart span').css('font-size', '16px');
+    }
+    Translate.translatePage();
+  });
 
   // Bind the clear button to reset everything
   $(".clear-input").click((e) => {
@@ -60,6 +67,7 @@ $(function() {
 
   // bind for the indicator group selection
   $("#select-indicator-group").change(() => {
+    Combo.checkRestriction();
     Combo.filter();
     Validation.checkPie();
     Validation.checkCharting();
@@ -87,10 +95,12 @@ $(function() {
   $("#chart-types input").click(() => (Validation.checkCharting()));
   $(".submit-chart").click(() => (chart.loadData()));
   $(".reset-chart").click(() => (Interaction.resetChart(chart)));
-  $(".chart-style-wrapper .form-group .col-lg-6 label").click(e => { e.preventDefault(); });
+  $(".chart-style-wrapper .form-group .col-lg-6 label").click(e => {
+    e.preventDefault();
+  });
 
-  //Guided Tour
-  $(".btn-guided-tour").click(function(){
+  // Guided Tour
+  $(".btn-guided-tour").click(function() {
       $('#tab-controls a').click();
       const driver = new Driver();
       const guidedSteps = Tooltips.guideSteps();

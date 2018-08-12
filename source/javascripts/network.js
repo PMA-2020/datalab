@@ -1,4 +1,7 @@
 import env from '../../env';
+import Utility from './utility';
+import Promise from 'promise-polyfill';
+import 'whatwg-fetch';
 
 /**
  * Encapsulate network requests to the API
@@ -51,6 +54,32 @@ export default class Network {
     });
   }
 
+  static sendIERequest(url) {
+    this.displayLoading();
+    const self = this;
+    return fetch(url).then(function(response) {
+      self.removeAlerts();
+      return response.json();
+    }).catch(function(err) {
+      self.displayError();
+      console.log("Error while attempting to request resource. Please contact site administrator.");
+      console.log(err);
+    });
+    /*
+    $.ajax({
+      url: url,
+      success: function(response) {
+        self.removeAlerts();
+        return JSON.stringify(response);
+      },
+      error: function(err) {
+        self.displayError();
+        console.log("Error while attempting to request resource. Please contact site administrator.");
+        console.log(err);
+      }
+    });*/
+  }
+
   /**
    * Build a URL to the API v1
    * @param {string} path - The URL path within the API
@@ -58,10 +87,14 @@ export default class Network {
    */
   static buildUrl(path, opts) {
     const baseUrl = env.api_url || 'http://api.pma2020.org';
-    let url =  `${baseUrl}/v1/${path}`;
+    let url = `${baseUrl}/v1/${path}`;
     if (opts) {
       url = `${url}?`;
-      for (var k in opts) { url = `${url}${k}=${opts[k]}&`; }
+      for (let k in opts) {
+        if (opts[k]) {
+          url = `${url}${k}=${opts[k]}&`;
+        }
+      }
     }
     return url;
   }
@@ -73,7 +106,11 @@ export default class Network {
    * @return {object} the json object from the API
    */
   static get(path, opts) {
-    const request = new Request(this.buildUrl(path, opts));
-    return this.sendRequest(request);
+    if (Utility.isIE()) {
+      return this.sendIERequest(this.buildUrl(path, opts));
+    } else {
+      const request = new Request(this.buildUrl(path, opts));
+      return this.sendRequest(request); 
+    }
   }
 }
