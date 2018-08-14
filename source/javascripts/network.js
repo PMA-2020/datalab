@@ -113,4 +113,27 @@ export default class Network {
       return this.sendRequest(request); 
     }
   }
+  
+  /*
+  static buildExternalUrl(path, opts) {
+    let url = `${path}`;
+    if (opts) {
+      url = `${url}?`;
+      for (let k in opts) {
+        if (opts[k]) {
+          url = `${url}${k}=${opts[k]}&`;
+        }
+      }
+    }
+    return url;
+  }
+
+  static getFromExternalUrl(path, opts) {
+    if (Utility.isIE()) {
+      return this.sendIERequest(this.buildExternalUrl(path, opts));
+    } else {
+      const request = new Request(this.buildExternalUrl(path, opts));
+      return this.sendRequest(request); 
+    }
+  }*/
 }

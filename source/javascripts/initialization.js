@@ -2,6 +2,7 @@ import Network from './network';
 import Utility from './utility';
 import URLParse from './url-parse';
 import Definitions from './definitions';
+import Translate from './translate';
 import Promise from 'promise-polyfill';
 
 import env from '../../env';
@@ -31,14 +32,25 @@ export default class Initialization {
    * @private
    */
   static initializeLanguage(languages) {
-    for (let k in languages) {
+    /*for (let k in languages) {
       if (languages[k]) {
         let opt = Utility.createNode('option');
         opt.value = k;
         opt.innerHTML = languages[k];
         $('#select-language').append(opt);
       }
-    }
+    }*/
+    Translate.google_translate_support_lang().then(data => {
+      const langs = data.data.languages;
+      langs.forEach(e => {
+        let opt = Utility.createNode('option');
+        opt.value = e.language;
+        opt.innerHTML = e.name;
+        $('#select-language').append(opt);
+      });
+      $('#select-language').selectpicker('refresh');
+      $('#select-language').selectpicker('val', 'en');
+    });
   }
 
   /**
