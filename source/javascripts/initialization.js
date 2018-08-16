@@ -32,15 +32,15 @@ export default class Initialization {
    * @private
    */
   static initializeLanguage(languages) {
-    /*for (let k in languages) {
+    for (let k in languages) {
       if (languages[k]) {
         let opt = Utility.createNode('option');
         opt.value = k;
         opt.innerHTML = languages[k];
         $('#select-language').append(opt);
       }
-    }*/
-    Translate.google_translate_support_lang().then(data => {
+    }
+    /*Translate.google_translate_support_lang().then(data => {
       const langs = data.data.languages;
       langs.forEach(e => {
         let opt = Utility.createNode('option');
@@ -50,7 +50,7 @@ export default class Initialization {
       });
       $('#select-language').selectpicker('refresh');
       $('#select-language').selectpicker('val', 'en');
-    });
+    });*/
   }
 
   /**

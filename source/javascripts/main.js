@@ -108,9 +108,4 @@ $(function() {
       driver.start();
   });
 
-  /*Translate.google_translate_support_lang();
-  Translate.google_translate('I am a student', 'ko').then(data => {
-    console.log(data);
-  });*/
-
 });
