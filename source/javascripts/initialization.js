@@ -267,6 +267,10 @@ export default class Initialization {
           const query = URLParse.parseQuery();
           $('#select-indicator-group').selectpicker('val', query['indicators']);
           $('#select-characteristic-group').selectpicker('val', query['characteristicGroups']);
+          $('#select-language').selectpicker('val', query['lang']);
+          if (query['lang']=='fr') {
+              Translate.translatePage(); 
+          }
           $('#chart-types #option-'+query['chartType']).click();
           const selectedCountries = query['surveyCountries'].split(',');
           selectedCountries.forEach(countryId => {
