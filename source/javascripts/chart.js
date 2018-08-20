@@ -494,10 +494,16 @@ export default class Chart {
     const selectedSurveys = Selectors.getSelectedCountryRounds();
     const selectedIndicator = Selectors.getSelectedValue('select-indicator-group');
     const selectedCharacteristicGroup = Selectors.getSelectedValue('select-characteristic-group');
+    const selectedLanguage = Selectors.getSelectedLanguage();
     const overTime = $('#dataset_overtime')[0].checked;
     const chartType = Selectors.getSelectedChartType();
     const urlRoot = window.location.href.split('?')[0];
-    const url = urlRoot + '?surveyCountries=' + selectedSurveys.join(',') + '&indicators=' + selectedIndicator + '&characteristicGroups=' + selectedCharacteristicGroup + '&chartType=' + chartType + '&overTime=' + overTime.toString();
+    const url = urlRoot + '?surveyCountries=' + selectedSurveys.join(',') 
+                + '&indicators=' + selectedIndicator 
+                + '&characteristicGroups=' + selectedCharacteristicGroup 
+                + '&chartType=' + chartType 
+                + '&overTime=' + overTime.toString()
+                + '&lang=' + selectedLanguage;
     window.location.href = url;
   }
 
