@@ -2,28 +2,26 @@
 set-full-development-env set-full-staging-env set-full-production-env test \
 push-dev push-dev2 push-staging push-production push-prod prod open-dev \
 open-staging open-production open-prod test-dev test-staging test-production \
-test-prod
+test-prod set-env
 
 # Local Development
 build:
 	middleman build
 serve:
 	npm install && middleman serve
-set-default-development-env:
-	sed 's/const env = envSrc\..*;/const env = envSrc\.developmentWithProductionApi;/g' env.js > temp.js \
-	&& mv temp.js env.js
-set-default-staging-env:
-	sed 's/const env = envSrc\..*;/const env = envSrc\.stagingWithProductionApi;/g' env.js > temp.js && \
+set-env:
+	sed 's/const env = envSrc\..*;/const env = envSrc\.${CONFIG_KEY};/g' env.js > temp.js && \
 	mv temp.js env.js
+set-default-development-env:
+	make set-env CONFIG_KEY=developmentWithProductionApi
+set-default-staging-env:
+	make set-env CONFIG_KEY=stagingWithProductionApi
 set-full-development-env:
-	sed 's/const env = envSrc\..*;/const env = envSrc\.developmentAll;/g' env.js > temp.js \
-	&& mv temp.js env.js
+	make set-env CONFIG_KEY=developmentAll
 set-full-staging-env:
-	sed 's/const env = envSrc\..*;/const env = envSrc\.stagingAll;/g' env.js \
-	&& mv temp.js env.js
+	make set-env CONFIG_KEY=stagingAll
 set-full-production-env:
-	sed 's/const env = envSrc\..*;/const env = envSrc\.productionAll;/g' env.js \
-	&& mv temp.js env.js
+	make set-env CONFIG_KEY=productionAll
 
 # Testing
 test-dev:

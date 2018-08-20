@@ -106,5 +106,6 @@ $(function() {
       const guidedSteps = Tooltips.guideSteps();
       driver.defineSteps(guidedSteps);
       driver.start();
-    });
+  });
+
 });
