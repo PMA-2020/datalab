@@ -5,12 +5,14 @@ import Network from '../../source/javascripts/network';
 
 describe('buildUrl', () => {
   it('should return the base url cleanly', () => {
-    const result = Network.buildUrl("");
+    const network = new Network();
+    const result = network.buildUrl("");
     expect(result).to.equal(`${env.api_url}/v1/`);
   });
 
   it('should return the query params', () => {
-    const result = Network.buildUrl("", { key: 'value' });
+    const network = new Network();
+    const result = network.buildUrl("", { key: 'value' });
     expect(result).to.equal(`${env.api_url}/v1/?key=value&`);
   });
 
