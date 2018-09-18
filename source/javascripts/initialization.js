@@ -80,6 +80,7 @@ export default class Initialization {
       optGroup.className = 'i18nable-optgroup';
       optGroup.setAttribute('data-key', group["label.id"]);
 
+      /* TODO: Create nodes and append at one time. */
       group.indicators.forEach(indicator => {
         let opt = Utility.createNode('option');
 
@@ -100,6 +101,7 @@ export default class Initialization {
   /**
    * Builds the html for survey countries
    * @private
+   * TODO: Refactor into smaller functions.
    */
   initializeSurveyCountries(surveyCountries) {
     const language = Utility.getSelectedLanguage();
@@ -232,9 +234,11 @@ export default class Initialization {
       this.initializeSurveyCountries(res.surveyCountries);
 
       $('.selectpicker').selectpicker('refresh');
-      if (URLParse.getQuery() !== false)
+      const url = window.location.href;
+      const queryString = URLParse.getQuery(url);
+      if (queryString !== false)
       {
-          const query = URLParse.parseQuery();
+          const query = URLParse.parseQuery(queryString);
           $('#select-indicator-group').selectpicker('val', query['indicators']);
           $('#select-characteristic-group').selectpicker('val', query['characteristicGroups']);
           $('#chart-types #option-'+query['chartType']).click();
