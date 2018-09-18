@@ -66,6 +66,7 @@
   },
   "dependencies": {
     "babel-runtime": "^6.26.0",
+    "chai-spies": "^1.0.0",
     "jquery": "^3.2.1"
   }
 }

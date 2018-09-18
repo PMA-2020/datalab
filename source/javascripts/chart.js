@@ -136,6 +136,10 @@ export default class Chart {
     }
   }
 
+  generateDate() {
+    return new Date().toJSON().slice(0, 10);
+  }
+
   /**
    * Generate chart citation based on the current date
    * and passed in partners
@@ -143,10 +147,11 @@ export default class Chart {
    * @return {string} citation string
    * @private
    */
-  generateCitation(partners) {
+  generateCitation(partners = []) {
     let citation = "Performance Monitoring and Accountability 2020. Johns Hopkins University;";
     citation = [citation, ...partners];
-    return `${citation} ${new Date().toJSON().slice(0,10)}`;
+    const date = this.generateDate();
+    return `${citation} ${date}`;
   }
 
   /**
@@ -301,12 +306,10 @@ export default class Chart {
    * @private
    */
   generatePieData(charGroup, charGroups, dataPoints) {
-    let series = [];
     const charGroupNames = this.getCharacteristicGroupNames(charGroups);
-
-    charGroupNames.forEach((charGroup) => {
-      const dataPoint = dataPoints[0].values[charGroupNames.indexOf(charGroup)];
-      series.push({ name: charGroup, y: dataPoint.value });
+    const series = charGroupNames.map((group) => {
+      const dataPoint = dataPoints[0].values[charGroupNames.indexOf(group)];
+      return { name: group, y: dataPoint.value };
     });
 
     return [{ name: charGroup, data: series }];
@@ -315,44 +318,35 @@ export default class Chart {
   /**
    * @private
    */
-  generateOverTimeSeriesData(dataPoints) {
-    return dataPoints.reduce((res, dataPoint) => {
+  generateOverTimeSeriesData(dataPoints = []) {
+    return dataPoints.map(dataPoint => {
       const characteristicGroupId = dataPoint["characteristic.label.id"];
 
-      return [
-        ...res,
-        {
-          name: Utility.getStringById(characteristicGroupId),
-          data: dataPoint.values.reduce((tot, item) => {
-            const utcDate = Utility.parseDate(item["survey.date"]);
-
-            return [...tot, [utcDate, item.value]];
-          }, [])
-        }
-      ]
-    }, [])
+      return {
+        name: Utility.getStringById(characteristicGroupId),
+        data: dataPoint.values.map(item => {
+          const utcDate = Utility.parseDate(item["survey.date"]);
+          return [utcDate, item.value];
+        })
+      }
+    })
   }
 
   /**
    * Builds the series array of data for Highcharts
    * @private
    */
-  generateSeriesData(dataPoints) {
-    return dataPoints.reduce((res, dataPoint) => {
+  generateSeriesData(dataPoints = []) {
+    return dataPoints.map(dataPoint => {
       const countryId = dataPoint["country.label.id"];
       const geographyId = dataPoint["geography.label.id"];
       const surveyId = dataPoint["survey.label.id"];
 
-      return [
-        ...res,
-        {
-          name: this.generateSeriesName(countryId, geographyId, surveyId),
-          data: dataPoint.values.reduce((tot, item) => {
-            return [...tot, item.value]
-          }, [])
-        }
-      ]
-    }, [])
+      return {
+        name: this.generateSeriesName(countryId, geographyId, surveyId),
+        data: dataPoint.values.map(item => item.value)
+      }
+    })
   }
 
   /**
