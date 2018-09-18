@@ -6,7 +6,7 @@ export default class Utility {
    * Creates a new node in the document
    */
   static createNode(el) {  
-    document.createElement(el);
+    return document.createElement(el);
   }
 
   /**
@@ -67,8 +67,13 @@ export default class Utility {
   }
 
   /**
-   * Parse date values
-   * TODO: Refactor to use a formal date format, or specify format used.
+   * Parses dates to Unix timestamps.
+   * Expects dates to either be presented in MM-DD-YYYY form, or MM-YYYY form.
+   * If the day is missing, it will be inferred to the first of the month.
+   *
+   * @param {string} date - a date string in either MM-YYYY or MM-DD-YYYY form.
+   *
+   * @returns {number} - a Unix timestamp representing the date provided.
    */
   static parseDate(date) {
     const splitDate = date.split("-");
@@ -83,7 +88,7 @@ export default class Utility {
    * @private
    */
   static loadStringsFromLocalStorage() {
-    JSON.parse(localStorage.getItem('pma2020Strings'))
+    return JSON.parse(localStorage.getItem('pma2020Strings'))
   }
 
   /**

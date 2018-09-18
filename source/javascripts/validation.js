@@ -23,13 +23,13 @@ export default class Validation {
    * Check the pie options
    */
   checkPie() {
-    const selectedIndicator = Selectors.getSelectedItem('select-indicator-group');
+    const selectedIndicator = Selectors.getSelectedIndicators();
     const countryRounds = Selectors.getSelectedCountryRounds();
     const pieChartType = $("#chart-types").find($("#option-pie")).parent();
 
     if(countryRounds.length > 1) {
       pieChartType.remove();
-    } else if (selectedIndicator.dataset.type && selectedIndicator.dataset.type !== 'distribution') {
+    } else if (selectedIndicator.dataset && selectedIndicator.dataset.type && selectedIndicator.dataset.type !== 'distribution') {
       pieChartType.remove();
     } else {
       if(pieChartType.length <= 0) {
@@ -96,7 +96,7 @@ export default class Validation {
    */
   checkCharting() {
     const countryRounds = Selectors.getSelectedCountryRounds().length;
-    const selectedIndicator = Selectors.getSelectedValue('select-indicator-group').length;
+    const selectedIndicator = Selectors.getSelectedIndicators().length;
     const selectedCharacteristicGroup = Selectors.getSelectedValue('select-characteristic-group').length;
     const chartType = Selectors.getSelectedChartType();
 

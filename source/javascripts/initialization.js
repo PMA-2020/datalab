@@ -80,7 +80,6 @@ export default class Initialization {
       optGroup.className = 'i18nable-optgroup';
       optGroup.setAttribute('data-key', group["label.id"]);
 
-      /* TODO: Create nodes and append at one time. */
       group.indicators.forEach(indicator => {
         let opt = Utility.createNode('option');
 
