@@ -32,6 +32,15 @@ via Middleman.
 To run a development server just use the command:
 `middleman server`
 
+## Testing
+Tests use Karma and Chai.
+
+To run tests:
+
+- Ensure node dependencies are installed with `npm install`.
+- Run `npm test`.
+- Karma will instruct you to open a browser to run the tests.
+
 ## Building and Deploying
 
 The Datalab Client uses Amazon S3 for its hosting since it is just static content.
