@@ -31,6 +31,7 @@
     "bootstrap-colorpicker": "^2.5.2",
     "bootstrap-select": "^1.12.4",
     "chai": "^4.1.2",
+    "chai-spies": "^1.0.0",
     "css-loader": "^0.28.5",
     "esdoc": "^1.1.0",
     "esdoc-importpath-plugin": "^1.0.2",
@@ -66,7 +67,6 @@
   },
   "dependencies": {
     "babel-runtime": "^6.26.0",
-    "chai-spies": "^1.0.0",
     "jquery": "^3.2.1"
   }
 }
