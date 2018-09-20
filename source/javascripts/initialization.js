@@ -97,6 +97,31 @@ export default class Initialization {
     });
   }
 
+  createPanelHeading(country) {
+    const countryName = Utility.getString(country);
+    const panelHeading  = Utility.createNode('div');
+    panelHeading.className = 'panel-heading';
+    panelHeading.setAttribute('role', 'tab');
+    panelHeading.id = countryName;
+
+    let panelTitle  = Utility.createNode('div');
+    panelTitle.className = 'panel-title';
+
+    let panelLink  = Utility.createNode('a');
+    panelLink.href = `#collapse${country["label.id"]}`
+    panelLink.setAttribute('role', 'button');
+    panelLink.setAttribute('data-toggle', 'collapse');
+    panelLink.setAttribute('data-parent', '#accordion');
+    panelLink.setAttribute('data-key', country["label.id"]);
+    panelLink.className = 'i18nable';
+    panelLink.innerHTML = countryName;
+
+    panelTitle.append(panelLink);
+
+    panelHeading.append(panelTitle);
+    return panelHeading;
+  }
+
   /**
    * Builds the html for survey countries
    * @private
@@ -104,89 +129,76 @@ export default class Initialization {
    */
   initializeSurveyCountries(surveyCountries) {
     const language = Utility.getSelectedLanguage();
+    const fragment = new DocumentFragment();
 
     surveyCountries.forEach(country => {
-      const countryName = Utility.getString(country);
-      let panelContainer  = Utility.createNode('div');
-
-      let panelHeading  = Utility.createNode('div');
-      let panelTitle  = Utility.createNode('div');
-      let panelLink  = Utility.createNode('a');
-
-      let panelBodyContainer  = Utility.createNode('div');
-      let panelBody  = Utility.createNode('div');
-
-      panelContainer.className = 'panel panel-default';
-
-      panelHeading.className = 'panel-heading';
-      panelHeading.setAttribute('role', 'tab');
-      panelHeading.id = countryName;
-
-      panelTitle.className = 'panel-title';
-
-      panelLink.href = `#collapse${country["label.id"]}`
-      panelLink.setAttribute('role', 'button');
-      panelLink.setAttribute('data-toggle', 'collapse');
-      panelLink.setAttribute('data-parent', '#accordion');
-      panelLink.setAttribute('data-key', country["label.id"]);
-      panelLink.className = 'i18nable';
-      panelLink.innerHTML = countryName;
-
-      panelTitle.append(panelLink);
-      panelHeading.append(panelTitle);
-      panelContainer.append(panelHeading);
-
-      panelBodyContainer.id = `collapse${country["label.id"]}`;
-      panelBodyContainer.className = 'panel-collapse collapse';
-
-      panelBody.className = 'panel-body';
-
-      country.geographies.forEach(geography => {
-        const geographyName = Utility.getString(geography);
-
-        let listHeader = Utility.createNode('h4');
-
-        listHeader.setAttribute('data-key', geography["label.id"]);
-        listHeader.className = 'i18nable';
-        listHeader.innerHTML = geographyName;
-
-        panelBody.append(listHeader);
-
-        geography.surveys.forEach((survey, i) => {
-          const surveyName = Utility.getString(survey);
-          const surveyId = survey["id"];
-
-          let listItem  = Utility.createNode('div');
-          let surveyInput = Utility.createNode('input');
-
-          surveyInput.type = 'checkbox';
-          surveyInput.name = surveyId;
-          surveyInput.value = surveyId;
-          surveyInput.id = surveyId;
-          if (i === geography.surveys.length - 1) {
-            surveyInput.className = 'country-round latest';
-          } else {
-            surveyInput.className = 'country-round';
-          }
-
-          let surveyInputLabel = Utility.createNode('label');
-
-          surveyInputLabel.setAttribute('data-key', survey["label.id"]);
-          surveyInputLabel.className = 'i18nable';
-          surveyInputLabel.htmlFor = surveyId;
-          surveyInputLabel.innerHTML = surveyName;
-
-          listItem.append(surveyInput);
-          listItem.append(surveyInputLabel);
-          panelBody.append(listItem);
-        });
-      });
-
-      panelBodyContainer.append(panelBody);
-      panelContainer.append(panelBodyContainer);
-
-      $('#countryRoundModal .modal-body').append(panelContainer);
+      const panelContainer = this.createPanelContainer(country)
+      fragment.appendChild(panelContainer);
     });
+
+    $('#countryRoundModal .modal-body').append(fragment);
+  }
+
+  createPanelContainer(country) {
+    let panelContainer  = Utility.createNode('div');
+    panelContainer.className = 'panel panel-default';
+
+    // Create panel heading.
+    const panelHeading = this.createPanelHeading(country);
+    panelContainer.append(panelHeading);
+
+    const panelBodyContainer = Utility.createNode('div');
+    panelBodyContainer.id = `collapse${country["label.id"]}`;
+    panelBodyContainer.className = 'panel-collapse collapse';
+
+    let panelBody  = Utility.createNode('div');
+    panelBody.className = 'panel-body';
+
+    country.geographies.forEach(geography => {
+      const geographyName = Utility.getString(geography);
+
+      let listHeader = Utility.createNode('h4');
+      listHeader.setAttribute('data-key', geography["label.id"]);
+      listHeader.className = 'i18nable';
+      listHeader.innerHTML = geographyName;
+
+      panelBody.append(listHeader);
+
+      geography.surveys.forEach((survey, i) => {
+        const listItem = this.createListItem(survey, i, geography.surveys.length);
+        panelBody.append(listItem);
+      });
+    });
+
+    panelBodyContainer.append(panelBody);
+    panelContainer.append(panelBodyContainer);
+    return panelContainer;
+  }
+
+  createListItem(survey, index, len) {
+    const listItem  = Utility.createNode('div');
+    const surveyInput = Utility.createNode('input');
+    const surveyId = survey['id'];
+    surveyInput.type = 'checkbox';
+    surveyInput.name = surveyId;
+    surveyInput.value = surveyId;
+    surveyInput.id = surveyId;
+    if (index === len - 1) {
+      surveyInput.className = 'country-round latest';
+    } else {
+      surveyInput.className = 'country-round';
+    }
+
+    listItem.append(surveyInput);
+    const surveyInputLabel = Utility.createNode('label');
+    const surveyName = Utility.getString(survey);
+    surveyInputLabel.setAttribute('data-key', survey["label.id"]);
+    surveyInputLabel.className = 'i18nable';
+    surveyInputLabel.htmlFor = surveyId;
+    surveyInputLabel.innerHTML = surveyName;
+
+    listItem.append(surveyInputLabel);
+    return listItem;
   }
 
   /**
