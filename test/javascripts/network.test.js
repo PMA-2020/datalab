@@ -1,4 +1,7 @@
-import { expect } from 'chai';
+import chai, { expect } from 'chai';
+import spies from 'chai-spies';
+
+chai.use(spies);
 
 import env from '../../env';
 import Network from '../../source/javascripts/network';
@@ -10,13 +13,15 @@ describe('buildUrl', () => {
     expect(result).to.equal(`${env.api_url}/v1/`);
   });
 
-  it('should return the query params', () => {
+  it('should return a single query param', () => {
     const network = new Network();
     const result = network.buildUrl("", { key: 'value' });
-    expect(result).to.equal(`${env.api_url}/v1/?key=value&`);
+    expect(result).to.equal(`${env.api_url}/v1/?key=value`);
   });
-
-  it('should use canned responses', () => {
-    expect(__json__['test/fixtures/network/base']).to.deep.equal({ data: [1,2,3] });
+  
+  it('should return multiple query params joined with `&`', () => {
+    const network = new Network();
+    const result = network.buildUrl("", { foo: 'bar', baz: 2 });
+    expect(result).to.equal(`${env.api_url}/v1/?foo=bar&baz=2`);
   });
 });
