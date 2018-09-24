@@ -12,6 +12,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-select/dist/css/bootstrap-select.css';
 import 'bootstrap-colorpicker';
 import 'font-awesome/css/font-awesome.css';
+import 'driver.js/dist/driver.min.css';
 
 import Chart from './chart';
 import Combo from './combo';
@@ -21,6 +22,7 @@ import Translate from './translate';
 import Definitions from './definitions';
 import Tooltips from './tooltip';
 import Network from './network';
+import Driver from 'driver.js/dist/driver.min.js';
 
 // Bind on the document ready
 $(function() {
@@ -33,7 +35,14 @@ $(function() {
   chart.initialize();
 
   // Bind to run translations when the language select is changed
-  $("#select-language").change((e) => (Translate.translatePage()));
+  $("#select-language").change((e) => {
+    if (e.target.value==="en") {
+      $('#submit-chart span').css('font-size', '18px');
+    } else {
+      $('#submit-chart span').css('font-size', '16px');
+    }
+    Translate.translatePage();
+  });
 
   // Bind the clear button to reset everything
   $(".clear-input").click((e) => {
@@ -62,9 +71,10 @@ $(function() {
 
   // bind for the indicator group selection
   $("#select-indicator-group").change(() => {
-    combo.filter();
-    validation.checkPie();
-    validation.checkCharting();
+    Combo.checkRestriction();
+    Combo.filter();
+    Validation.checkPie();
+    Validation.checkCharting();
     Definitions.setDefinitionText();
   });
 
@@ -89,5 +99,17 @@ $(function() {
   $("#chart-types input").click(() => (validation.checkCharting()));
   $(".submit-chart").click(() => (chart.loadData()));
   $(".reset-chart").click(() => (Interaction.resetChart(chart)));
-  $(".btn-save-style").click(() => (chart.saveChartStyle()));
+  $(".chart-style-wrapper .form-group .col-lg-6 label").click(e => {
+    e.preventDefault();
+  });
+
+  // Guided Tour
+  $(".btn-guided-tour").click(function() {
+      $('#tab-controls a').click();
+      const driver = new Driver();
+      const guidedSteps = Tooltips.guideSteps();
+      driver.defineSteps(guidedSteps);
+      driver.start();
+  });
+
 });

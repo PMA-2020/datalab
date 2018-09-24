@@ -1,5 +1,8 @@
 import Utility from './utility';
 import URLParse from './url-parse';
+import Definitions from './definitions';
+import Translate from './translate';
+import Promise from 'promise-polyfill';
 
 import env from '../../env';
 
@@ -16,8 +19,8 @@ export default class Initialization {
    */
   initializeStrings(strings) {
     if (typeof(Storage) !== "undefined") {
-      localStorage.removeItem('pma2020Strings', strings);
-      localStorage.pma2020Strings = JSON.stringify(strings);
+      sessionStorage.removeItem('pma2020Strings', strings);
+      sessionStorage.pma2020Strings = JSON.stringify(strings);
     } else {
       console.log('Warning: Local Storage is unavailable.');
     }
@@ -34,6 +37,17 @@ export default class Initialization {
       });
       $('#select-language').append(opt);
     }
+    /*Translate.google_translate_support_lang().then(data => {
+      const langs = data.data.languages;
+      langs.forEach(e => {
+        let opt = Utility.createNode('option');
+        opt.value = e.language;
+        opt.innerHTML = e.name;
+        $('#select-language').append(opt);
+      });
+      $('#select-language').selectpicker('refresh');
+      $('#select-language').selectpicker('val', 'en');
+    });*/
   }
 
   /**
@@ -61,7 +75,6 @@ export default class Initialization {
         });
         optGroup.append(opt);
       });
-
       $('#select-characteristic-group').append(optGroup);
     });
   }
@@ -93,7 +106,6 @@ export default class Initialization {
 
         optGroup.append(opt);
       });
-
       $('#select-indicator-group').append(optGroup);
     });
   }
@@ -127,7 +139,6 @@ export default class Initialization {
     });
 
     panelTitle.append(panelLink);
-
     panelHeading.append(panelTitle);
     return panelHeading;
   }
@@ -135,7 +146,6 @@ export default class Initialization {
   /**
    * Builds the html for survey countries
    * @private
-   * TODO: Refactor into smaller functions.
    */
   initializeSurveyCountries(surveyCountries) {
     const language = Utility.getSelectedLanguage();
@@ -222,25 +232,37 @@ export default class Initialization {
    * loads up the saved style data from local storage
    * @public
    */
-  initializeStyles() {
-    if (!!localStorage.saved_style && localStorage.saved_style == 1) {
-      for (let i=0; i<localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key.startsWith('styles.')){
-          document.getElementById(key.substr(7)).value = localStorage.getItem(key);
+  static initializeStyles() {
+    if (!!sessionStorage.get('saved_style') && sessionStorage.get('saved_style') == 1) {
+      for (let i=0; i<sessionStorage.length; i++) {
+        const key = sessionStorage.key(i);
+        if (key.startsWith('styles.')) {
+          $('#'+key.substr(7)).val(sessionStorage.getItem(key));
         }
       }
     }
 
     /* Set Default Value and Placeholder of Chart Title and Axis Label */
-    const chart_type = localStorage.getItem('chart-type');
-    const chart_title = localStorage.getItem('chart-title');
-    const chart_axis_label = localStorage.getItem('chart-axis-label');
-    $('.chart-style-wrapper #chart-title').val(chart_title);
-    $('.chart-style-wrapper #chart-title').attr('placeholder', chart_title);
-    const select_axis = '.chart-style-wrapper #'+(chart_type=='bar' ? 'x' : 'y')+'-axis-label';
-    $(select_axis).val(chart_axis_label);
-    $(select_axis).attr('placeholder', chart_axis_label);
+    const chartType = sessionStorage.getItem('chart-type');
+
+    const chartTitle = sessionStorage.getItem('chart-title');
+    $('.chart-style-wrapper #chart-title').val(chartTitle);
+    $('.chart-style-wrapper #chart-title').attr('placeholder', chartTitle);
+
+    const chartAxisLabel = sessionStorage.getItem('chart-axis-label');
+    const selectorValidAxis = '.chart-style-wrapper #'+(chartType=='bar' ? 'x' : 'y')+'-axis-label';
+    $(selectorValidAxis).val(chartAxisLabel);
+    $(selectorValidAxis).attr('placeholder', chartAxisLabel);
+    $('.chart-style-wrapper #'+(chartType=='bar' ? 'y' : 'x')+'-axis-label').val('');
+
+    /* Set the switch of black and white */
+    $('#dataset_black_and_white').prop('checked', sessionStorage.getItem('switch.bw')==="true");
+
+    if (chartType=="pie") {
+      $('.no-pie').hide();
+    } else {
+      $('.no-pie').show();
+    }
   }
 
   /**
@@ -261,25 +283,35 @@ export default class Initialization {
       this.initializeIndicators(res.indicatorCategories);
       this.initializeSurveyCountries(res.surveyCountries);
 
+      $('#select-characteristic-group').selectpicker('val', 'none');
       $('.selectpicker').selectpicker('refresh');
       const url = window.location.href;
       const queryString = URLParse.getQuery(url);
-      if (queryString !== false)
-      {
-          const query = URLParse.parseQuery(queryString);
-          $('#select-indicator-group').selectpicker('val', query['indicators']);
-          $('#select-characteristic-group').selectpicker('val', query['characteristicGroups']);
-          $('#chart-types #option-'+query['chartType']).click();
-          const selectedCountries = query['surveyCountries'].split(',');
-          selectedCountries.forEach(country_id => {
-            $('#'+country_id).click();
-          });
-          if (query['overTime']=='true'){
-            $('#dataset_overtime').prop('checked', true);
-            $('#dataset_overtime').prop('disabled', false);
-          }
-          chart.data(query);
+      if (queryString !== false) {
+        const query = URLParse.parseQuery(queryString);
+        $('#select-indicator-group').selectpicker('val', query['indicators']);
+        $('#select-characteristic-group').selectpicker('val', query['characteristicGroups']);
+        $('#select-language').selectpicker('val', query['lang']);
+        if (query['lang']=='fr') {
+            Translate.translatePage(); 
+        }
+        $('#chart-types #option-'+query['chartType']).click();
+        const selectedCountries = query['surveyCountries'].split(',');
+        selectedCountries.forEach(countryId => {
+          $('#'+countryId).click();
+        });
+        if (query['overTime']=='true') {
+          $('#dataset_overtime').prop('checked', true);
+          $('#dataset_overtime').prop('disabled', false);
+        }
+        Definitions.setDefinitionText();
+        chart.data(query).then(()=>{
+          this.initializeStyles();
+        });
       }
     });
+    // Replace the footer year with the current year
+    const dt = new Date();
+    $('#footer-year').html(dt.getFullYear());
   }
 }

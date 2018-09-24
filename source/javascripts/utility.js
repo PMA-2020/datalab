@@ -36,8 +36,8 @@ export default class Utility {
    */
   static getOverrideValue(id, fallback) {
     let overRideValue = document.getElementById(id).value;
-    if (!!localStorage.getItem('saved_style') && localStorage.getItem('saved_style') == 1) {
-      overRideValue = localStorage.getItem('styles.'+id);
+    if (!!sessionStorage.get('saved_style') && sessionStorage.get('saved_style') == 1) {
+      overRideValue = sessionStorage.getItem('styles.'+id);
     }
     return overRideValue || fallback;
   }
@@ -62,14 +62,16 @@ export default class Utility {
    * Uses the strings loaded into local storage, provided by the API
    */
   static getStringById(labelId) {
-    const strings = Utility.loadStringsFromLocalStorage();
-    const lang = Utility.getSelectedLanguage();
+    const strings = this.loadStringsFromSessionStorage();
+    const lang = Selectors.getSelectedLanguage();
     const string = strings[labelId];
     if (string) {
       const enString = string['en'];
       return string[lang] || enString;
     } else {
-      if (labelId !== undefined) { console.log(`No String for "${labelId}"`) }
+      if (labelId !== undefined) {
+        console.log(`No String for "${labelId}"`);
+      }
       return false;
     }
   }
@@ -95,8 +97,8 @@ export default class Utility {
   /**
    * @private
    */
-  static loadStringsFromLocalStorage() {
-    return JSON.parse(localStorage.getItem('pma2020Strings'))
+  static loadStringsFromSessionStorage() {
+    return JSON.parse(sessionStorage.getItem('pma2020Strings'));
   }
 
   /**
@@ -113,5 +115,16 @@ export default class Utility {
     } else {
       return '';
     }
+  }
+
+  static isIE() {
+    const ua = window.navigator.userAgent;
+    const msie = ua.indexOf("MSIE ");
+
+    if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) {
+        return true;
+    }
+
+    return false;
   }
 }

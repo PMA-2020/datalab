@@ -1,12 +1,12 @@
 <div id='jhu-chart'>
   <div class='row top-row'>
-    <div class='col-md-3 match-height'>
+    <div class='col-md-3 match-height chart-control-panel'>
       <div class='row'>
         <div class='col-md-12'>
           <section class='chart-sidebar'>
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" role="tablist">
-              <li role="presentation" class="active">
+              <li role="presentation" class="active" id="tab-controls">
                 <a href="#controls"
                    aria-controls="controls"
                    role="tab"
@@ -16,7 +16,7 @@
                   </span>
                 </a>
               </li>
-              <li role="presentation">
+              <li role="presentation" id="tab-definitions">
                 <a href="#help-center"
                    aria-controls="help-center"
                    role="tab"
@@ -26,7 +26,7 @@
                   </span>
                 </a>
               </li>
-              <li role="presentation">
+              <li role="presentation" id="tab-style">
                 <a href="#style"
                    aria-controls="style"
                    role="tab"
@@ -50,16 +50,11 @@
               </div>
             </div>
             <div class='clear'></div>
-            <h3 class='text-center'>
-              <a href="mailto:datalab@pma2020.org">
-                <button type="button" class="btn btn-primary">
-                  <i class='fa fa-paper-plane-o' aria-hidden='true'></i>
-                  <span class='i18nable' data-key='questions-suggestions'>
-                    Contact
-                  </span>
+            <div class="row guided-tour-wrapper">
+                <button type="button" class="btn btn-guided-tour">
+                    Guided Tour
                 </button>
-              </a>
-            </h3>
+            </div>
           </section>
         </div>
       </div>
@@ -68,20 +63,25 @@
       <section class='chart-viewport'>
         <div id='chart-container' class='chart-container'>
           <div class='chart-placeholder'>
-            <h2>Welcome to <strong>PMA DataLab</strong>!</h2>
+            <h2>Welcome to <strong>PMA2020 DataLab</strong>!</h2>
             <img src='http://www.pma2020.org/sites/default/files/blankchart.gif' alt='Chart image'>
-            <p>PMA DataLab is a data visualization tool that allows you to build customized charts and download up-to-date PMA data. Use the left panel to...</p>
+            <p>PMA2020 DataLab is a data visualization tool that allows you to build customized charts and download up-to-date PMA data. Use the left panel to build your graph.</p>
             <ul>
-              <li>- Choose your language.</li>
+              <li>- Select your language.</li>
+              <li>- Choose the country, survey round, and year of data.</li>
               <li>- Select an indicator.</li>
-              <li>- Select a categorical variable to break the data into groups.</li>
-              <li>- Select any number of datasets to view.</li>
+              <li>- Break the data into groups, if applicable.</li>
               <li>- Choose your chart type.</li>
               <li>- Download the data or generate the chart.</li>
             </ul>
           </div>
         </div>
+        <div id="tour-download-graph-pointer">
+        </div>
       </section>
     </div>
+  </div>
+  <div class='row prefooter-row'>
+    <%= partial 'chart_footer' %>
   </div>
 </div>

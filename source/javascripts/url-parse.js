@@ -4,7 +4,6 @@
  * hard browser refresh
  */
 export default class URLParse {
-
   /**
    * Returns the query from the window location
    * to help initialize a direct url with query params

@@ -24,11 +24,41 @@ export default class Combo {
     const selectedIndicator = Selectors.getSelectedValue('select-indicator-group');
     const selectedCharacteristicGroup = Selectors.getSelectedValue('select-characteristic-group');
 
-    if (selectedSurvey.length > 0) { opts["survey"] = selectedSurvey; }
-    if (selectedIndicator !== "") { opts["indicator"] = selectedIndicator; }
-    if (selectedCharacteristicGroup !== "") { opts["characteristicGroup"] = selectedCharacteristicGroup; }
+    if (selectedSurvey.length > 0) {
+      opts["survey"] = selectedSurvey;
+    }
+    if (selectedIndicator !== "") {
+      opts["indicator"] = selectedIndicator;
+    }
+    if (selectedCharacteristicGroup !== "") {
+      opts["characteristicGroup"] = selectedCharacteristicGroup;
+    }
 
     this.handleCombos(opts);
+  }
+
+  static checkRestriction() {
+    const selectedIndicator = Selectors.getSelectedValue('select-indicator-group');
+    switch (selectedIndicator) {
+      case "methodmix_allw_anym":
+        $("#select-characteristic-group").selectpicker('val', 'method_mix_all');
+        break;
+      case "methodmix_marw_anym":
+        $("#select-characteristic-group").selectpicker('val', 'method_mix_all');
+        break;
+      case "methodmix_allw_modernm":
+        $("#select-characteristic-group").selectpicker('val', 'method_mix_modern');
+        break;
+      case "methodmix_marw_modernm":
+        $("#select-characteristic-group").selectpicker('val', 'method_mix_modern');
+        break;
+      case "methodmix_allw_plusnon":
+        $("#select-characteristic-group").selectpicker('val', 'method_mix_non');
+        break;
+      case "methodmix_marw_plusnon":
+        $("#select-characteristic-group").selectpicker('val', 'method_mix_non');
+        break;
+    }
   }
 
   /**
@@ -43,14 +73,13 @@ export default class Combo {
         const itemDomElement = availableItems[item];
         if (!availableValues.includes(itemDomElement.value)) {
           if (['wealth_quintile', 'wealth_tertile'].includes(itemDomElement.value)) {
-              const wealth_tooltip = "Burkina Faso and Niger indicators may be broken down by wealth tertile; all other countries may be broken down by wealth quintile. Please adjust your country selections.";
-              itemDomElement.setAttribute('data-content', '<span title="'+wealth_tooltip+'">'+itemDomElement.text+'</span>');
+              const wealthTooltip = "Burkina Faso and Niger indicators may be broken down by wealth tertile; all other countries may be broken down by wealth quintile. Please adjust your country selections.";
+              itemDomElement.setAttribute('data-content', '<span title="'+wealthTooltip+'">'+itemDomElement.text+'</span>');
               fExistWealthComment = true;
           }
           itemDomElement.selected = false;
           itemDomElement.disabled = true;
-        }
-        else {
+        } else {
           if (['wealth_quintile', 'wealth_tertile'].includes(itemDomElement.value)) {
               itemDomElement.removeAttribute('data-content');
               fExistWealthComment = false;
@@ -58,8 +87,9 @@ export default class Combo {
           itemDomElement.disabled = false;
         }
       });
-      if (type=='characteristic')
+      if (type=='characteristic') {
         return fExistWealthComment;
+      }
     }
   }
 
@@ -75,8 +105,9 @@ export default class Combo {
         if (!availableValues.includes(itemDomElement.value)) {
           itemDomElement.checked = false;
           itemDomElement.disabled = true;
+        } else {
+          itemDomElement.disabled = false;
         }
-        else { itemDomElement.disabled = false; }
       });
     }
   }
@@ -84,12 +115,13 @@ export default class Combo {
   /**
    * @private
    */
-  removeComments() {
-    const arr_commented = ['Wealth quintile', 'Wealth tertile'];
-    arr_commented.forEach(element => {
+  static removeComments() {
+    const arrCommented = ['Wealth quintile', 'Wealth tertile'];
+    arrCommented.forEach(element => {
       const jqObj = $("span:contains('" + element + "')");
-      if (!jqObj.closest('li').hasClass('disabled'))
+      if (!jqObj.closest('li').hasClass('disabled')) {
         jqObj.removeAttr('title');
+      }
     });
   }
 
@@ -99,7 +131,10 @@ export default class Combo {
   handleCombos(opts) {
     this.network.getPath("datalab/combos", opts).then(res => {
       const fExistWealthComment = this.setOptionsDisabled('characteristic', res['characteristicGroup.id']);
-      this.setOptionsDisabled('indicator', res['indicator.id']);
+      const selectedCharacteristicGroup = Selectors.getSelectedValue('select-characteristic-group');
+      if (selectedCharacteristicGroup !== "none") {
+        this.setOptionsDisabled('indicator', res['indicator.id']);
+      }
       this.setCountryRoundsDisabled(res['survey.id']);
 
       $('.selectpicker').selectpicker('refresh');
@@ -107,8 +142,12 @@ export default class Combo {
         this.removeComments();
       }
 
-      if (opts["indicator"] === undefined) { $("#select-indicator-group").selectpicker('val', ''); }
-      if (opts["characteristicGroup"] === undefined) { $("#select-characteristic-group").selectpicker('val', ''); }
+      if (opts["indicator"] === undefined) {
+        $("#select-indicator-group").selectpicker('val', '');
+      }
+      if (opts["characteristicGroup"] === undefined) {
+        $("#select-characteristic-group").selectpicker('val', '');
+      }
     });
   }
 }
