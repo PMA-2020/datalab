@@ -7,7 +7,7 @@ export default class Utility {
   /**
    * Creates a new node in the document
    */
-  static createNode(elementName, props) {  
+  static createNode(elementName, props = {}) {  
     const element = document.createElement(elementName);
     Object.entries(props).map(([prop, value]) => {
       if (prop === 'innerHTML') {

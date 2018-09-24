@@ -481,7 +481,7 @@ export default class Chart {
     }
 
     return new Promise((resolve, reject) => {
-      Network.get("datalab/data", opts).then(res => {
+      this.network.get("datalab/data", opts).then(res => {
         if (overTime) { // Overtime series option selected
           this.option_obj = this.generateOverTimeChart(res);
         } else if (chartType === 'pie') { // Pie chart type option selected
@@ -495,11 +495,11 @@ export default class Chart {
           this.chartObj.update(highchartTheme.gray());
         }
 
-        Combo.filter();
-        Validation.checkOverTime();
-        Validation.checkBlackAndWhite();
-        Validation.checkPie();
-        Validation.checkCharting();
+        this.combo.filter();
+        this.validation.checkOverTime();
+        this.validation.checkBlackAndWhite();
+        this.validation.checkPie();
+        this.validation.checkCharting();
         resolve();
       });
     });

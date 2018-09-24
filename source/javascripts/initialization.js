@@ -121,7 +121,7 @@ export default class Initialization {
     const panelHeading  = Utility.createNode('div', {
       class: 'panel-heading',
       role: 'tab',
-      id: couuntryName
+      id: countryName
     });
 
     let panelTitle  = Utility.createNode('div', {
@@ -232,8 +232,8 @@ export default class Initialization {
    * loads up the saved style data from local storage
    * @public
    */
-  static initializeStyles() {
-    if (!!sessionStorage.get('saved_style') && sessionStorage.get('saved_style') == 1) {
+  initializeStyles() {
+    if (!!sessionStorage.getItem('saved_style') && sessionStorage.getItem('saved_style') == 1) {
       for (let i=0; i<sessionStorage.length; i++) {
         const key = sessionStorage.key(i);
         if (key.startsWith('styles.')) {
@@ -271,7 +271,7 @@ export default class Initialization {
    * @public
    */
   initialize(network, chart) {
-    network.getPath("datalab/init").then(res => {
+    network.get("datalab/init").then(res => {
       console.log("------------------------------------------------");
       console.log(`PMA2020 Datalab API Version: ${res.metadata.version}`);
       console.log(`PMA2020 Datalab Client:      ${env.version}`);

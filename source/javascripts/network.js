@@ -104,7 +104,7 @@ export default class Network {
    * @param {object} opts - Map of options for the query
    * @return {object} the json object from the API
    */
-  static get(path, opts) {
+  get(path, opts) {
     if (Utility.isIE()) {
       return this.sendIERequest(this.buildUrl(path, opts));
     } else {

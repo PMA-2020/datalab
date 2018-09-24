@@ -129,7 +129,7 @@ export default class Combo {
    * @private
    */
   handleCombos(opts) {
-    this.network.getPath("datalab/combos", opts).then(res => {
+    this.network.get("datalab/combos", opts).then(res => {
       const fExistWealthComment = this.setOptionsDisabled('characteristic', res['characteristicGroup.id']);
       const selectedCharacteristicGroup = Selectors.getSelectedValue('select-characteristic-group');
       if (selectedCharacteristicGroup !== "none") {
