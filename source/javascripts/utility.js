@@ -5,8 +5,16 @@ export default class Utility {
   /**
    * Creates a new node in the document
    */
-  static createNode(el) {  
-    return document.createElement(el);
+  static createNode(elementName, props) {  
+    const element = document.createElement(elementName);
+    Object.entries(props).map(([prop, value]) => {
+      if (prop === 'innerHTML') {
+        element.innerHTML = value;
+      } else {
+        element.setAttribute(prop, value);
+      }
+    });
+    return element;
   }
 
   /**

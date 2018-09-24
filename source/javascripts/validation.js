@@ -33,19 +33,20 @@ export default class Validation {
       pieChartType.remove();
     } else {
       if(pieChartType.length <= 0) {
-        const buttonLabel = Utility.createNode('label');
-        buttonLabel.className = 'btn btn-primary';
+        const buttonLabel = Utility.createNode('label', {
+          class: 'btn btn-primary'
+        });
 
-        const pieChartInput = Utility.createNode('input');
-        pieChartInput.setAttribute('type', 'radio');
-        pieChartInput.setAttribute('name', 'options');
-        pieChartInput.setAttribute('id', 'option-pie');
-        pieChartInput.setAttribute('autocomplete', 'off');
-        pieChartInput.setAttribute('checked', '');
-        pieChartInput.setAttribute('data-type', 'pie');
+        const pieChartInput = Utility.createNode('input', {
+          type: 'radio',
+          name: 'options',
+          id: 'option-pie',
+          autocomplete: 'off',
+          checked: '',
+          'data-type': 'pie'
+        });
 
-        const pieIcon = Utility.createNode('i');
-        pieIcon.className = 'fa fa-pie-chart';
+        const pieIcon = Utility.createNode('i', { class: 'fa fa-pie-chart' });
 
         buttonLabel.append(pieChartInput);
         buttonLabel.append(pieIcon);

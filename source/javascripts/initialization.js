@@ -29,9 +29,9 @@ export default class Initialization {
    */
   initializeLanguage(languages) {
     for(var k in languages) {
-      let opt = Utility.createNode('option');
-      opt.value = k;
-      opt.innerHTML = languages[k];
+      let opt = Utility.createNode('option', { 
+        value: k, innerHTML: languages[k]
+      });
       $('#select-language').append(opt);
     }
   }
@@ -44,21 +44,21 @@ export default class Initialization {
   initializeCharacteristicGroups(characteristicGroups) {
     characteristicGroups.forEach(group => {
       const optGroupName = Utility.getString(group);
-      let optGroup = Utility.createNode('optgroup');
-
-      optGroup.label = optGroupName;
-      optGroup.className = 'i18nable-optgroup';
-      optGroup.setAttribute('data-key', group["label.id"]);
+      let optGroup = Utility.createNode('optgroup', {
+        label: optGroupName,
+        class: 'i18nable-optgroup',
+        'data-key': group['label.id']
+      });
 
       group.characteristicGroups.forEach(characteristic => {
-        let opt = Utility.createNode('option');
-
-        opt.value = characteristic.id;
-        opt.className = 'i18nable';
-        opt.setAttribute('data-definition-id', characteristic["definition.id"]);
-        opt.setAttribute('data-label-id', characteristic["label.id"]);
-        opt.setAttribute('data-key', characteristic["label.id"]);
-        opt.innerHTML = Utility.getString(characteristic);
+        let opt = Utility.createNode('option', {
+          value: characteristic.id,
+          class: 'i18nable',
+          'data-definition-id': characteristic['definition.id'],
+          'data-label-id': characteristic['label.id'],
+          'data-key': characteristic['label.id'],
+          innerHTML: Utility.getString(characteristic)
+        });
         optGroup.append(opt);
       });
 
@@ -74,22 +74,23 @@ export default class Initialization {
   initializeIndicators(indicators) {
     indicators.forEach(group => {
       const optGroupName = Utility.getString(group);
-      let optGroup = Utility.createNode('optgroup');
-
-      optGroup.label = optGroupName;
-      optGroup.className = 'i18nable-optgroup';
-      optGroup.setAttribute('data-key', group["label.id"]);
+      let optGroup = Utility.createNode('optgroup', {
+        label: optGroupName,
+        class: '18nable-optgroup',
+        'data-key': group['label.id']
+      });
 
       group.indicators.forEach(indicator => {
-        let opt = Utility.createNode('option');
+        let opt = Utility.createNode('option', {
+          value: indicator.id,
+          class: 'i18nable',
+          'data-definition-id': indicator['definition.id'],
+          'data-label-id': indicator['label.id'],
+          'data-key': indicator['label.id'],
+          'data-type': indicator['type'],
+          innerHTML: Utility.getString(indicator),
+        });
 
-        opt.value = indicator.id;
-        opt.className = 'i18nable';
-        opt.setAttribute('data-definition-id', indicator["definition.id"]);
-        opt.setAttribute('data-label-id', indicator["label.id"]);
-        opt.setAttribute('data-key', indicator["label.id"]);
-        opt.setAttribute('data-type', indicator["type"]);
-        opt.innerHTML = Utility.getString(indicator);
         optGroup.append(opt);
       });
 
@@ -97,24 +98,33 @@ export default class Initialization {
     });
   }
 
+  /**
+   * Builds a panel heading node, which is a `div` containing a title `div`
+   * and a link `a`.
+   * @param {object} country: survey data on a given country.
+   * @private
+   */
   createPanelHeading(country) {
     const countryName = Utility.getString(country);
-    const panelHeading  = Utility.createNode('div');
-    panelHeading.className = 'panel-heading';
-    panelHeading.setAttribute('role', 'tab');
-    panelHeading.id = countryName;
+    const panelHeading  = Utility.createNode('div', {
+      class: 'panel-heading',
+      role: 'tab',
+      id: couuntryName
+    });
 
-    let panelTitle  = Utility.createNode('div');
-    panelTitle.className = 'panel-title';
+    let panelTitle  = Utility.createNode('div', {
+      class: 'panel-title'
+    });
 
-    let panelLink  = Utility.createNode('a');
-    panelLink.href = `#collapse${country["label.id"]}`
-    panelLink.setAttribute('role', 'button');
-    panelLink.setAttribute('data-toggle', 'collapse');
-    panelLink.setAttribute('data-parent', '#accordion');
-    panelLink.setAttribute('data-key', country["label.id"]);
-    panelLink.className = 'i18nable';
-    panelLink.innerHTML = countryName;
+    let panelLink  = Utility.createNode('a', {
+      href: `#collapse${country['label.id']}`,
+      role: 'button',
+      'data-toggle': 'collapse',
+      'data-parent': '#accordion',
+      'data-key': country['label.id'],
+      class: 'i18nable',
+      innerHTML: countryName,
+    });
 
     panelTitle.append(panelLink);
 
@@ -139,28 +149,37 @@ export default class Initialization {
     $('#countryRoundModal .modal-body').append(fragment);
   }
 
+  /**
+   * Creates a panel container node consisting of a `div` with an internal
+   * list
+   * @param {object} country: survey data of a given country.
+   */
   createPanelContainer(country) {
-    let panelContainer  = Utility.createNode('div');
-    panelContainer.className = 'panel panel-default';
+    let panelContainer  = Utility.createNode('div', {
+      class: 'panel panel-default'
+    });
 
     // Create panel heading.
     const panelHeading = this.createPanelHeading(country);
     panelContainer.append(panelHeading);
 
-    const panelBodyContainer = Utility.createNode('div');
-    panelBodyContainer.id = `collapse${country["label.id"]}`;
-    panelBodyContainer.className = 'panel-collapse collapse';
+    const panelBodyContainer = Utility.createNode('div', {
+      id: `collapse${country["label.id"]}`,
+      class: 'panel-collapse collapse'
+    });
 
-    let panelBody  = Utility.createNode('div');
-    panelBody.className = 'panel-body';
+    let panelBody  = Utility.createNode('div', {
+      class: 'panel-body'
+    });
 
     country.geographies.forEach(geography => {
       const geographyName = Utility.getString(geography);
 
-      let listHeader = Utility.createNode('h4');
-      listHeader.setAttribute('data-key', geography["label.id"]);
-      listHeader.className = 'i18nable';
-      listHeader.innerHTML = geographyName;
+      let listHeader = Utility.createNode('h4', {
+        'data-key': geography['label.id'],
+        class: 'i18nable',
+        innerHTML: geographyName
+      });
 
       panelBody.append(listHeader);
 
@@ -175,27 +194,25 @@ export default class Initialization {
     return panelContainer;
   }
 
-  createListItem(survey, index, len) {
-    const listItem  = Utility.createNode('div');
-    const surveyInput = Utility.createNode('input');
-    const surveyId = survey['id'];
-    surveyInput.type = 'checkbox';
-    surveyInput.name = surveyId;
-    surveyInput.value = surveyId;
-    surveyInput.id = surveyId;
-    if (index === len - 1) {
-      surveyInput.className = 'country-round latest';
-    } else {
-      surveyInput.className = 'country-round';
-    }
 
+  createListItem(survey, index, len) {
+    const listItem  = Utility.createNode('div', );
+    const surveyId = survey['id'];
+    const surveyInput = Utility.createNode('input', {
+      type: 'checkbox',
+      name: surveyId,
+      value: surveyId,
+      id: surveyId,
+      class: index === len - 1 ? 'country-round latest' : 'country-round'
+    });
     listItem.append(surveyInput);
-    const surveyInputLabel = Utility.createNode('label');
     const surveyName = Utility.getString(survey);
-    surveyInputLabel.setAttribute('data-key', survey["label.id"]);
-    surveyInputLabel.className = 'i18nable';
-    surveyInputLabel.htmlFor = surveyId;
-    surveyInputLabel.innerHTML = surveyName;
+    const surveyInputLabel = Utility.createNode('label', {
+      'data-key': survey['label.id'],
+      class: 'i18nable',
+      htmlFor: surveyId,
+      innerHTML: surveyName
+    });
 
     listItem.append(surveyInputLabel);
     return listItem;
