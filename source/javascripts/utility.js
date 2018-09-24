@@ -1,3 +1,5 @@
+import Selectors from './selectors';
+
 /**
  * Utility functions
  */
@@ -36,7 +38,7 @@ export default class Utility {
    */
   static getOverrideValue(id, fallback) {
     let overRideValue = document.getElementById(id).value;
-    if (!!sessionStorage.get('saved_style') && sessionStorage.get('saved_style') == 1) {
+    if (!!sessionStorage.getItem('saved_style') && sessionStorage.getItem('saved_style') == 1) {
       overRideValue = sessionStorage.getItem('styles.'+id);
     }
     return overRideValue || fallback;
@@ -63,7 +65,7 @@ export default class Utility {
    */
   static getStringById(labelId) {
     const strings = this.loadStringsFromSessionStorage();
-    const lang = Selectors.getSelectedLanguage();
+    const lang = Utility.getSelectedLanguage();
     const string = strings[labelId];
     if (string) {
       const enString = string['en'];

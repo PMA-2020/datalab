@@ -7,27 +7,27 @@ import Utility from '../../source/javascripts/utility';
 
 describe('getOverrideValue', () => {
   afterEach(() => {
-    chai.spy.restore(localStorage);
+    chai.spy.restore(sessionStorage);
     chai.spy.restore(document);
   });
 
   it('should return a fallback value if no value exists', () => {
     chai.spy.on(document, 'getElementById', id => ({}));
-    chai.spy.on(localStorage, 'saved_style', () => false);
+    chai.spy.on(sessionStorage, 'saved_style', () => false);
     const overrideValue = Utility.getOverrideValue(null, true);
     expect(overrideValue).to.equal(true);
   });
 
   it('should return an override style if one is found in the DOM', () => {
     chai.spy.on(document, 'getElementById', id => ({ value: 'red' }));
-    chai.spy.on(localStorage, 'saved_style', () => false);
+    chai.spy.on(sessionStorage, 'saved_style', () => false);
     const overrideValue = Utility.getOverrideValue(null, null);
     expect(overrideValue).to.equal('red');
   });
 
   it('should return a saved style from localStorage if that exists', () => {
     chai.spy.on(document, 'getElementById', id => ({}));
-    chai.spy.on(localStorage, 'getItem', (id) => {
+    chai.spy.on(sessionStorage, 'getItem', (id) => {
       if (id === 'saved_style') {
         return 1;
       }
@@ -44,21 +44,21 @@ describe('getStringById', () => {
   });
 
   it('should return false if no matching string is found for an id', () => {
-    chai.spy.on(Utility, 'loadStringsFromLocalStorage', () => ({}));
+    chai.spy.on(Utility, 'loadStringsFromSessionStorage', () => ({}));
     chai.spy.on(Utility, 'getSelectedLanguage', () => 'en');
     const string = Utility.getStringById('label');
     expect(string).to.equal(false);
   });
 
   it('should return a specific language string if available', () => {
-    chai.spy.on(Utility, 'loadStringsFromLocalStorage', () => ({label: {en: 'label', es: 'etiqueta'}}));
+    chai.spy.on(Utility, 'loadStringsFromSessionStorage', () => ({label: {en: 'label', es: 'etiqueta'}}));
     chai.spy.on(Utility, 'getSelectedLanguage', () => 'es');
     const string = Utility.getStringById('label');
     expect(string).to.equal('etiqueta');
   });
 
   it('should return an english string if a language specific one is not found', () => {
-    chai.spy.on(Utility, 'loadStringsFromLocalStorage', () => ({label: {en: 'label' }}));
+    chai.spy.on(Utility, 'loadStringsFromSessionStorage', () => ({label: {en: 'label' }}));
     chai.spy.on(Utility, 'getSelectedLanguage', () => 'es');
     const string = Utility.getStringById('label');
     expect(string).to.equal('label');
