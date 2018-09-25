@@ -54,6 +54,10 @@ export default class Network {
     });
   }
 
+  /**
+   * Send an IE friendly API request
+   * @private
+   */
   static sendIERequest(url) {
     this.displayLoading();
     const self = this;

@@ -113,7 +113,7 @@ export default class Initialization {
   /**
    * Builds a panel heading node, which is a `div` containing a title `div`
    * and a link `a`.
-   * @param {object} country: survey data on a given country.
+   * @param {object} country - survey data on a given country.
    * @private
    */
   createPanelHeading(country) {
@@ -162,7 +162,7 @@ export default class Initialization {
   /**
    * Creates a panel container node consisting of a `div` with an internal
    * list
-   * @param {object} country: survey data of a given country.
+   * @param {object} country - survey data of a given country.
    */
   createPanelContainer(country) {
     let panelContainer  = Utility.createNode('div', {
@@ -205,6 +205,13 @@ export default class Initialization {
   }
 
 
+  /**
+   * Create the list item for each survey provided
+   * @param {object} survey - survey data of a given country.
+   * @param {integer} index - the survey position in the list
+   * @param {integer} len - the number of surveys in the country
+   * @private
+   */
   createListItem(survey, index, len) {
     const listItem  = Utility.createNode('div', );
     const surveyId = survey['id'];

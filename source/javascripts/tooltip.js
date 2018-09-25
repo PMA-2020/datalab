@@ -80,6 +80,9 @@ export default class Tooltips {
     this.enableBtnDownload();
   }
 
+  /**
+   * Get all guide steps for the tooltips, in the correct language
+   */
   static guideSteps() {
     const lang = Selectors.getSelectedLanguage();
     let arrayDescription = [];

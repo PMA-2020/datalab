@@ -33,13 +33,18 @@ To run a development server just use the command:
 `middleman server`
 
 ## Testing
-Tests use Karma and Chai.
+Unit Tests use Karma and Chai.
 
 To run tests:
 
 - Ensure node dependencies are installed with `npm install`.
-- Run `npm test`.
+- Run `npm run test:unit`.
 - Karma will instruct you to open a browser to run the tests.
+
+Snapshot tests use Selenium
+
+- Can be run with default config using `npm test`
+- See the makefile for other options
 
 ## Building and Deploying
 

@@ -4,7 +4,8 @@
   "description": "PMA2020 Data Lab",
   "main": "index.js",
   "scripts": {
-    "test": "karma start karma.conf.js",
+    "test": "node ./test/index.js",
+    "test:unit": "karma start karma.conf.js",
     "doc:gen": "esdoc",
     "lint": "./node_modules/.bin/eslint ./source/javascripts/*.js; exit 0"
   },

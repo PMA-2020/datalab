@@ -37,6 +37,9 @@ export default class Combo {
     this.handleCombos(opts);
   }
 
+  /**
+   * Check for combo box restrictions based on the indicator group
+   */
   static checkRestriction() {
     const selectedIndicator = Selectors.getSelectedValue('select-indicator-group');
     switch (selectedIndicator) {

@@ -119,6 +119,10 @@ export default class Utility {
     }
   }
 
+  /**
+   * Indicates if the client browser is an IE variant
+   * @return {boolean} true if the client is IE
+   */
   static isIE() {
     const ua = window.navigator.userAgent;
     const msie = ua.indexOf("MSIE ");

@@ -159,6 +159,11 @@ export default class Chart {
     };
   }
 
+  /**
+   * Generate the date in yyyy-mm-dd format
+   * @return {string} the date in string format
+   * @private
+   */
   generateDate() {
     return new Date().toJSON().slice(0, 10);
   }
