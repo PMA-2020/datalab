@@ -1,4 +1,4 @@
-# Datalab Client Applicattion
+# Datalab Client Application
 PMA2020 Datalab client
 
 ## Setup
@@ -13,48 +13,58 @@ To get the application setup just:
 ### Setting up the Environment
 
 In order to make the app more flexible for differenet environments
-(development, staging, production, etc) we utilize a `env.js` file to describe
-the environment for the client application. Your actual `env.js` should never
-be committed.
+(development, staging, production, etc) we utilize a `env.js` file to
+describe the environment for the client application. Your actual
+`env.js` should never be committed.
 
 Currently the options are:
 
-- `api_url`: The url you would like to use for the API. This will hard default to `http://api.pma2020.org`
+- `api_url`: The url you would like to use for the API. This will hard
+default to `http://api.pma2020.org`
 - `environment`: The environment you are using
-- `version`: The version # of the client application. This should be incremented using Semantic Versioning on every deploy.
+- `version`: The version # of the client application. This should be
+incremented using Semantic Versioning on every deploy.
 
 ## Development
 
-During development we are using Webpack to manage assets including Javascript and CSS files.
-Normally you would have to run a webpack server along side things but this is abstracted away
-via Middleman.
+During development we are using Webpack to manage assets including
+Javascript and CSS files.
+Normally you would have to run a webpack server along side things but
+this is abstracted away via Middleman.
 
 To run a development server just use the command:
 `middleman server`
 
 ## Testing
-Unit Tests use Karma and Chai.
-
-To run tests:
-
+Unit Tests use Karma and Chai. To run,
 - Ensure node dependencies are installed with `npm install`.
 - Run `npm run test:unit`.
 - Karma will instruct you to open a browser to run the tests.
 
-Snapshot tests use Selenium
+Blackbox testing uses Selenium. To run,
+- Ensure node dependencies are installed with `npm install`.
+- Can be run with default config using `npm test:selenium`.
 
-- Can be run with default config using `npm test`
-- See the makefile for other options
+To run all tests,
+- Use the command `make test` or `npm run test`.
+
+Note that if running all tests, some versions of Karma appear to have a
+bug where the server does not close automatically; therefore you should
+exit the first command automatically after it finishes.
 
 ## Building and Deploying
 
-The Datalab Client uses Amazon S3 for its hosting since it is just static content.
+The Datalab Client uses Amazon S3 for its hosting since it is just
+static content.
 
 When you are ready to deploy a new version run these steps:
 
-- `middleman build` - generates static assets that are uglified and minified to the `build/` directory
+- `middleman build` - generates static assets that are uglified and
+minified to the `build/` directory
 - Copy the static assets in the build folder to the Amazon S3 Bucket
-- If the build does not automatically create an updated `env.js` in `build/`, copy/patse `env.js.example` into `build/` and change the name to `env.js`.
+- If the build does not automatically create an updated `env.js` in
+`build/`, copy/patse `env.js.example` into `build/` and change the name
+to `env.js`.
 
 ## Documentation
 

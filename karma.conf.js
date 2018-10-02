@@ -1,4 +1,4 @@
-var webpackConfig = require('./webpack.config');
+const webpackConfig = require('./webpack.config');
 
 module.exports = function (config) {
   config.set({
@@ -25,10 +25,10 @@ module.exports = function (config) {
     logLevel: config.LOG_INFO,
     autoWatch: true,
     browsers: [],
-    singleRun: false,
+    singleRun: true,
     concurrency: Infinity,
     jsonFixturesPreprocessor: {
       variableName: '__json__'
     },
   })
-}
+};
