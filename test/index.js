@@ -26,7 +26,7 @@ let testConfig = {
   decimalPrecision: 3,
   thresholdValue: 0.950,
   slowdownMultiplier: 1.5,
-  urlBase: defaultUrls['dev'] + '/?',  // TODO #6b: Fetch from env.
+  urlBase: defaultUrls['production'] + '/?',  // TODO #6b: Fetch from env.
   svgFileName: 'chart.svg'
 };
 let globals = {  // There may be an existing bug in which some errors accidentally get counted as both passes and errors, and error number isn't accurate either.
