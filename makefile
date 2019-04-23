@@ -5,7 +5,8 @@ open-staging open-production open-prod test-dev test-staging test-production \
 test-prod set-env choices-prompt push-staging_prod-like-env \
 push-staging_full-staging-env staging_prod-like-env staging_full-staging-env \
 set-stagingWithProductionApi set-stagingWithStagingApi dev prod production \
-push-staging2 staging2 open-local open-staging2
+push-staging2 staging2 open-local open-staging2 backup-local-staging \
+backup-local-production
 
 # Local Development
 build:
@@ -86,16 +87,28 @@ push-staging: choices-prompt
 	@echo
 push-dev: set-stagingWithStagingApi push-staging-static
 	aws s3 sync build/ s3://datalab-dev.pma2020.org \
-	  --region eu-central-1 --profile work
+	 --region eu-central-1 --profile work
 	@echo Pushed to: http://datalab-dev.pma2020.org
 push-staging_full-staging-env: set-stagingWithStagingApi push-staging-static
 	aws s3 sync build/ s3://datalab-staging.pma2020.org \
-	  --region eu-central-1 --profile work
+	 --region eu-central-1 --profile work
 	@echo Pushed to: http://datalab-staging.pma2020.org
 push-staging_prod-like-env: set-stagingWithProductionApi push-staging-static
 	aws s3 sync build/ s3://datalab-staging2.pma2020.org \
-	  --region eu-central-1 --profile work
+	 --region eu-central-1 --profile work
 	@echo Pushed to: http://datalab-staging2.pma2020.org
+backup-local-staging:
+	@DATETIME=$(shell echo `date +%Y-%m-%d_%H-%M-%S`); \
+	mkdir _dev/backup/deployments/staging/"$$DATETIME"; \
+	aws s3 sync s3://datalab-staging.pma2020.org \
+	--region eu-central-1 --profile work \
+	_dev/backup/deployments/staging/"$$DATETIME"
+backup-local-production:
+	@DATETIME=$(shell echo `date +%Y-%m-%d_%H-%M-%S`); \
+	mkdir _dev/backup/deployments/production/"$$DATETIME"; \
+	aws s3 sync s3://datalab.pma2020.org \
+	 --region eu-central-1 --profile work \
+	_dev/backup/deployments/production/"$$DATETIME"
 staging_prod-like-env: set-stagingWithProductionApi push-staging-static
 staging_full-staging-env: set-stagingWithStagingApi push-staging-static
 push-production:
@@ -103,7 +116,7 @@ push-production:
 	cp env.js build/env.js; \
 	make build; \
 	aws s3 sync build/ s3://datalab.pma2020.org \
-	  --region eu-central-1 --profile work
+	 --region eu-central-1 --profile work
 push-prod: push-production
 staging: push-staging
 push-staging2: push-staging_prod-like-env
